@@ -1,0 +1,414 @@
+{
+  "config": {
+    "qubits": 3,
+    "samples": 2048,
+    "dt": 2.0,
+    "seed": 20260921,
+    "sigma": 0.004,
+    "skip_quantum": false,
+    "output": "results/validated",
+    "duration_ns": 200.0,
+    "control": [
+      {
+        "label": "Ry(pi/2)",
+        "duration_ns": 20.0,
+        "sites": [
+          0
+        ]
+      },
+      {
+        "label": "CX(0,1)",
+        "duration_ns": 80.0,
+        "sites": [
+          0,
+          1
+        ]
+      },
+      {
+        "label": "CX(1,2)",
+        "duration_ns": 80.0,
+        "sites": [
+          1,
+          2
+        ]
+      },
+      {
+        "label": "idle",
+        "duration_ns": 20.0,
+        "sites": [
+          0
+        ]
+      }
+    ],
+    "ou_modes": 12,
+    "ou_rates_per_ns": [
+      0.0001,
+      0.1
+    ],
+    "markovian_calibration": {
+      "ramsey_time_ns": 100.0,
+      "gamma_phi_per_ns": 0.0006057121427863463
+    }
+  },
+  "models": {
+    "ideal": {
+      "fidelity": 1.0000000000000002,
+      "purity": 1.0000000000000004,
+      "trace_real": 1.0000000000000002,
+      "trace_imag": -3.4158385974766904e-33,
+      "min_eigenvalue": -1.3923604487897752e-32,
+      "probabilities": [
+        0.5000000000000001,
+        0.0,
+        0.0,
+        0.0,
+        6.162975822039156e-33,
+        0.0,
+        3.081487911019578e-32,
+        0.5000000000000001
+      ],
+      "x_parity": 1.0000000000000002,
+      "ghz_coherence_real": 0.5000000000000001,
+      "ghz_coherence_imag": -8.326672684688675e-17,
+      "seconds": 0.0
+    },
+    "colored_dense": {
+      "fidelity": 0.8509703381285698,
+      "purity": 0.7444512163345562,
+      "trace_real": 1.0000000000000013,
+      "trace_imag": -1.0150999804136572e-19,
+      "min_eigenvalue": -5.620364683791756e-17,
+      "probabilities": [
+        0.5002606193541411,
+        8.233447434027266e-34,
+        3.552753905966119e-66,
+        1.0037176837310466e-65,
+        0.004048384287944596,
+        2.484177018165437e-34,
+        0.004174604720627815,
+        0.49151639163728766
+      ],
+      "x_parity": 0.7101636652657105,
+      "ghz_coherence_real": 0.35508183263285525,
+      "ghz_coherence_imag": 0.00033769022000701274,
+      "seconds": 4.456917041999986,
+      "fidelity_mc_standard_error": 0.0037490707914933146
+    },
+    "colored_mps_substeps1": {
+      "fidelity": 0.850996412099905,
+      "purity": 0.7444900243028656,
+      "trace_real": 1.0000000000000002,
+      "trace_imag": -2.5589024016566218e-20,
+      "min_eigenvalue": -1.5154076629771962e-17,
+      "probabilities": [
+        0.5002574705553606,
+        3.379492737127442e-31,
+        9.099998130714888e-32,
+        1.037767666004994e-30,
+        0.004044298428060254,
+        6.390687305368235e-32,
+        0.0041704246137809825,
+        0.4915278064027985
+      ],
+      "x_parity": 0.7102075472416506,
+      "ghz_coherence_real": 0.3551037736208253,
+      "ghz_coherence_imag": 0.00033855645652909345,
+      "seconds": 7.323539083998185,
+      "fidelity_mc_standard_error": 0.003748671139947978,
+      "mps": {
+        "peak_bond": 2,
+        "max_trajectory_discarded_weight_sum": 0.0,
+        "max_trajectory_norm_error_before_normalization": 1.2656542480726785e-14
+      }
+    },
+    "colored_mps_substeps2": {
+      "fidelity": 0.8509768555425448,
+      "purity": 0.7444609166160543,
+      "trace_real": 1.0000000000000002,
+      "trace_imag": 2.6126114323566225e-19,
+      "min_eigenvalue": -1.919713638053717e-19,
+      "probabilities": [
+        0.500259831393807,
+        6.455371421533286e-31,
+        1.8600318275986098e-31,
+        2.3722183012069516e-30,
+        0.004047362726439236,
+        1.2355930357632915e-31,
+        0.004173559601433922,
+        0.4915192462783201
+      ],
+      "x_parity": 0.710174633412962,
+      "ghz_coherence_real": 0.355087316706481,
+      "ghz_coherence_imag": 0.00033790670294923074,
+      "seconds": 14.411570625001332,
+      "fidelity_mc_standard_error": 0.003748970908137999,
+      "mps": {
+        "peak_bond": 2,
+        "max_trajectory_discarded_weight_sum": 0.0,
+        "max_trajectory_norm_error_before_normalization": 1.2878587085651816e-14
+      }
+    },
+    "quasistatic_dense": {
+      "fidelity": 0.7998933500719335,
+      "purity": 0.6771410838107693,
+      "trace_real": 1.0000000000000002,
+      "trace_imag": 1.637957363086298e-20,
+      "min_eigenvalue": 8.473875274229166e-33,
+      "probabilities": [
+        0.5002786704791551,
+        7.395891457428664e-33,
+        2.1844216406501833e-65,
+        8.14450802037523e-65,
+        0.005323956911994259,
+        8.512142748258001e-33,
+        0.004964067090301391,
+        0.4894333055185494
+      ],
+      "x_parity": 0.6100747241461624,
+      "ghz_coherence_real": 0.3050373620730812,
+      "ghz_coherence_imag": -0.007505588102341994,
+      "seconds": 4.476422417006688,
+      "fidelity_mc_standard_error": 0.004746496725074409
+    },
+    "reset_colored_dense": {
+      "fidelity": 0.9262670236577861,
+      "purity": 0.8624209678895352,
+      "trace_real": 1.0000000000000013,
+      "trace_imag": 2.834183941534787e-19,
+      "min_eigenvalue": -2.65800376390859e-19,
+      "probabilities": [
+        0.5002606193541409,
+        8.233447434027267e-34,
+        3.647286731032082e-66,
+        9.942644012244487e-66,
+        0.004176536628868005,
+        2.4783707567397228e-34,
+        0.004107763301710443,
+        0.49145508071528216
+      ],
+      "x_parity": 0.860818347246149,
+      "ghz_coherence_real": 0.4304091736230745,
+      "ghz_coherence_imag": 0.004217173491589279,
+      "seconds": 4.452429750002921,
+      "fidelity_mc_standard_error": 0.0019871370710782036
+    },
+    "lindblad": {
+      "fidelity": 0.8889714618629622,
+      "purity": 0.8004698527010681,
+      "trace_real": 1.0,
+      "trace_imag": 0.0,
+      "min_eigenvalue": -3.3815906314638553e-18,
+      "probabilities": [
+        0.5019222167461905,
+        0.0,
+        0.0,
+        0.0,
+        0.005961502865663376,
+        0.0,
+        0.005890149519635488,
+        0.4862261308685106
+      ],
+      "x_parity": 0.7897945761112231,
+      "ghz_coherence_real": 0.39489728805561153,
+      "ghz_coherence_imag": 1.865098003737576e-17,
+      "seconds": 0.0016637090011499822
+    },
+    "colored_dense_half_dt": {
+      "fidelity": 0.8535001640348658,
+      "purity": 0.7483764846276127,
+      "trace_real": 0.9999999999999989,
+      "trace_imag": 2.943930259990416e-19,
+      "min_eigenvalue": -4.985001673911215e-19,
+      "probabilities": [
+        0.5002485458884162,
+        1.653758993180559e-33,
+        4.485720264232262e-61,
+        1.1370943390992248e-61,
+        0.004218636565963328,
+        2.4600922515804494e-34,
+        0.003977333077131335,
+        0.4915554844684881
+      ],
+      "x_parity": 0.7151962977128271,
+      "ghz_coherence_real": 0.35759814885641356,
+      "ghz_coherence_imag": 0.011234234483291642,
+      "seconds": 8.635135334014194,
+      "fidelity_mc_standard_error": 0.0036816656654341537
+    }
+  },
+  "checks": {
+    "colored_mps_substeps1_trace_distance_to_dense": 2.7662990371870288e-05,
+    "colored_mps_substeps2_trace_distance_to_dense": 6.914989767464638e-06,
+    "continuous_vs_reset_trace_distance": 0.0764148460910713,
+    "memory_comparison_note": "Finite Monte Carlo difference; not a significance test or hardware result.",
+    "paired_grid_refinement": {
+      "trace_distance": 3.022318199135701e-06,
+      "fidelity_difference": -2.246804086548791e-06,
+      "fidelity_difference_standard_error": 4.817792554679e-07,
+      "note": "Paired fine cells versus their coarse average; probes control/noise time ordering, not full continuum convergence."
+    }
+  },
+  "quantum": {
+    "description": "One qubit, two thermal oscillator modes: log quadrature of regularized 1/f symmetrized spectrum; illustrative, not continuum-converged or device-calibrated.",
+    "config": {
+      "modes": 2,
+      "omega_min": 0.015,
+      "omega_max": 0.24,
+      "sigma": 0.03,
+      "beta": 60.0,
+      "duration_ns": 40.0
+    },
+    "models": {
+      "heom_depth4": {
+        "fidelity": 0.8189881010320217,
+        "purity": 0.7048177742697682,
+        "trace_real": 0.9999999999999999,
+        "trace_imag": 0.0,
+        "min_eigenvalue": 0.17998611415301935,
+        "probabilities": [
+          0.4753604362121383,
+          0.5246395637878616
+        ],
+        "x_parity": 0.6379762020640429,
+        "ghz_coherence_real": 0.31898810103202146,
+        "ghz_coherence_imag": 0.006954885420544333,
+        "seconds": 2.661403292004252,
+        "diagnostics": {
+          "ado_count": 70,
+          "depth": 4,
+          "mode_frequencies": [
+            0.03,
+            0.12
+          ],
+          "couplings": [
+            0.01795366373723093,
+            0.02119737186656749
+          ],
+          "occupations": [
+            0.19803362651500597,
+            0.000747143615196605
+          ]
+        }
+      },
+      "heom_depth6": {
+        "fidelity": 0.8189880020112205,
+        "purity": 0.7048176465959379,
+        "trace_real": 0.9999999999999998,
+        "trace_imag": 0.0,
+        "min_eigenvalue": 0.17998621389388664,
+        "probabilities": [
+          0.47536045612537475,
+          0.5246395438746251
+        ],
+        "x_parity": 0.6379760040224407,
+        "ghz_coherence_real": 0.3189880020112204,
+        "ghz_coherence_imag": 0.00695490823154234,
+        "seconds": 0.05015266698319465,
+        "diagnostics": {
+          "ado_count": 210,
+          "depth": 6,
+          "mode_frequencies": [
+            0.03,
+            0.12
+          ],
+          "couplings": [
+            0.01795366373723093,
+            0.02119737186656749
+          ],
+          "occupations": [
+            0.19803362651500597,
+            0.000747143615196605
+          ]
+        }
+      },
+      "heom_reset_depth6": {
+        "fidelity": 0.9330410344422236,
+        "purity": 0.8750913245909601,
+        "trace_real": 0.9999999999999999,
+        "trace_imag": 0.0,
+        "min_eigenvalue": 0.06693457504035251,
+        "probabilities": [
+          0.4970002605175098,
+          0.5029997394824901
+        ],
+        "x_parity": 0.8660820688844469,
+        "ghz_coherence_real": 0.43304103444222347,
+        "ghz_coherence_imag": 0.003482290586135551,
+        "seconds": 0.0467415000020992,
+        "diagnostics": {
+          "ado_count": 210,
+          "depth": 6,
+          "mode_frequencies": [
+            0.03,
+            0.12
+          ],
+          "couplings": [
+            0.01795366373723093,
+            0.02119737186656749
+          ],
+          "occupations": [
+            0.19803362651500597,
+            0.000747143615196605
+          ]
+        }
+      },
+      "explicit_fock5": {
+        "fidelity": 0.8191016695039557,
+        "purity": 0.7049632089017507,
+        "trace_real": 0.9999999999999971,
+        "trace_imag": -2.3001698709958967e-17,
+        "min_eigenvalue": 0.17987251843854807,
+        "probabilities": [
+          0.4753624439740332,
+          0.5246375560259638
+        ],
+        "x_parity": 0.6382033390079138,
+        "ghz_coherence_real": 0.3191016695039568,
+        "ghz_coherence_imag": 0.006979957287240785,
+        "seconds": 0.006085417000576854,
+        "diagnostics": {
+          "fock": 5,
+          "joint_dimension": 50,
+          "initial_thermal_tail_per_mode": [
+            0.00012340980408667962,
+            2.319522830243577e-16
+          ]
+        }
+      },
+      "explicit_fock7": {
+        "fidelity": 0.818990738950038,
+        "purity": 0.7048211855921418,
+        "trace_real": 1.0000000000000004,
+        "trace_imag": 7.861220740219074e-17,
+        "min_eigenvalue": 0.1799834491841546,
+        "probabilities": [
+          0.4753603347374922,
+          0.5246396652625082
+        ],
+        "x_parity": 0.6379814779000752,
+        "ghz_coherence_real": 0.3189907389500377,
+        "ghz_coherence_imag": 0.00695615956769228,
+        "seconds": 0.012090625008568168,
+        "diagnostics": {
+          "fock": 7,
+          "joint_dimension": 98,
+          "initial_thermal_tail_per_mode": [
+            3.3720152341391862e-06,
+            1.2928796868784116e-22
+          ]
+        }
+      }
+    },
+    "checks": {
+      "heom_depth4_vs6": 1.0354707951166819e-07,
+      "fock5_vs7": 0.00011347408570829885,
+      "heom6_vs_explicit7": 3.0118783620122964e-06,
+      "heom_continuous_vs_reset": 0.11613971936486031
+    }
+  },
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "qutip": "5.2.2"
+  }
+}
