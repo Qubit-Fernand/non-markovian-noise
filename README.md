@@ -6,6 +6,9 @@
 - [研究方案](docs/research-plan.md)：小系统验证、跨门记忆诊断和后续误差缓解研究。
 - [完整数值记录](results/validated/summary.json)与[终态密度矩阵](results/validated/final_states.npz)。
 - [复现与备份说明](docs/backup-and-reproduce.md)。
+- [研究讨论笔记](codex_memory.md)：当前问题与文献边界，包含尚待实验验证的设想。
+
+合作者建议先阅读数值报告中的“读图说明”，再查看研究方案。`results/validated/` 是报告采用的主数据；`results/demo/` 仅保留早期试运行。当前结果是给定模型下的数值验证，尚未对接真机或完成器件噪声学习。
 
 ![三比特模拟结果：fidelity、终态密度矩阵和连续噪声轨迹](results/validated/comparison.png)
 
@@ -24,16 +27,34 @@
 
 ## 运行
 
-在项目目录，用用户现有的 Qubit 环境：
+首次使用可以创建独立环境（Python 3.11 或以上）：
+
+```bash
+git clone https://github.com/Qubit-Fernand/non-markovian-noise.git
+cd non-markovian-noise
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-reproduce.txt
+python -m pytest -q
+```
+
+查看已有报告、PNG 图和结果数据无需重跑。生成新图前需要安装系统 LaTeX 和 Times New Roman 字体；绘图配置位于 `run_demo.py` 的 `make_plot()`。快速试运行和完整运行分别为：
+
+```bash
+python run_demo.py --samples 32 --skip-quantum --output results/quickstart
+python run_demo.py --samples 2048 --output results/reproduced
+```
+
+已有 Qubit conda 环境也可以直接运行：
 
 ```bash
 conda run -n Qubit python run_demo.py --samples 2048 --output results/my_run
 conda run -n Qubit python -m pytest -q
 ```
 
-本机也可以直接调用 `/opt/miniconda3/envs/Qubit/bin/python`。默认运行 3 比特；`--qubits 4` 改为 4 比特，`--dt 1` 减小时间步长，`--sigma 0.002` 改变失谐标准差。`--skip-quantum` 仅跳过量子浴示例。每次选择一个新的 `--output` 目录，脚本不会覆盖已有 `summary.json`。
+默认运行 3 比特；`--qubits 4` 改为 4 比特，`--dt 1` 减小时间步长，`--sigma 0.002` 改变失谐标准差。`--skip-quantum` 仅跳过量子浴示例。每次选择一个新的 `--output` 目录，脚本不会覆盖已有 `summary.json`。
 
-依赖见 `pyproject.toml`。运行环境已具备 NumPy、SciPy、Matplotlib、QuTiP 和 pytest。绘图按用户偏好使用 Times New Roman 和 LaTeX，需要系统 LaTeX；核心求解器不依赖 LaTeX。输出图中的误差棒为轨迹 Monte Carlo 的一个标准误，不是硬件 shots 的误差。
+依赖范围见 `pyproject.toml`，归档运行的核心版本见 `requirements-reproduce.txt`。核心求解器不依赖 LaTeX。输出图中的误差棒为轨迹 Monte Carlo 的一个标准误，不是硬件 shots 的误差。
 
 输出包括：
 

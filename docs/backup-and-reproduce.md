@@ -5,13 +5,14 @@ GitHub 公开仓库：[Qubit-Fernand/non-markovian-noise](https://github.com/Qub
 ## 归档内容
 
 - `docs/`：研究设计与实际模拟报告。
+- `codex_memory.md`：研究讨论笔记，包含待验证的设想及文献要点。
 - `nmnoise/`、`run_demo.py`、`tests/`：求解代码及验证。
 - `results/validated/`：2048 条轨迹的主运行、图表、终态、噪声轨迹及测试记录。
 - `results/demo/`：512 条轨迹的早期试运行，保留作历史数据；正文报告以 validated 为准。
 - `2509.07693v2.pdf`：用户提供的参考论文，原作者版权不因仓库公开而改变。
 - `results/SHA256SUMS`：已归档结果文件的 SHA-256 清单。
 
-`tmp/`、Python 缓存和 pytest 缓存不进入 Git；它们不属于研究交付。
+`tmp/`、`.history/`、`.venv/`、Python 缓存和 pytest 缓存不进入 Git；它们不属于研究交付。
 
 ## 从远端恢复
 
