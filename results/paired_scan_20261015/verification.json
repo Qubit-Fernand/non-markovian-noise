@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-15",
+  "pytest_command": "python -m pytest -q",
+  "pytest_result": "14 passed in 5.47s",
+  "scan_rows_checked": 160,
+  "confirmations_checked": 8,
+  "max_scan_bloch_norm_error": 2.7755575615628914e-15,
+  "max_saved_noise_replay_error": 0.0,
+  "source_snapshot_matches_working_code": true,
+  "largest_confirmed_bloch_step_change": 6.521470246514492e-07
+}
