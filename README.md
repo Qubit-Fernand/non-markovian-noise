@@ -113,7 +113,7 @@ conda run -n TensorCircuitNG python -m pytest -q
 
 默认运行 3 比特；`--qubits 4` 改为 4 比特，`--dt 1` 减小时间步长，`--sigma 0.002` 改变失谐标准差。`--skip-quantum` 仅跳过量子浴示例。每次选择一个新的 `--output` 目录，脚本不会覆盖已有 `summary.json`。
 
-依赖范围见 `pyproject.toml`，当前安装版本见 `requirements.txt`，旧归档运行的核心版本保留在 `requirements-reproduce.txt`。核心求解器不依赖 LaTeX。输出图中的误差棒为轨迹 Monte Carlo 的一个标准误，不是硬件 shots 的误差。
+依赖范围见 `pyproject.toml`，固定安装版本统一见 `requirements.txt`；各次归档运行的版本见结果记录及 Git 历史。核心求解器不依赖 LaTeX。输出图中的误差棒为轨迹 Monte Carlo 的一个标准误，不是硬件 shots 的误差。
 
 输出包括：
 

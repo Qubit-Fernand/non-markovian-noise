@@ -35,7 +35,7 @@ python -m spp_tn.demo --output results/spp_reproduced --convergence
 python run_demo.py --samples 2048 --output results/reproduced
 ```
 
-也可在 Python 3.11 的独立环境执行 `python -m pip install -r requirements.txt`。`requirements-reproduce.txt` 仅保留旧基准的核心版本。绘图还依赖 LaTeX 与 Times New Roman，运行时间随平台和首次导入开销变化。随机种子和模型参数保存在 JSON；跨 BLAS/系统的浮点结果允许舍入差异。
+也可在 Python 3.11 的独立环境执行 `python -m pip install -r requirements.txt`。旧安装清单的五项依赖已按相同版本合并到该文件，不再维护第二个根目录安装入口；历史清单可从 Git 历史查看。绘图还依赖 LaTeX 与 Times New Roman，运行时间随平台和首次导入开销变化。随机种子和模型参数保存在 JSON；跨 BLAS/系统的浮点结果允许舍入差异。
 
 ## 后续同步
 
