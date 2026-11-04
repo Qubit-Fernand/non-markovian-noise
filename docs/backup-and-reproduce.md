@@ -10,10 +10,10 @@ GitHub 公开仓库：[Qubit-Fernand/non-markovian-noise](https://github.com/Qub
 - `nmnoise/`、`run_demo.py`、`run_paired_scan.py`、`tests/`：求解代码及验证。
 - `results/validated/`：2048 条轨迹的主运行、图表、终态、噪声轨迹及测试记录。
 - `results/demo/`：512 条轨迹的早期试运行，保留作历史数据；正文报告以 validated 为准。
-- `2509.07693v2.pdf`：用户提供的参考论文，原作者版权不因仓库公开而改变。
+- 原参考论文 `2509.07693v2.pdf` 已于 2026-10-27 移出项目根目录并放入回收站；改由 [Zotero 群组条目](https://www.zotero.org/groups/6729418/items/AXEGG4GX)及[在线 v2 PDF](https://arxiv.org/pdf/2509.07693v2)访问。旧 Git 历史可能仍包含该文件。
 - `results/SHA256SUMS`：已归档结果文件的 SHA-256 清单。
 
-`tmp/`、`.history/`、`.venv/`、Python 缓存和 pytest 缓存不进入 Git；它们不属于研究交付。
+`tmp/`、`.history/`、venv、Python 缓存、pytest 缓存、本机编辑器配置和环境修复日志不进入 Git。主要安装入口为 `requirements.txt` 与 `environment.yml`；旧环境的约束和验证范围见 `environments/README.md`。
 
 ## 从远端恢复
 
@@ -25,14 +25,17 @@ shasum -a 256 -c results/SHA256SUMS
 
 ## 重跑
 
-在具备依赖的 Qubit 环境运行：
+从仓库根目录创建或激活项目环境：
 
 ```bash
-conda run -n Qubit python -m pytest -q
-conda run -n Qubit python run_demo.py --samples 2048 --output results/reproduced
+conda env create -f environment.yml
+conda activate TensorCircuitNG
+python -m pytest -q
+python -m spp_tn.demo --output results/spp_reproduced --convergence
+python run_demo.py --samples 2048 --output results/reproduced
 ```
 
-新环境可安装 `requirements-reproduce.txt` 中记录的核心版本。绘图还依赖 LaTeX 与 Times New Roman，运行时间随平台和首次导入开销变化。随机种子和模型参数保存在 JSON；跨 BLAS/系统的浮点结果允许舍入差异。
+也可在 Python 3.11 的独立环境执行 `python -m pip install -r requirements.txt`。`requirements-reproduce.txt` 仅保留旧基准的核心版本。绘图还依赖 LaTeX 与 Times New Roman，运行时间随平台和首次导入开销变化。随机种子和模型参数保存在 JSON；跨 BLAS/系统的浮点结果允许舍入差异。
 
 ## 后续同步
 

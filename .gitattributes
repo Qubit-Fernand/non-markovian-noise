@@ -1,0 +1,5 @@
+# Preserve archived data and source snapshots byte-for-byte for SHA256 checks.
+results/** -text
+# Python's csv writer uses CRLF; archived patches contain context blank lines.
+results/**/*.csv whitespace=cr-at-eol
+results/**/working-tree.patch -whitespace

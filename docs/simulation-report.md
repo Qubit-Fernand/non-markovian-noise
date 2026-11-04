@@ -150,6 +150,6 @@ MPS 两个子步的最大 bond dimension 为 2，记录的 SVD 丢弃权重为�
 
 ## 7. 文献与文件依据
 
-- Chen et al., [arXiv:2509.07693v2](https://arxiv.org/abs/2509.07693v2)，[本地参考 PDF](../2509.07693v2.pdf)。
+- Chen et al., [arXiv:2509.07693v2](https://arxiv.org/abs/2509.07693v2)，[在线 PDF（v2）](https://arxiv.org/pdf/2509.07693v2)，[Zotero 群组条目](https://www.zotero.org/groups/6729418/items/AXEGG4GX)。
 - [QuTiP Bosonic HEOM 文档](https://qutip.readthedocs.io/en/v5.1.0/guide/heom/bosonic.html)。
 - [OQuPy PT-TEMPO 教程](https://oqupy.readthedocs.io/en/latest/pages/tutorials/pt_tempo.html)，属于可进一步探索、尚未实现的路线。

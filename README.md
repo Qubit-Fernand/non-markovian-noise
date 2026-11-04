@@ -1,10 +1,51 @@
 # 有限时长量子门与非马尔可夫噪声：可运行的数值原型
 
-本文件统一记录项目说明、维护约定、待办与已解决事项；后续直接维护本文件。
+有限时长控制、有时间关联的噪声，以及基于 TensorCircuit 的 SPP 张量网络与误差缓解数值实现。所有结果均为合成模拟，模型假设和验证范围见各基准报告。
+
+## 新增：TensorCircuit SPP 张量网络包（2026-11-04）
+
+[`spp_tn/README.md`](spp_tn/README.md) 是新包的使用和维护入口。依据相邻 Overleaf 项目的 `note.tex` 与本仓库 HTML 方案，采用统一的 **gate-after** 约定，实现经典 Hermite HEOM 的层级 MPS（压缩 RK4）、逐层 HEOM→时间 MPS、Walsh／PEA、约束 ALS-PEC 及独立小系统检查。TensorCircuit-NG 和 legacy TensorCircuit 在不同环境中验证。旧 `nmnoise/` 的量子浴与两时段基准仍独立保留。
+
+新包不等同于完整复现 HTML：TDVP、大规模 signed-PEC 采样、通用实验学习及四比特多模扩展的性能验证仍是 TODO。安装、运行、约定和证据边界见新包 README。
+
+本地 NG／legacy 两套环境各 **36 项测试通过**。新增结果：[一比特 PEA／PEC 与收敛](results/spp_tn_20261104_final/README.md)、[四比特单模构造对照](results/spp_tn_ising4_mps_20261104/README.md)。四比特原型目前比小模型稠密参考慢，未建立扩规模收益；完整历史非负性尚未验证。
+
+2026-11-04 环境迁移：本项目改用独立 conda **TensorCircuitNG**（配置：[`environment.yml`](environment.yml)），原 `.venv-spp` 已移入回收站。新环境通过全部 36 项项目测试；旧 `TensorCircuit` 环境的运行依赖及四个后端已修复并补齐，门／后端上游测试 124 通过、3 跳过。版本、OpenMP 设置和验证记录统一见 [`environments/README.md`](environments/README.md)。
+
+## 项目参考文献：Zotero 群组入口
+
+本项目的共享参考文献集中在 **Error-Mitigation → Non-Markov**。优先从此集合查找相关论文；2026-10-27 经本机 Zotero API 核对，共 **8 篇**。
+
+- [在 Zotero 桌面端选中集合](zotero://select/groups/6729418/collections/FH728L4C) · [Zotero 网页集合](https://www.zotero.org/groups/6729418/collections/FH728L4C)（访问取决于群组权限）。
+- 本机阅读入口：[references-local/](references-local/)，内有 6 个 PDF 软链接；原文件位于 `~/Zotero/storage/<附件目录>/`。精确路径与校验和保存在该目录的 `manifest.json`。
+- **集合不是磁盘文件夹。** 当前群组不允许存储文件附件；本地入口关联的是本机找到的同名 PDF，不能据此认定 PDF 已共享到群组。新增的 Chen et al. 文献在条目 URL 中提供 arXiv v2 PDF 链接。`~/Documents/Research/library/` 也不是这个集合的实时镜像。
+- 软链接目录仅供本机阅读，已加入 `.gitignore`，不会把 PDF 或本机路径提交到公开仓库；换机器或 Zotero 移动/清理文件后需重新核对。
+
+| 文献（链接到群组条目） | 本机 PDF |
+|---|---|
+| [Simulation of one and two qubit superconducting quantum gates under the non-Markovian 1/f noise](https://www.zotero.org/groups/6729418/items/AXEGG4GX) | [在线 PDF（v2）](https://arxiv.org/pdf/2509.07693v2)；项目根目录副本已移到回收站 |
+| [Techniques for learning sparse Pauli-Lindblad noise models](https://www.zotero.org/groups/6729418/items/3KEF6BYP) | 未找到；[论文入口](https://arxiv.org/abs/2311.15408) |
+| [Spatiotemporal Pauli processes: Quantum combs for modeling correlated noise in quantum error correction](https://www.zotero.org/groups/6729418/items/78U7DMZM) | [打开 PDF](references-local/spp.pdf) |
+| [Single snapshot non-Markovianity of Pauli channels](https://www.zotero.org/groups/6729418/items/5MLII58Q) | [打开 PDF](references-local/single-snapshot.pdf) |
+| [Efficient Lindblad synthesis for noise model construction](https://www.zotero.org/groups/6729418/items/726QD8UT) | [打开 PDF](references-local/lindblad-synthesis.pdf) |
+| [Quantum error mitigation via matrix product operators](https://www.zotero.org/groups/6729418/items/VMERBHR8) | [打开 PDF](references-local/mpo-mitigation.pdf) |
+| [Tensor network characterization and mitigation of readout errors](https://www.zotero.org/groups/6729418/items/QCBVXIMF) | [打开 PDF](references-local/readout-mpo.pdf) |
+| [Observable Estimation in the Absence of Classical Verification](https://www.zotero.org/groups/6729418/items/UNTETZAX) | [在线 PDF（v1）](https://arxiv.org/pdf/2607.25998v1)；原本机软链接于 2026-10-28 核对时失效 |
 
 ## 说明与使用
 
 ### 报告、图表与数据
+
+- [完整讨论稿：时间相关效应的分辨与张量网络表示（2026-11-02）](docs/spp-memory-discussion-20261102.md)：可脱离聊天上下文阅读，包含两时段例子、原配对脉冲任务、SPP/压缩的作用、下一步建议及现有证据边界，供合作者讨论。
+
+- [周四讨论准备：SPP 参数规模与张量网络计算可行性（2026-11-05）](docs/spp-tensor-network-meeting-20261105.md)：2026-11-02 确定优先与张老师讨论的主题；先回应参数规模、低秩记忆表示与逐层构造，再明确需要哪些压缩和成本证据。属于汇报准备，尚无新增压缩模拟。
+
+- [HEOM–SPP 误差缓解研究方案（HTML 原文）](docs/heom-spp-proposal-20261029.html)：文内署名陈胤伽、日期 2026-10-29，2026-11-02 收录用户提供的原文件。内容包括四比特 Ising Trotter 分层、MPS-HEOM 到 SPP、PEA 与 PEC 变分求逆；保留原始图示和排版，方案中的实现与结果表述尚未由本项目独立核验。公式渲染与部分字体需联网加载。
+
+- [四比特 Ising 的受限 SPP/PEC 数值基准（2026-10-29）](docs/spp-ising-benchmark.md)：两噪声时段、单站点单模量子浴，完成 HEOM→SPP、末态计数学习、独立层留出对照和准概率 PEC。含收敛、学习误差、采样成本与源码快照；全部为合成结果，未核验合作者源码或真机。
+
+- [IBM 2607.25998 文献核对（2026-10-28；2026-10-29 补充）](docs/ibm-2607-25998-review.md)：开头比较与 2023 Nature utility 文章的关联、旋转角验证及两者的验证边界。核心仍为 SPL-PEC，但 F.2 另有准静态相关模型的参数拟合，用于残余偏差评估；未展示完整 SPP 学习与求逆。
+- [从 SPL 到 SPP：基础解释（2026-10-27）](docs/spl-to-spp-explainer.md)：从逐层噪声通道到联合分布，含两层延拓和仅测末态的学习例子。
 
 - [数值模拟报告（2026-09-21）](docs/simulation-report.md)：模型、终态、误差检查和结论边界。
 - [研究方案](docs/research-plan.md)：小系统验证、跨门记忆诊断和后续误差缓解研究。
@@ -31,20 +72,30 @@
 
 另外提供静态失谐、连续 Lindblad 以及每个脉冲后重置环境的诊断对照。
 
-**当前没有实现 HEOM 层级的 MPS 压缩或 TEMPO。** 这里的 MPS 压缩系统态，环境记忆由持续的随机轨迹保存。论文中的 MPS-HEOM 与此不同：它压缩辅助层级。TEMPO / process tensor 则可压缩时间方向的影响泛函。不能仅因为用了 MPS 就认为所有这些算法已经实现。
+**下述旧 `nmnoise` 模拟没有实现 HEOM 层级的 MPS 压缩或 TEMPO。** 其中的 MPS 压缩系统态，环境记忆由持续的随机轨迹保存。新 `spp_tn` 包另行实现经典 Hermite 层级的 MPS 与 SPP 时间 MPS；它不改变旧量子浴示例的实现。论文中的 MPS-HEOM 压缩辅助层级，TEMPO / process tensor 可压缩时间方向的影响泛函，不能混称。
 
 ### 运行
 
-首次使用可以创建独立环境（Python 3.11 或以上）：
+首次使用创建项目专用 conda 环境（Python 3.11，依赖版本已固定）：
 
 ```bash
 git clone https://github.com/Qubit-Fernand/non-markovian-noise.git
 cd non-markovian-noise
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements-reproduce.txt
+conda env create -f environment.yml
+conda activate TensorCircuitNG
 python -m pytest -q
 ```
+
+也可以先自行准备 **Python 3.11** 的干净环境，再使用标准 pip 入口：
+
+```bash
+python -m pip install -r requirements.txt
+python -m pip check
+python -m pytest -q
+python -m spp_tn.demo --output results/my_spp_run --convergence
+```
+
+[`requirements.txt`](requirements.txt) 固定了 TensorCircuit-NG 1.10.0、NumPy 2.4.6、SciPy 1.15.2、QuTiP 5.2.2 等经过验证的版本，并以 editable 方式安装本仓库。`environment.yml` 复用同一文件，避免两套版本漂移。不要在同一环境中同时安装 `tensorcircuit` 与 `tensorcircuit-ng`。核心求解器和测试无需系统 LaTeX；生成论文风格图表时才需要安装 LaTeX 和字体。macOS ARM 已本地验证；Linux 等其他平台尚未验证，跨平台允许浮点舍入差异。
 
 查看已有报告、PNG 图和结果数据无需重跑。生成新图前需要安装系统 LaTeX 和 Times New Roman 字体；绘图配置位于 `run_demo.py` 的 `make_plot()`。快速试运行和完整运行分别为：
 
@@ -53,16 +104,16 @@ python run_demo.py --samples 32 --skip-quantum --output results/quickstart
 python run_demo.py --samples 2048 --output results/reproduced
 ```
 
-已有 Qubit conda 环境也可以直接运行：
+本机已有 `TensorCircuitNG` conda 环境，可直接运行：
 
 ```bash
-conda run -n Qubit python run_demo.py --samples 2048 --output results/my_run
-conda run -n Qubit python -m pytest -q
+conda run -n TensorCircuitNG python run_demo.py --samples 2048 --output results/my_run
+conda run -n TensorCircuitNG python -m pytest -q
 ```
 
 默认运行 3 比特；`--qubits 4` 改为 4 比特，`--dt 1` 减小时间步长，`--sigma 0.002` 改变失谐标准差。`--skip-quantum` 仅跳过量子浴示例。每次选择一个新的 `--output` 目录，脚本不会覆盖已有 `summary.json`。
 
-依赖范围见 `pyproject.toml`，归档运行的核心版本见 `requirements-reproduce.txt`。核心求解器不依赖 LaTeX。输出图中的误差棒为轨迹 Monte Carlo 的一个标准误，不是硬件 shots 的误差。
+依赖范围见 `pyproject.toml`，当前安装版本见 `requirements.txt`，旧归档运行的核心版本保留在 `requirements-reproduce.txt`。核心求解器不依赖 LaTeX。输出图中的误差棒为轨迹 Monte Carlo 的一个标准误，不是硬件 shots 的误差。
 
 输出包括：
 
@@ -185,7 +236,7 @@ MPS 可以指定 `max_bond` 与 `svd_cutoff`，记录丢弃权重及归一化偏
 
 ### 依据与后续扩展
 
-- 本文件夹论文：Chen et al., [arXiv:2509.07693v2](https://arxiv.org/abs/2509.07693v2)。目前复用了其“有限时长控制 + 有记忆环境”的问题设置，没有宣称复现其全部参数与 BSD/MPS-HEOM 计算。
+- 原始参考论文：Chen et al., [arXiv:2509.07693v2](https://arxiv.org/abs/2509.07693v2)，已收入 [Zotero 群组条目](https://www.zotero.org/groups/6729418/items/AXEGG4GX)。目前复用了其“有限时长控制 + 有记忆环境”的问题设置，没有宣称复现其全部参数与 BSD/MPS-HEOM 计算。
 - [QuTiP Bosonic HEOM 文档](https://qutip.readthedocs.io/en/v5.1.0/guide/heom/bosonic.html)：量子浴相关函数的指数展开、时间依赖控制和 ADO。
 - [OQuPy PT-TEMPO 教程](https://oqupy.readthedocs.io/en/latest/pages/tutorials/pt_tempo.html)：时间方向张量网络的另一条实现路线，当前未安装、未实现。
 
@@ -193,7 +244,16 @@ MPS 可以指定 `max_bond` 与 `svd_cutoff`，记录丢弃权重及归一化偏
 
 ### 当前研究进展
 
-配对脉冲的合成噪声扫描已完成；合作者提出的 SPP 学习与缓解路线已整理为研究设想，尚未实现或开展真机验证。实验设计、数值结果、复现命令及后续建议统一维护在 [proposal 文档](docs/paired-pulse-proposal.md)。
+配对脉冲扫描及[受限四比特 Ising SPP/PEC 基准](docs/spp-ising-benchmark.md)已完成，均为合成数值实验。新基准只覆盖两时段 I/Z 历史、单站点单模浴及瞬时理想 Ising 控制，未实现通用 SPP 学习或真机验证。合作者报告的 HEOM → SPP → PEC 近期进展及 IBM 文献理解修正，见 [2026-10-28 讨论记录](docs/paired-pulse-proposal.md#讨论更新heom--spp--pec-与-ibm-文献复核2026-10-28-整理)；合作者源码、参数和优化算法仍待取得并核对。IBM 文献已完成[专项核对](docs/ibm-2607-25998-review.md)：用于 PEC 的仍是 SPL，但 F.2 额外拟合了准静态相关模型以评估残余偏差。实验设计、结果及未决事项统一维护在 [proposal 文档](docs/paired-pulse-proposal.md)。
+
+新基准复现（输出目录必须不存在）：
+
+```bash
+conda run -n TensorCircuitNG python run_spp_benchmark.py --output results/spp_ising_reproduced
+conda run -n TensorCircuitNG python -m pytest -q
+```
+
+主记录：[results/spp_ising_20261029/summary.json](results/spp_ising_20261029/summary.json)。12 条留出电路、84 个观测量的预测 RMSE 为独立层 0.005545、相关模型 0.000306；相关 PEC 的准概率开销因子 $\gamma^2=2.4891$。默认训练 300,000 shots、每目标 PEC 20,000 shots；100 次重复学习计入有限学习误差。完整限定及成本见报告。
 
 ## 维护约定
 
@@ -216,12 +276,16 @@ Ke Wang、Xiantao Li，*Non-Markovian Noise Mitigation: Practical Implementation
 
 以下为后续研究方向。已完成配对序列的合成噪声数值扫描，尚未执行真机实验。
 
+- [x] 实现可供对接的受限 4 比特 Ising 数值基准，完成 HEOM→SPP、末态计数学习、独立层/相关模型留出预测、L1 历史卷积求逆和 PEC 成本核验（2026-10-29；[报告](docs/spp-ising-benchmark.md)）。
+- [ ] 接收合作者源码、参数、SPP 指标和优化操作集合，与本地基准逐项比较；本地自建基准不等于已验证其报告。
+- [ ] 在扩展前明确多站点浴、更多时段与有限时长控制的范围；当前四历史模型无张量压缩或一般空间相关。器件拟合与硬件验证继续保留为未完成。
+
 - [ ] 真机测量 GHZ 电路与从 `|0>` 出发的门电路终态，并测量相应的 X 乘积观测量期望值；比特数和具体测量协议仍需明确。
 - [ ] 将真机 schedule 与波形输入数值模型，拟合环境/控制参数并比较硬件预测；HEOM 层级单独做数值收敛检查。
 - [ ] 按 xiaoyang 学长建议，研究 Lindblad 与非马尔可夫模型差异是否可在真机上分辨；这是研究设想，尚非已证实的 non-Markovian effect。
 - [ ] 在已有配对扫描基础上输入实验波形、校准控制/读出误差，完成参数不确定度下的实验选择与真机留出预测。
 - [ ] 按 [SPP 新方案](docs/paired-pulse-proposal.md#合作者新方案学习时空-pauli-过程并用于预测与缓解2026-10-21)先确认多时刻对象与可用测量，完成一比特受控相关噪声正对照及可辨识性检查，再推进真机留出预测。
-- [ ] 用现有 $d=0,2,4,8$ 的保真度先检验 $\log f_j(t)$ 是否线性于 $t$，把“单快照负速率”与“真记忆”分开，再决定 SPP 学习是否值得上张量网络；判据见[模型层级文档](docs/pauli-noise-model-hierarchy.md)。
+- [ ] 用现有 $d=0,2,4,8$ 的保真度检验时间齐次单指数基线（在保真度为正且对数误差可控时检查 $\log f_j$ 的线性），并比较准静态与有限相关时间模型的留出预测；非指数衰减本身不能证明“真记忆”或 CP 不可分性，见 [IBM 核对说明](docs/ibm-2607-25998-review.md)。
 - [ ] 建立或选择噪声学习方案，研究浴相关函数/谱参数的可辨识性，以及学习误差对预测或缓解的影响。
 - [ ] 选择具体器件/论文参数，统一谱归一化、温度和截止，拟合 BCF 并检查连续谱与 HEOM 层级收敛，再扩展到两比特 CR 控制。
 - [ ] MPS-HEOM/TEMPO、可扩展局域观测量输出及更一般控制接口仍未实现；是否开展需按后续研究安排确定。
@@ -236,8 +300,13 @@ Ke Wang、Xiantao Li，*Non-Markovian Noise Mitigation: Practical Implementation
 
 ## 已解决与完成记录
 
-下列记录属于数值工作，不代表完成真机验证。2026-10-15 已运行完整测试套件，14 项通过。
+下列记录包括数值工作与文献核对，不代表完成真机验证。2026-10-15 已运行完整测试套件，14 项通过。
 
+- [x] 收录用户提供的 [HEOM–SPP 研究方案 HTML](docs/heom-spp-proposal-20261029.html)，原样复制至 `docs/` 并校验文件内容一致，补充阅读入口（2026-11-02；仅归档，未执行文内方案或核验其结论）。
+
+- [x] 新增受限四比特 Ising SPP/PEC 基准与 5 项物理/统计测试，全套 19 项通过；保存原始计数、收敛检查、源码 SHA-256 和独立输出目录，并从源码快照重跑核对（2026-10-29）。更新 proposal，明确瞬时控制、单站点单模浴、两时段范围及合作者实现仍待核对。
+
+- [x] 核对 IBM arXiv:2607.25998v1 正文及附录 E/F，区分 SPL-PEC、历史依赖校准、TLS 稳定化、后选择与 F.2 准静态相关拟合；更新 proposal 与[专项说明](docs/ibm-2607-25998-review.md)（2026-10-28；文献核对，未复现作者实验）。
 - [x] 实现 dense trajectories、MPS trajectories、HEOM 和独立显式浴四条数值路线。
 - [x] 已保存数值报告、主数据、终态密度矩阵、连续噪声样本及复现说明。
 - [x] 原文记录了步长、MPS 截断、HEOM/显式浴及门边界等误差检查。
@@ -245,3 +314,11 @@ Ke Wang、Xiantao Li，*Non-Markovian Noise Mitigation: Practical Implementation
 - [x] 整理配对脉冲 proposal；实现有限脉冲的 OU 噪声扫描、共享 Lindblad 速率拟合、独立种子复核、步长与脉宽检查，并保存源码快照和原始末态样本（2026-10-15）。
 - [x] 整理合作者提出的 SPP 四步路线，补充最小实验、文献用途与学习边界；清理 README 中重复的配对实验细节和旧笔记入口（2026-10-21；仅文档更新）。
 - [x] 精读 arXiv:2602.13145 的 appendix A（三个 fitter 与反对易矩阵），整理 Markov 半群／单快照 pseudo-Lindblad／真记忆三层定义、显式 Pauli 公式与可分性判据；明确该文的 non-Markovian 指 CP-indivisibility，不含时序关联（2026-10-22；仅文档）。
+
+- [x] 新增 SPL → SPP 入门说明，定义单层生成元与多时刻联合分布，推导保持单层噪声不变的相关模型及三设置末态学习例子（2026-10-27；解析说明）。
+
+- [x] 核对 Zotero 群组 `Error-Mitigation → Non-Markov` 的 7 篇文献，在 README 开头添加群组及本机阅读入口，并建立 6 个不进入 Git 的 PDF 软链接；未修改 Zotero 条目或附件（2026-10-27）。
+
+- [x] 将 Chen et al. arXiv:2509.07693v2 加入 `Error-Mitigation → Non-Markov`（条目 `AXEGG4GX`）；因群组不允许存储附件，提供在线 PDF。核对在线 PDF 与原文件 SHA-256 一致后，用 `trash` 移走项目根目录副本并更新引用（2026-10-27）。
+
+- [x] 整理合作者近期 HEOM/SPP/PEC 工作及对 IBM arXiv:2607.25998 的理解修正（2026-10-28；初始讨论记录）。其中论文判断现已由[专项核对](docs/ibm-2607-25998-review.md)更新，合作者实现仍待独立核对。

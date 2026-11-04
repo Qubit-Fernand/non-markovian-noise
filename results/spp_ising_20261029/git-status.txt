@@ -1,0 +1,13 @@
+ M .gitignore
+ D 2509.07693v2.pdf
+ M README.md
+ M docs/backup-and-reproduce.md
+ M docs/paired-pulse-proposal.md
+ M docs/simulation-report.md
+ M nmnoise/quantum.py
+?? docs/ibm-2607-25998-review.md
+?? docs/spl-to-spp-explainer.md
+?? nmnoise/spp.py
+?? results/spp_ising_20261029/
+?? run_spp_benchmark.py
+?? tests/test_spp.py

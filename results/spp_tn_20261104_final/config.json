@@ -1,0 +1,35 @@
+{
+  "output": "results/spp_tn_20261104_final",
+  "example": "one-qubit",
+  "engine": "mps",
+  "levels": 5,
+  "max_dt": 0.05,
+  "heom_bond": 16,
+  "time_bond": 16,
+  "sigma": 0.55,
+  "gamma": 0.2,
+  "shots": 20000,
+  "seed": 20261104,
+  "convergence": true,
+  "n_qubits": 1,
+  "modes": "one independent classical OU mode on qubit 0",
+  "convention": "gate-after",
+  "pauli_order": "I,X,Y,Z; qubit 0 most significant",
+  "time_units": "arbitrary, sigma and gamma use reciprocal units",
+  "slot_names": [
+    "rx",
+    "rz",
+    "rx-minus"
+  ],
+  "slot_durations": [
+    [
+      0.7
+    ],
+    [
+      0.7
+    ],
+    [
+      0.7
+    ]
+  ]
+}

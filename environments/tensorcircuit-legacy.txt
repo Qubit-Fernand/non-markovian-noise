@@ -1,0 +1,23 @@
+# Runtime/backends for local TensorCircuit b6bbca7, macOS arm64, Python 3.10.
+# setup.py + requirements/requirements.txt; torch from requirements-extra.txt.
+# TF <2.16 requires the older ml-dtypes series; pair JAX and JAXLIB explicitly.
+tensorcircuit==0.12.0
+numpy==1.26.4
+scipy==1.15.2
+tensornetwork-ng==0.5.1
+networkx==3.4.2
+graphviz==0.21
+tensorflow==2.15.1
+jax==0.4.26
+jaxlib==0.4.26
+ml-dtypes==0.3.2
+optax==0.1.9
+chex==0.1.86
+torch==2.2.2
+# Existing legacy Qiskit ecosystem is retained.
+qiskit==0.46.3
+qiskit-terra==0.46.3
+mthree==2.6.3
+# Repository test runner; version used by its requirements-dev.txt.
+pytest==6.2.4
+pytest-lazy-fixture==0.6.3

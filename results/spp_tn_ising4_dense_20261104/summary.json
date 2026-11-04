@@ -1,0 +1,137 @@
+{
+  "status": "synthetic simulation",
+  "config": {
+    "output": "results/spp_tn_ising4_dense_20261104",
+    "example": "ising4",
+    "engine": "dense",
+    "levels": 3,
+    "max_dt": 0.05,
+    "heom_bond": 16,
+    "time_bond": 16,
+    "sigma": 0.03,
+    "gamma": 0.2,
+    "shots": 20000,
+    "seed": 20261104,
+    "convergence": false,
+    "n_qubits": 4,
+    "modes": "one independent classical OU mode on qubit 0",
+    "convention": "gate-after",
+    "pauli_order": "I,X,Y,Z; qubit 0 most significant",
+    "time_units": "arbitrary, sigma and gamma use reciprocal units",
+    "slot_names": [
+      "rx-cx-even",
+      "rz-cx-even",
+      "cx-rz-middle",
+      "cx-middle"
+    ],
+    "slot_durations": [
+      [
+        1.0,
+        2.0
+      ],
+      [
+        1.0,
+        2.0
+      ],
+      [
+        2.0,
+        1.0
+      ],
+      [
+        2.0
+      ]
+    ]
+  },
+  "versions": {
+    "python": "3.11.12",
+    "platform": "macOS-27.2-arm64-arm-64bit",
+    "numpy": "2.4.6",
+    "scipy": "1.15.2",
+    "tensorcircuit-ng": "1.10.0",
+    "tensornetwork-ng": "0.5.1"
+  },
+  "source_sha256": {
+    "__init__.py": "62b6a535c89077f0d1d31346e4fb2fb9b593a0dba4a6273c75ae98244a176389",
+    "circuits.py": "40cfde6cf5cdb58acbdc3b60135d5db2c5ab59f047f29517e51ff5851d1e9f4f",
+    "demo.py": "cacc795456fafb48723e7fee0b28055debebe512ab9603c5e04cabd590e76a38",
+    "heom.py": "c013eea454cf920dc984588e9bc7e7dcfc412a3daa70d8c48ea7821b71d1637b",
+    "mitigation.py": "58d20f4767a93cd995f702d97f6f500de832e394f5a911e57afbf918b0017a7a",
+    "mps.py": "64f6b0a77da4fad7d2e7eec6b1a6c35405ba523491ebad4d6dc669149c599000",
+    "pauli.py": "f0a1b5207bbad8fcf74742b2ae72e0b4deefeba86f360c6efe2d36a095a68956",
+    "process.py": "05c484033a7b13a3b617a348534feb64f37be0efdc0fa77f36ee15cc1912dd5d"
+  },
+  "snapshot_sha256": {
+    "spp_tn/circuits.py": "40cfde6cf5cdb58acbdc3b60135d5db2c5ab59f047f29517e51ff5851d1e9f4f",
+    "spp_tn/mitigation.py": "58d20f4767a93cd995f702d97f6f500de832e394f5a911e57afbf918b0017a7a",
+    "spp_tn/mps.py": "64f6b0a77da4fad7d2e7eec6b1a6c35405ba523491ebad4d6dc669149c599000",
+    "spp_tn/__init__.py": "62b6a535c89077f0d1d31346e4fb2fb9b593a0dba4a6273c75ae98244a176389",
+    "spp_tn/process.py": "05c484033a7b13a3b617a348534feb64f37be0efdc0fa77f36ee15cc1912dd5d",
+    "spp_tn/demo.py": "cacc795456fafb48723e7fee0b28055debebe512ab9603c5e04cabd590e76a38",
+    "spp_tn/heom.py": "c013eea454cf920dc984588e9bc7e7dcfc412a3daa70d8c48ea7821b71d1637b",
+    "spp_tn/pauli.py": "f0a1b5207bbad8fcf74742b2ae72e0b4deefeba86f360c6efe2d36a095a68956",
+    "spp_tn/README.md": "850b1e567ee87aaabfa8e6f1b5f45f81ffc8d0ccad56029fce9ed69430c6e971",
+    "pyproject.toml": "4646b5a98d1388d66092bf4130ea6a47e3cf35ac259e8f013442acf5602006ef",
+    "tests/test_spp_tn.py": "815f21cb14e1b7c3358bed855015adde74a817ba672968de3f8aaf8c44888dbd"
+  },
+  "probability": {
+    "total_real": 1.00000000000002,
+    "total_imag": -3.4817594784070845e-19,
+    "normalization_error": 1.9984014446285903e-14,
+    "entries": 4294967296,
+    "storage": 3072,
+    "bonds": [
+      2,
+      2,
+      2
+    ],
+    "positivity_checked": false,
+    "valid": null
+  },
+  "construction": [
+    {
+      "slot": 0,
+      "name": "rx-cx-even",
+      "probes": 256,
+      "time_bond": 2,
+      "time_discarded_norm": 0.0,
+      "assembly_discarded_norm_sum": 3.755585161688805e-15
+    },
+    {
+      "slot": 1,
+      "name": "rz-cx-even",
+      "probes": 512,
+      "time_bond": 2,
+      "time_discarded_norm": 0.0,
+      "assembly_discarded_norm_sum": 5.9245413022363674e-15
+    },
+    {
+      "slot": 2,
+      "name": "cx-rz-middle",
+      "probes": 512,
+      "time_bond": 2,
+      "time_discarded_norm": 0.0,
+      "assembly_discarded_norm_sum": 2.2288306544188583e-15
+    },
+    {
+      "slot": 3,
+      "name": "cx-middle",
+      "probes": 512,
+      "time_bond": 1,
+      "time_discarded_norm": 0,
+      "assembly_discarded_norm_sum": 0
+    }
+  ],
+  "hierarchy": {
+    "steps": 3072,
+    "responses": 1792,
+    "max_bond_seen": 1,
+    "svd_discarded_norm_sum": 0.0,
+    "svd_discarded_norm_max": 0.0
+  },
+  "limitations": [
+    "full history positivity not enumerated (256^4 entries)",
+    "PEA/PEC sampling and dense circuit response skipped at this size",
+    "one bath mode, not the full per-qubit multimode target"
+  ],
+  "elapsed_seconds": 10.248655416013207
+}

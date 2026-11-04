@@ -1,0 +1,565 @@
+{
+  "schema_version": 1,
+  "evidence": "synthetic numerical benchmark; no hardware data",
+  "config": {
+    "duration": 12.0,
+    "sigma": 0.06,
+    "beta": 60.0,
+    "omega_min": 0.03,
+    "omega_max": 0.12
+  },
+  "seeds": {
+    "calibration": 20261029,
+    "circuits": 20261030,
+    "validation": 20261031,
+    "pec": 20261032,
+    "repeated_learning": 20261033
+  },
+  "history_order": [
+    "00",
+    "01",
+    "10",
+    "11"
+  ],
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.15.2",
+    "qutip": "5.2.2"
+  },
+  "python": "3.11.12",
+  "source_sha256": {
+    "run_spp_benchmark.py": "65892978b1252d312bb7980445fcaaa5ede143d5c0f19f65192246b229e9bdc1",
+    "nmnoise/spp.py": "2e7f4ff7392cccfede99e2199aa500f3204872eacb1f4fed831cb4582e73d00c",
+    "nmnoise/quantum.py": "992b006bd8e0a3ba8ca04811abcf46271dcefbc8094040b18c9d4461644e1411",
+    "nmnoise/core.py": "4cbe9639d972a44f1966d3598b2097d70da1be088e0791ec0249f2bad0dd313c",
+    "tests/test_spp.py": "4e28ea594cb86184cf27e6f74d0470b2472aa79772c27665f3764102e21b0d2a",
+    "pyproject.toml": "9a1bfd31acecfd7422424631a54635b13e232271d1145dd7ff169693a7c97450"
+  },
+  "git_head": "966652fd14319f43fa2a0582ceded9f934837600",
+  "convergence": {
+    "heom": [
+      {
+        "depth": 4,
+        "ado_count": 15,
+        "probabilities": [
+          0.7937425011327236,
+          0.09636206848246151,
+          0.07778682690257659,
+          0.03210860348223744
+        ],
+        "max_abs_vs_fock12": 2.790789391271531e-05
+      },
+      {
+        "depth": 6,
+        "ado_count": 28,
+        "probabilities": [
+          0.793714670203265,
+          0.09638951071364482,
+          0.07780649278521072,
+          0.03208932629787853
+        ],
+        "max_abs_vs_fock12": 1.151869796489624e-07
+      },
+      {
+        "depth": 8,
+        "ado_count": 45,
+        "probabilities": [
+          0.7937145789865983,
+          0.09638959932263999,
+          0.07780659209206243,
+          0.032089229598698504
+        ],
+        "max_abs_vs_fock12": 1.5974057146483922e-08
+      },
+      {
+        "depth": 10,
+        "ado_count": 66,
+        "probabilities": [
+          0.793714579893147,
+          0.09638959867317397,
+          0.07780658937296381,
+          0.032089232060714463
+        ],
+        "max_abs_vs_fock12": 1.859922656166635e-08
+      }
+    ],
+    "explicit_bath": [
+      {
+        "fock": 4,
+        "initial_thermal_tail": 5.573903692694608e-07,
+        "probabilities": [
+          0.7936791735585972,
+          0.09642610466234441,
+          0.07779613914081773,
+          0.03209858263824064
+        ],
+        "max_abs_vs_fock12": 3.651949798652576e-05
+      },
+      {
+        "fock": 6,
+        "initial_thermal_tail": 4.1613973942241654e-10,
+        "probabilities": [
+          0.7937147583175543,
+          0.09638942185014174,
+          0.07780662755623327,
+          0.032089192276070454
+        ],
+        "max_abs_vs_fock12": 1.6507874345261797e-07
+      },
+      {
+        "fock": 8,
+        "initial_thermal_tail": 3.1068402375434586e-13,
+        "probabilities": [
+          0.7937145933635786,
+          0.09638958503879407,
+          0.07780660830683046,
+          0.03208921329079659
+        ],
+        "max_abs_vs_fock12": 3.346400934134408e-10
+      },
+      {
+        "fock": 10,
+        "initial_thermal_tail": 2.3195228302435795e-16,
+        "probabilities": [
+          0.7937145932366559,
+          0.09638958516651129,
+          0.07780660796999639,
+          0.0320892136268364
+        ],
+        "max_abs_vs_fock12": 2.1950427586681087e-12
+      },
+      {
+        "fock": 12,
+        "initial_thermal_tail": 1.7317228272655675e-19,
+        "probabilities": [
+          0.7937145932388109,
+          0.09638958516435789,
+          0.07780660797219037,
+          0.03208921362464136
+        ],
+        "max_abs_vs_fock12": 0.0
+      }
+    ],
+    "depth8_to_10_max_abs": 2.7190985713021476e-09,
+    "fock10_to_12_max_abs": 2.1950427586681087e-12,
+    "tighter_ode_max_abs": 1.8319946781808483e-08,
+    "continuum_spectral_convergence": "not tested; fixed single oscillator model"
+  },
+  "direct_heom_checks": [
+    {
+      "circuit": 0,
+      "correction": 0,
+      "trace_distance": 1.2226877152103578e-07,
+      "trace_error": 7.698364716380833e-17,
+      "min_eigenvalue": -5.915455261825928e-17
+    },
+    {
+      "circuit": 0,
+      "correction": 1,
+      "trace_distance": 1.2226877152363827e-07,
+      "trace_error": 7.698364716380833e-17,
+      "min_eigenvalue": -5.915455261825928e-17
+    },
+    {
+      "circuit": 0,
+      "correction": 2,
+      "trace_distance": 1.2693590930649014e-07,
+      "trace_error": 1.3286777830888864e-16,
+      "min_eigenvalue": -1.9801404805315316e-16
+    },
+    {
+      "circuit": 0,
+      "correction": 3,
+      "trace_distance": 1.269359093064693e-07,
+      "trace_error": 1.3286777830888864e-16,
+      "min_eigenvalue": -1.9801404805315316e-16
+    },
+    {
+      "circuit": 1,
+      "correction": 0,
+      "trace_distance": 1.1821042597995605e-07,
+      "trace_error": 2.2277692652622616e-16,
+      "min_eigenvalue": -1.0633535374208199e-16
+    },
+    {
+      "circuit": 2,
+      "correction": 0,
+      "trace_distance": 1.211869101442304e-07,
+      "trace_error": 5.994960317204492e-17,
+      "min_eigenvalue": -1.53722658043482e-16
+    }
+  ],
+  "untwirled_to_twirled_trace_distance": 0.1589111732552776,
+  "truth": [
+    0.7937145798931476,
+    0.09638959867317404,
+    0.07780658937296386,
+    0.03208923206071449
+  ],
+  "truth_temporal_covariance": 0.01796994542037529,
+  "training": {
+    "shots_per_setting": 100000,
+    "settings": 3,
+    "total_shots": 300000,
+    "minus_counts": [
+      10905,
+      12729,
+      17425
+    ],
+    "augmented_response_rank": 4,
+    "augmented_response_condition": 1.0000000000000002,
+    "fits": {
+      "independent": {
+        "success": true,
+        "nll": 119046.20298435129,
+        "boundary": false
+      },
+      "correlated": {
+        "success": true,
+        "nll": 118828.85001982526,
+        "boundary": false
+      }
+    }
+  },
+  "models": {
+    "independent": [
+      0.7944197323387117,
+      0.10520385639675786,
+      0.08863818464561879,
+      0.011738226618911716
+    ],
+    "correlated": [
+      0.794705,
+      0.09624500000000002,
+      0.07800499999999999,
+      0.03104499999999999
+    ],
+    "oracle_independent": [
+      0.7757446344727724,
+      0.11435954409354933,
+      0.09577653479333915,
+      0.014119286640339198
+    ],
+    "oracle_correlated": [
+      0.7937145798931476,
+      0.09638959867317404,
+      0.07780658937296386,
+      0.03208923206071449
+    ]
+  },
+  "inverse_coefficients": {
+    "independent": [
+      1.2974017318437092,
+      -0.1718130352628193,
+      -0.1447589096612177,
+      0.019170213080327684
+    ],
+    "correlated": [
+      1.288845231233407,
+      -0.14937726857833641,
+      -0.11808243978697447,
+      -0.0213855228680965
+    ],
+    "oracle_independent": [
+      1.3381186445933346,
+      -0.19726419151165003,
+      -0.1652094790299289,
+      0.02435502594824405
+    ],
+    "oracle_correlated": [
+      1.2905482840957183,
+      -0.14969383101403344,
+      -0.11763911853231235,
+      -0.02321533454937256
+    ],
+    "unmitigated": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "ising": {
+    "qubits": 4,
+    "layers": 2,
+    "heldout_circuits": 12,
+    "parameters_t_J_h": [
+      [
+        [
+          0.6927354813493333,
+          0.6983062577675316,
+          1.0335160262223881
+        ],
+        [
+          0.8323883640590145,
+          0.8373626114867223,
+          0.45196588767656537
+        ]
+      ],
+      [
+        [
+          1.1094719051674182,
+          0.6886628426135099,
+          0.3170995505455882
+        ],
+        [
+          0.8715683235736298,
+          0.7628810945539871,
+          0.32644226920933395
+        ]
+      ],
+      [
+        [
+          0.27141189194170867,
+          0.7047571309238114,
+          0.8580223536561347
+        ],
+        [
+          0.979079522987537,
+          0.7965399548861869,
+          0.3349672868293886
+        ]
+      ],
+      [
+        [
+          0.2906657325355221,
+          0.7965061014027338,
+          0.9605000903755468
+        ],
+        [
+          0.5800725877065861,
+          0.9563127756138895,
+          1.040866965112342
+        ]
+      ],
+      [
+        [
+          0.7458811032261944,
+          0.7440936909417777,
+          0.2523765951039986
+        ],
+        [
+          0.5338532730208019,
+          1.0660874224085843,
+          0.6694419490394735
+        ]
+      ],
+      [
+        [
+          0.8404795790509315,
+          0.7890185357270778,
+          0.8511197106998608
+        ],
+        [
+          1.1442749408770787,
+          0.709560898262657,
+          0.2867654187040765
+        ]
+      ],
+      [
+        [
+          0.5851306817356933,
+          1.0487249385641362,
+          0.776501293866658
+        ],
+        [
+          0.9254265297872054,
+          0.6920494381555573,
+          0.3448818972138354
+        ]
+      ],
+      [
+        [
+          0.5716832584578039,
+          0.9565979431584275,
+          0.6692623032327129
+        ],
+        [
+          1.0438907170451492,
+          0.6212859942322689,
+          1.021827118053378
+        ]
+      ],
+      [
+        [
+          1.1538304922864702,
+          0.7359324087213239,
+          0.7047726057538182
+        ],
+        [
+          1.0934468599409461,
+          0.8910206931294309,
+          0.9818496630521945
+        ]
+      ],
+      [
+        [
+          0.9731400632200081,
+          1.0768735443723494,
+          0.7106106311096273
+        ],
+        [
+          0.7819036308385268,
+          0.9248602341034802,
+          0.7850590811893184
+        ]
+      ],
+      [
+        [
+          0.2913702335006468,
+          0.9653271274581753,
+          0.7706228320788177
+        ],
+        [
+          0.4272929015811686,
+          0.7247091198936986,
+          0.7035093446203929
+        ]
+      ],
+      [
+        [
+          0.898193652981298,
+          0.8214050211459294,
+          0.3568855460562831
+        ],
+        [
+          0.34270382348796424,
+          0.8527285024293123,
+          0.985713479667579
+        ]
+      ]
+    ],
+    "observable_names": [
+      "X0",
+      "X1",
+      "X2",
+      "X3",
+      "Z0Z1",
+      "Z1Z2",
+      "Z2Z3"
+    ],
+    "physical_control_duration_ns": 0
+  },
+  "prediction": {
+    "independent": {
+      "expectation_rmse": 0.005545373476249747,
+      "expectation_max_abs": 0.02575315555131033,
+      "binary_probability_rmse": 0.0027726867381248736,
+      "heldout_count_expectation_rmse": 0.0063128091802879425
+    },
+    "correlated": {
+      "expectation_rmse": 0.00030588500024344284,
+      "expectation_max_abs": 0.0011243486931507007,
+      "binary_probability_rmse": 0.00015294250012172142,
+      "heldout_count_expectation_rmse": 0.002883847711991859
+    },
+    "oracle_independent": {
+      "expectation_rmse": 0.00817003916824358,
+      "expectation_max_abs": 0.041371047424908325,
+      "binary_probability_rmse": 0.00408501958412179,
+      "heldout_count_expectation_rmse": 0.00883114318575928
+    },
+    "oracle_correlated": {
+      "expectation_rmse": 0.0,
+      "expectation_max_abs": 0.0,
+      "binary_probability_rmse": 0.0,
+      "heldout_count_expectation_rmse": 0.0028825613633280175
+    }
+  },
+  "pec": {
+    "independent": {
+      "exact_bias_rmse": 0.00842052295438587,
+      "sampled_rmse": 0.015930141462086787,
+      "mean_conditional_variance": 0.00011959150119508431,
+      "conditional_expected_mse": 0.00019049670802042366,
+      "gamma": 1.633143889848074,
+      "gamma_squared": 2.6671589649480976,
+      "condition": 1.633143889848074,
+      "residual_inf": 3.125487366219544e-17,
+      "min_abs_fourier": 0.6123159179152468
+    },
+    "correlated": {
+      "exact_bias_rmse": 0.0004004056064628967,
+      "sampled_rmse": 0.010000640960715039,
+      "mean_conditional_variance": 0.00011067141087059856,
+      "conditional_expected_mse": 0.00011083173552028546,
+      "gamma": 1.5776904624668144,
+      "gamma_squared": 2.4891071953587507,
+      "condition": 1.5349194167306215,
+      "residual_inf": 1.1102230246251565e-16,
+      "min_abs_fourier": 0.6515000000000001
+    },
+    "oracle_independent": {
+      "exact_bias_rmse": 0.014092887339806995,
+      "sampled_rmse": 0.016775644536303654,
+      "mean_conditional_variance": 0.00013481045852703813,
+      "conditional_expected_mse": 0.00033341993209953037,
+      "gamma": 1.7249473410831577,
+      "gamma_squared": 2.9754433295098557,
+      "condition": 1.724947341083158,
+      "residual_inf": 1.1102230246251565e-16,
+      "min_abs_fourier": 0.579727842226223
+    },
+    "oracle_correlated": {
+      "exact_bias_rmse": 7.56678877100532e-17,
+      "sampled_rmse": 0.010581657625058498,
+      "mean_conditional_variance": 0.00011119899266086719,
+      "conditional_expected_mse": 0.00011119899266086719,
+      "gamma": 1.5810965681914366,
+      "gamma_squared": 2.4998663579467384,
+      "condition": 1.5346658990926916,
+      "residual_inf": 1.6119838919155782e-17,
+      "min_abs_fourier": 0.6516076239077242
+    },
+    "unmitigated": {
+      "exact_bias_rmse": 0.05364446480967047,
+      "sampled_rmse": 0.0537829771513498,
+      "mean_conditional_variance": 3.75303936261648e-05,
+      "conditional_expected_mse": 0.0029152589983421386,
+      "gamma": 1.0,
+      "gamma_squared": 1.0
+    }
+  },
+  "repeated_learning": {
+    "independent": {
+      "prediction_rmse_median": 0.005628455841989022,
+      "prediction_rmse_q025_q975": [
+        0.005488868155556773,
+        0.0057570148873733445
+      ],
+      "total_expected_mse": 0.00019550587368720955,
+      "total_expected_mse_repetition_se": 4.15872192559944e-07,
+      "empirical_end_to_end_mse": 0.0001898496879977477,
+      "gamma_squared_q025_q975": [
+        2.6537734883379995,
+        2.7104585772196406
+      ],
+      "conditional_95pct_coverage": 0.9486904761904761
+    },
+    "correlated": {
+      "prediction_rmse_median": 0.0003354542932107279,
+      "prediction_rmse_q025_q975": [
+        0.00010982171684964742,
+        0.0007785143527937961
+      ],
+      "total_expected_mse": 0.0001115806794581928,
+      "total_expected_mse_repetition_se": 6.152326183951837e-08,
+      "empirical_end_to_end_mse": 0.0001118894020577378,
+      "gamma_squared_q025_q975": [
+        2.476644441057624,
+        2.5218279213736934
+      ],
+      "conditional_95pct_coverage": 0.9509523809523809
+    }
+  },
+  "sampling": {
+    "pec_shots_per_observable": 20000,
+    "pec_total_shots_per_model": 1680000,
+    "validation_shots_per_observable": 100000,
+    "learning_repeats": 100,
+    "twirl_frames_exact": 4,
+    "learning_cost_included": "3*train_shots shared across 84 observable targets; repeated_learning includes training randomness",
+    "frame_policy": "fresh uniform frame history for each shot; exact frame average in generator"
+  },
+  "elapsed_seconds": 4.484181374995387
+}

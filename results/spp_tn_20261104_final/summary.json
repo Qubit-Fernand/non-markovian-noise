@@ -1,0 +1,414 @@
+{
+  "status": "synthetic simulation",
+  "config": {
+    "output": "results/spp_tn_20261104_final",
+    "example": "one-qubit",
+    "engine": "mps",
+    "levels": 5,
+    "max_dt": 0.05,
+    "heom_bond": 16,
+    "time_bond": 16,
+    "sigma": 0.55,
+    "gamma": 0.2,
+    "shots": 20000,
+    "seed": 20261104,
+    "convergence": true,
+    "n_qubits": 1,
+    "modes": "one independent classical OU mode on qubit 0",
+    "convention": "gate-after",
+    "pauli_order": "I,X,Y,Z; qubit 0 most significant",
+    "time_units": "arbitrary, sigma and gamma use reciprocal units",
+    "slot_names": [
+      "rx",
+      "rz",
+      "rx-minus"
+    ],
+    "slot_durations": [
+      [
+        0.7
+      ],
+      [
+        0.7
+      ],
+      [
+        0.7
+      ]
+    ]
+  },
+  "versions": {
+    "python": "3.11.12",
+    "platform": "macOS-27.2-arm64-arm-64bit",
+    "numpy": "2.4.6",
+    "scipy": "1.15.2",
+    "tensorcircuit-ng": "1.10.0",
+    "tensornetwork-ng": "0.5.1"
+  },
+  "source_sha256": {
+    "__init__.py": "62b6a535c89077f0d1d31346e4fb2fb9b593a0dba4a6273c75ae98244a176389",
+    "circuits.py": "40cfde6cf5cdb58acbdc3b60135d5db2c5ab59f047f29517e51ff5851d1e9f4f",
+    "demo.py": "cacc795456fafb48723e7fee0b28055debebe512ab9603c5e04cabd590e76a38",
+    "heom.py": "c013eea454cf920dc984588e9bc7e7dcfc412a3daa70d8c48ea7821b71d1637b",
+    "mitigation.py": "58d20f4767a93cd995f702d97f6f500de832e394f5a911e57afbf918b0017a7a",
+    "mps.py": "64f6b0a77da4fad7d2e7eec6b1a6c35405ba523491ebad4d6dc669149c599000",
+    "pauli.py": "f0a1b5207bbad8fcf74742b2ae72e0b4deefeba86f360c6efe2d36a095a68956",
+    "process.py": "05c484033a7b13a3b617a348534feb64f37be0efdc0fa77f36ee15cc1912dd5d"
+  },
+  "snapshot_sha256": {
+    "spp_tn/circuits.py": "40cfde6cf5cdb58acbdc3b60135d5db2c5ab59f047f29517e51ff5851d1e9f4f",
+    "spp_tn/mitigation.py": "58d20f4767a93cd995f702d97f6f500de832e394f5a911e57afbf918b0017a7a",
+    "spp_tn/mps.py": "64f6b0a77da4fad7d2e7eec6b1a6c35405ba523491ebad4d6dc669149c599000",
+    "spp_tn/__init__.py": "62b6a535c89077f0d1d31346e4fb2fb9b593a0dba4a6273c75ae98244a176389",
+    "spp_tn/process.py": "05c484033a7b13a3b617a348534feb64f37be0efdc0fa77f36ee15cc1912dd5d",
+    "spp_tn/demo.py": "cacc795456fafb48723e7fee0b28055debebe512ab9603c5e04cabd590e76a38",
+    "spp_tn/heom.py": "c013eea454cf920dc984588e9bc7e7dcfc412a3daa70d8c48ea7821b71d1637b",
+    "spp_tn/pauli.py": "f0a1b5207bbad8fcf74742b2ae72e0b4deefeba86f360c6efe2d36a095a68956",
+    "spp_tn/README.md": "850b1e567ee87aaabfa8e6f1b5f45f81ffc8d0ccad56029fce9ed69430c6e971",
+    "pyproject.toml": "4646b5a98d1388d66092bf4130ea6a47e3cf35ac259e8f013442acf5602006ef",
+    "tests/test_spp_tn.py": "815f21cb14e1b7c3358bed855015adde74a817ba672968de3f8aaf8c44888dbd"
+  },
+  "probability": {
+    "total_real": 1.0000000000000036,
+    "total_imag": -2.7181344220674053e-28,
+    "normalization_error": 3.552713678800501e-15,
+    "entries": 64,
+    "storage": 92,
+    "bonds": [
+      3,
+      5
+    ],
+    "positivity_checked": true,
+    "min_probability": -2.0519482408335343e-18,
+    "negative_mass": 3.184429192195561e-18,
+    "max_imaginary": 3.491854685421876e-16,
+    "valid": true
+  },
+  "construction": [
+    {
+      "slot": 0,
+      "name": "rx",
+      "probes": 4,
+      "time_bond": 3,
+      "time_discarded_norm": 0.0,
+      "assembly_discarded_norm_sum": 5.520985539162874e-15
+    },
+    {
+      "slot": 1,
+      "name": "rz",
+      "probes": 12,
+      "time_bond": 5,
+      "time_discarded_norm": 0.0,
+      "assembly_discarded_norm_sum": 2.4603173824188464e-16
+    },
+    {
+      "slot": 2,
+      "name": "rx-minus",
+      "probes": 20,
+      "time_bond": 1,
+      "time_discarded_norm": 0,
+      "assembly_discarded_norm_sum": 0
+    }
+  ],
+  "hierarchy": {
+    "steps": 504,
+    "responses": 36,
+    "max_bond_seen": 3,
+    "svd_discarded_norm_sum": 1.1716579695322582e-11,
+    "svd_discarded_norm_max": 9.766305603535436e-14
+  },
+  "dense_reference_error_l2": 1.939230136029475e-08,
+  "pec": {
+    "optimization": {
+      "converged": true,
+      "history": [
+        {
+          "sweep": 1,
+          "residual_mse": 1.5106598791939288e-24,
+          "normalization_error": 3.3306690738754696e-16
+        }
+      ],
+      "bonds": [
+        4,
+        4
+      ],
+      "ridge": 1e-12,
+      "objective": "mean squared Walsh convolution residual"
+    },
+    "gamma": 1.2136603528242478,
+    "gamma_squared": 1.4729714520174777,
+    "normalization_error": 0.0,
+    "method": "exhaustive signed-history enumeration",
+    "error_to_dense_inverse_l2": 1.377239580806146e-12
+  },
+  "observables": {
+    "ideal": 0.9610554383107707,
+    "noisy": 0.7947236433895044,
+    "independent_prediction": 0.7783829911262372,
+    "correlated_pec": 0.9610554383093646,
+    "independent_pec": 0.9812309468999757,
+    "pea": [
+      {
+        "gain": 0,
+        "expectation": 0.9610554383107707,
+        "probability": {
+          "total_real": 1.0,
+          "total_imag": 0.0,
+          "normalization_error": 0.0,
+          "entries": 64,
+          "storage": 12,
+          "bonds": [
+            1,
+            1
+          ],
+          "positivity_checked": true,
+          "min_probability": 0.0,
+          "negative_mass": -0.0,
+          "max_imaginary": 0.0,
+          "valid": true
+        },
+        "truncation": {
+          "discarded_norm_sum": 0,
+          "gain": 0
+        }
+      },
+      {
+        "gain": 1,
+        "expectation": 0.7947236433895043,
+        "probability": {
+          "total_real": 1.0000000000000024,
+          "total_imag": -4.735804128852514e-25,
+          "normalization_error": 2.4424906541753444e-15,
+          "entries": 64,
+          "storage": 60,
+          "bonds": [
+            3,
+            3
+          ],
+          "positivity_checked": true,
+          "min_probability": -6.646445419771622e-18,
+          "negative_mass": 8.346088290778122e-18,
+          "max_imaginary": 3.491854685421871e-16,
+          "valid": true
+        },
+        "truncation": {
+          "discarded_norm_sum": 1.4282534661916804e-20,
+          "gain": 1
+        }
+      },
+      {
+        "gain": 2,
+        "expectation": 0.6571792262810713,
+        "probability": {
+          "total_real": 1.0000000000000053,
+          "total_imag": 1.6215497432488934e-24,
+          "normalization_error": 5.329070518200751e-15,
+          "entries": 64,
+          "storage": 96,
+          "bonds": [
+            4,
+            4
+          ],
+          "positivity_checked": true,
+          "min_probability": -1.1000830901427645e-17,
+          "negative_mass": 1.1696950369627704e-17,
+          "max_imaginary": 6.135061152611021e-16,
+          "valid": true
+        },
+        "truncation": {
+          "discarded_norm_sum": 1.4282534661916804e-20,
+          "gain": 2
+        }
+      },
+      {
+        "gain": 3,
+        "expectation": 0.543439897689964,
+        "probability": {
+          "total_real": 1.0000000000000089,
+          "total_imag": 1.9786027279834863e-24,
+          "normalization_error": 8.881784197001252e-15,
+          "entries": 64,
+          "storage": 96,
+          "bonds": [
+            4,
+            4
+          ],
+          "positivity_checked": true,
+          "min_probability": -1.3556410575366492e-17,
+          "negative_mass": 1.4894831789902794e-17,
+          "max_imaginary": 8.099286491443447e-16,
+          "valid": true
+        },
+        "truncation": {
+          "discarded_norm_sum": 1.4282534661916804e-20,
+          "gain": 3
+        }
+      }
+    ],
+    "pea_quadratic_extrapolation": 0.9560731490152633
+  },
+  "finite_shot_pec": {
+    "estimate": 0.961461731507369,
+    "standard_error": 0.005237319067878852,
+    "shots": 20000,
+    "negative_mass_clipped": 3.184429192195561e-18,
+    "includes_learning_uncertainty": false
+  },
+  "convergence": [
+    {
+      "axis": "hierarchy_levels",
+      "value": 3,
+      "error_l2": 0.0008223599405155857
+    },
+    {
+      "axis": "hierarchy_levels",
+      "value": 5,
+      "error_l2": 3.467428055544676e-06
+    },
+    {
+      "axis": "hierarchy_levels",
+      "value": 7,
+      "error_l2": 7.043485297798141e-09
+    },
+    {
+      "axis": "rk4_max_dt",
+      "value": 0.2,
+      "error_l2": 2.6613748871277793e-06
+    },
+    {
+      "axis": "rk4_max_dt",
+      "value": 0.1,
+      "error_l2": 3.0053373118682983e-07
+    },
+    {
+      "axis": "rk4_max_dt",
+      "value": 0.05,
+      "error_l2": 1.9392300676684284e-08
+    },
+    {
+      "axis": "internal_heom_bond",
+      "value": 1,
+      "error_l2": 0.09590243929162343,
+      "probability": {
+        "total_real": 1.0000000000000058,
+        "total_imag": 5.186437074344468e-33,
+        "normalization_error": 5.773159728050814e-15,
+        "entries": 64,
+        "storage": 20,
+        "bonds": [
+          1,
+          2
+        ],
+        "positivity_checked": true,
+        "min_probability": -0.00973593210556883,
+        "negative_mass": 0.00973611689692882,
+        "max_imaginary": 7.9903021061358355e-22,
+        "valid": false
+      }
+    },
+    {
+      "axis": "time_bond",
+      "value": 1,
+      "error_l2": 0.0029748309703956635,
+      "probability": {
+        "total_real": 0.9955329575008085,
+        "total_imag": 3.4005204132784662e-18,
+        "normalization_error": 0.004467042499191498,
+        "entries": 64,
+        "storage": 12,
+        "bonds": [
+          1,
+          1
+        ],
+        "positivity_checked": true,
+        "min_probability": -5.032689000000282e-17,
+        "negative_mass": 5.364898945967317e-17,
+        "max_imaginary": 1.4878321186442504e-17,
+        "valid": false
+      }
+    },
+    {
+      "axis": "internal_heom_bond",
+      "value": 2,
+      "error_l2": 0.006415062372889237,
+      "probability": {
+        "total_real": 1.0000000000000022,
+        "total_imag": -1.0327452630250936e-20,
+        "normalization_error": 2.22044604927433e-15,
+        "entries": 64,
+        "storage": 92,
+        "bonds": [
+          3,
+          5
+        ],
+        "positivity_checked": true,
+        "min_probability": -0.0011954038958736997,
+        "negative_mass": 0.0029805077936866384,
+        "max_imaginary": 4.2985743637028726e-17,
+        "valid": false
+      }
+    },
+    {
+      "axis": "time_bond",
+      "value": 2,
+      "error_l2": 1.3333416119294766e-05,
+      "probability": {
+        "total_real": 0.9999912136789609,
+        "total_imag": -5.281901057007126e-22,
+        "normalization_error": 8.786321039067069e-06,
+        "entries": 64,
+        "storage": 32,
+        "bonds": [
+          2,
+          2
+        ],
+        "positivity_checked": true,
+        "min_probability": -4.478381482272674e-19,
+        "negative_mass": 9.179184784408542e-19,
+        "max_imaginary": 6.320215536488303e-17,
+        "valid": false
+      }
+    },
+    {
+      "axis": "internal_heom_bond",
+      "value": 4,
+      "error_l2": 1.9392300676684284e-08,
+      "probability": {
+        "total_real": 1.0000000000000036,
+        "total_imag": -1.4964843637774658e-18,
+        "normalization_error": 3.552713993977229e-15,
+        "entries": 64,
+        "storage": 92,
+        "bonds": [
+          3,
+          5
+        ],
+        "positivity_checked": true,
+        "min_probability": -1.6021460640229793e-18,
+        "negative_mass": 2.5611991095884695e-18,
+        "max_imaginary": 1.7831800785183871e-16,
+        "valid": true
+      }
+    },
+    {
+      "axis": "time_bond",
+      "value": 4,
+      "error_l2": 0.0,
+      "probability": {
+        "total_real": 1.0000000000000004,
+        "total_imag": 2.851784880575457e-21,
+        "normalization_error": 4.440892098592192e-16,
+        "entries": 64,
+        "storage": 60,
+        "bonds": [
+          3,
+          3
+        ],
+        "positivity_checked": true,
+        "min_probability": -1.5124318200845063e-16,
+        "negative_mass": 2.158330574909236e-16,
+        "max_imaginary": 9.392489099546074e-17,
+        "valid": true
+      }
+    }
+  ],
+  "elapsed_seconds": 6.105518374999519
+}

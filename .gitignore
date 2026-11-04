@@ -5,3 +5,17 @@ __pycache__/
 tmp/
 .history/
 .venv/
+.venv-spp/
+*.egg-info/
+
+# Machine-local links to Zotero PDFs; do not publish attachment files or paths.
+/references-local/
+
+# Machine-specific editor configuration, environment exports and repair logs.
+/.vscode/
+/environments/audit-*/
+/environments/*-lock.txt
+/environments/README.local.md
+
+# Local CI draft; publishing it requires GitHub workflow authorization.
+/.github/workflows/spp-tn.yml

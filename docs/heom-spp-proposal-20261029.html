@@ -1,0 +1,642 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>HEOM–SPP 误差缓解</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* 单栏研究汇报：正文 + 横向可滚动的张量网络图；颜色按张量角色编码 */
+:root{
+  --bg:#F3F5F6; --surface:#FFFFFF; --ink:#1B232B; --muted:#5D6A75; --rule:#D5DCE1;
+  --sys:#2D6A9F; --sys-t:#DCE8F4;
+  --bath:#B8731A; --bath-t:#F6E8D2;
+  --spp:#B0466A; --spp-t:#F6DDE5;
+  --corr:#2E8550; --corr-t:#DAF0E1;
+  --probe:#6B4FA0; --probe-t:#E8E1F4;
+  --lab:#7A858F; --lab-t:#E7EBEE;
+  --f-display:"Noto Serif SC","Songti SC","SimSun",serif;
+  --f-body:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11151A; --surface:#181E24; --ink:#E4E9ED; --muted:#98A5B0; --rule:#2B343C;
+  --sys:#86B2E6; --sys-t:#1B2C40; --bath:#E3A851; --bath-t:#382A15;
+  --spp:#E58AA8; --spp-t:#3A1C27; --corr:#6CCB8F; --corr-t:#15301F;
+  --probe:#B49BE3; --probe-t:#28203A; --lab:#9AA5AF; --lab-t:#252D34; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151A; --surface:#181E24; --ink:#E4E9ED; --muted:#98A5B0; --rule:#2B343C;
+  --sys:#86B2E6; --sys-t:#1B2C40; --bath:#E3A851; --bath-t:#382A15;
+  --spp:#E58AA8; --spp-t:#3A1C27; --corr:#6CCB8F; --corr-t:#15301F;
+  --probe:#B49BE3; --probe-t:#28203A; --lab:#9AA5AF; --lab-t:#252D34; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 80px}
+main{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.35;margin:0}
+h1{font-size:1.9rem;font-weight:700}
+h2{font-size:1.45rem;margin-top:34px;padding-top:24px;border-top:1px solid var(--rule)}
+h3{font-size:1.1rem;margin-top:12px}
+p{margin:0}
+.eyebrow{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.toc a{display:block;background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;color:var(--ink);text-decoration:none;font-size:.92rem;line-height:1.5}
+.toc a:hover,.toc a:focus-visible{border-color:var(--ink)}
+.toc b{font-family:var(--f-mono);color:var(--muted);font-weight:500;margin-right:6px}
+.key{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 20px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.86rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:50%;border:2px solid;display:inline-block}
+.sw.sq{border-radius:3px}
+.fig{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:10px 6px 4px;overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:660px;height:auto}
+.cap{font-size:.88rem;color:var(--muted);margin-top:-6px}
+.fig text{font-family:var(--f-mono);font-size:13px;fill:var(--ink)}
+.fig .zh{font-family:var(--f-body)}
+.fig .th{font-size:13.5px;font-weight:600}
+.fig .tm{fill:var(--muted)}
+.fig .ts{font-size:11px}
+.wire,.bond,.leg{stroke:var(--ink);stroke-width:1.6}
+.ctl{fill:var(--ink)}
+.tgt{fill:var(--surface);stroke:var(--ink);stroke-width:1.6}
+.n-sys{fill:var(--sys-t);stroke:var(--sys);stroke-width:2}
+.n-bath{fill:var(--bath-t);stroke:var(--bath);stroke-width:2}
+.n-spp{fill:var(--spp-t);stroke:var(--spp);stroke-width:2}
+.n-corr{fill:var(--corr-t);stroke:var(--corr);stroke-width:2}
+.n-q{fill:var(--probe-t);stroke:var(--probe);stroke-width:2}
+.n-lab{fill:var(--lab-t);stroke:var(--lab);stroke-width:2}
+.n-gate{fill:var(--surface);stroke:var(--ink);stroke-width:1.6}
+.n-env{fill:var(--lab-t);stroke:var(--ink);stroke-width:1.6}
+.hole{fill:none;stroke:var(--corr);stroke-width:1.6;stroke-dasharray:4 3}
+.capdot{fill:var(--muted)}
+.layer{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:6 4}
+.grp{fill:none;stroke:var(--bath);stroke-width:1.4;stroke-dasharray:5 4}
+.arr{stroke:var(--muted);stroke-width:1.6;fill:none}
+.ahd{fill:var(--muted)}
+ol,ul{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px}
+code{font-family:var(--f-mono);font-size:.88em;background:var(--lab-t);padding:1px 5px;border-radius:4px}
+pre{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;overflow-x:auto;margin:0;font-size:.84rem;line-height:1.6}
+pre code{background:none;padding:0}
+.cm{color:var(--muted)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.92rem;min-width:520px;width:100%}
+th,td{padding:7px 12px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:.85rem}
+a{color:var(--sys)}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%;padding:2px 0}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto}}
+</style>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+
+<main>
+<div class="eyebrow">研究汇报 · 2026-10-29 · 陈胤伽</div>
+<h1>从 HEOM 到 SPP：4 比特横场 Ising 线路的时间关联噪声缓解</h1>
+<p>本汇报整理一条完整的数值路线：以 4 比特横场 Ising 模型的 Trotter 线路为对象，先说明分层与逐层 Pauli twirling；再用 MPS-HEOM 精确计算 twirling 之后的时空 Pauli 过程（SPP），也就是全部错误历史的联合分布，并把它写成时间方向的 MPS；最后在 SPP 上做两种误差缓解：概率误差放大（PEA）和概率误差消除（PEC）。PEC 的求逆借鉴 Guo 与杨硕的 MPO 变分求逆。</p>
+<nav class="toc" aria-label="目录">
+  <a href="#s1"><b>1</b>目标线路、分层与 Pauli twirling</a>
+  <a href="#s2"><b>2</b>从 HEOM 计算 SPP</a>
+  <a href="#s3"><b>3</b>PEA：在 SPP 上放大噪声</a>
+  <a href="#s4"><b>4</b>PEC：SPP 的变分求逆</a>
+  <a href="#s5"><b>5</b>验证与下一步</a>
+</nav>
+<div class="legend">
+  <span><i class="sw" style="border-color:var(--sys);background:var(--sys-t)"></i>系统 RDO 节点</span>
+  <span><i class="sw" style="border-color:var(--bath);background:var(--bath-t)"></i>浴 ADO 节点 / 噪声</span>
+  <span><i class="sw sq" style="border-color:var(--probe);background:var(--probe-t)"></i>读出 $\mathsf Q$、Pauli 探针</span>
+  <span><i class="sw sq" style="border-color:var(--lab);background:var(--lab-t)"></i>标签 / 环境张量</span>
+  <span><i class="sw sq" style="border-color:var(--spp);background:var(--spp-t)"></i>SPP 节点 $G^j$</span>
+  <span><i class="sw sq" style="border-color:var(--corr);background:var(--corr-t)"></i>修正准概率 $q$ 的节点 $B_j$</span>
+</div>
+
+<!-- ================= 1 ================= -->
+<h2 id="s1">1　目标线路：4 比特横场 Ising 的 Trotter 步</h2>
+<h3>1.1　模型与 Trotter 分解</h3>
+<p>开边界的 4 比特横场 Ising 模型及其一阶 Trotter 分解为</p>
+$$H=J\sum_{i=1}^{3}Z_iZ_{i+1}+h\sum_{i=1}^{4}X_i,\qquad
+e^{-iH\Delta t}\approx\prod_{\langle ij\rangle}e^{-iJ\Delta t\,Z_iZ_j}\;\prod_{i}e^{-ih\Delta t\,X_i}.$$
+<p>横场项是单比特旋转 $R_x(\theta_x)=e^{-i\theta_xX/2}$，$\theta_x=2h\Delta t$。$ZZ$ 项用 CNOT 夹一个 $R_z$ 实现：</p>
+$$e^{-i\theta_z Z_iZ_j/2}=\mathrm{CX}_{i\to j}\,R_z^{(j)}(\theta_z)\,\mathrm{CX}_{i\to j},\qquad \theta_z=2J\Delta t .$$
+<p>当前取 $\theta_x=0.5$、$\theta_z=-0.075$（单位 rad）。$(1,2)$、$(3,4)$ 两条边可以并行，$(2,3)$ 边单独执行。</p>
+
+<h3>1.2　分层</h3>
+<p>一个 Trotter 步分成 4 层，每层是一段连续的有限时长脉冲。层的边界就是 twirling 的边界，也是 SPP 的时间节点。</p>
+<div class="fig"><svg viewBox="0 0 760 470" role="img" aria-label="4 比特 Ising Trotter 步的四层分解，以及 twirling 之后的 SPP">
+<text x="22" y="75" font-weight="600">Q₁</text><text x="22" y="135" font-weight="600">Q₂</text><text x="22" y="195" font-weight="600">Q₃</text><text x="22" y="255" font-weight="600">Q₄</text>
+<line class="wire" x1="56" y1="70" x2="730" y2="70"/><line class="wire" x1="56" y1="130" x2="730" y2="130"/><line class="wire" x1="56" y1="190" x2="730" y2="190"/><line class="wire" x1="56" y1="250" x2="730" y2="250"/>
+<rect class="layer" x="76" y="40" width="176" height="240" rx="6"/><text class="zh tm" x="164" y="32" text-anchor="middle">Layer 1</text>
+<rect class="layer" x="260" y="40" width="176" height="240" rx="6"/><text class="zh tm" x="348" y="32" text-anchor="middle">Layer 2</text>
+<rect class="layer" x="444" y="40" width="156" height="240" rx="6"/><text class="zh tm" x="522" y="32" text-anchor="middle">Layer 3</text>
+<rect class="layer" x="608" y="40" width="112" height="240" rx="6"/><text class="zh tm" x="664" y="32" text-anchor="middle">Layer 4</text>
+<!-- L1 -->
+<rect class="n-gate" x="94" y="55" width="44" height="30" rx="4"/><text x="116" y="75" text-anchor="middle">Rx</text>
+<rect class="n-gate" x="94" y="115" width="44" height="30" rx="4"/><text x="116" y="135" text-anchor="middle">Rx</text>
+<rect class="n-gate" x="94" y="175" width="44" height="30" rx="4"/><text x="116" y="195" text-anchor="middle">Rx</text>
+<rect class="n-gate" x="94" y="235" width="44" height="30" rx="4"/><text x="116" y="255" text-anchor="middle">Rx</text>
+<line class="wire" x1="205" y1="70" x2="205" y2="141"/><circle class="ctl" cx="205" cy="70" r="5"/><circle class="tgt" cx="205" cy="130" r="11"/><line class="wire" x1="194" y1="130" x2="216" y2="130"/>
+<line class="wire" x1="205" y1="190" x2="205" y2="261"/><circle class="ctl" cx="205" cy="190" r="5"/><circle class="tgt" cx="205" cy="250" r="11"/><line class="wire" x1="194" y1="250" x2="216" y2="250"/>
+<line class="wire" x1="205" y1="119" x2="205" y2="141"/><line class="wire" x1="205" y1="239" x2="205" y2="261"/>
+<!-- L2 -->
+<rect class="n-gate" x="282" y="115" width="44" height="30" rx="4"/><text x="304" y="135" text-anchor="middle">Rz</text>
+<rect class="n-gate" x="282" y="235" width="44" height="30" rx="4"/><text x="304" y="255" text-anchor="middle">Rz</text>
+<line class="wire" x1="390" y1="70" x2="390" y2="141"/><circle class="ctl" cx="390" cy="70" r="5"/><circle class="tgt" cx="390" cy="130" r="11"/><line class="wire" x1="379" y1="130" x2="401" y2="130"/><line class="wire" x1="390" y1="119" x2="390" y2="141"/>
+<line class="wire" x1="390" y1="190" x2="390" y2="261"/><circle class="ctl" cx="390" cy="190" r="5"/><circle class="tgt" cx="390" cy="250" r="11"/><line class="wire" x1="379" y1="250" x2="401" y2="250"/><line class="wire" x1="390" y1="239" x2="390" y2="261"/>
+<!-- L3 -->
+<line class="wire" x1="482" y1="130" x2="482" y2="201"/><circle class="ctl" cx="482" cy="130" r="5"/><circle class="tgt" cx="482" cy="190" r="11"/><line class="wire" x1="471" y1="190" x2="493" y2="190"/><line class="wire" x1="482" y1="179" x2="482" y2="201"/>
+<rect class="n-gate" x="530" y="175" width="44" height="30" rx="4"/><text x="552" y="195" text-anchor="middle">Rz</text>
+<!-- L4 -->
+<line class="wire" x1="664" y1="130" x2="664" y2="201"/><circle class="ctl" cx="664" cy="130" r="5"/><circle class="tgt" cx="664" cy="190" r="11"/><line class="wire" x1="653" y1="190" x2="675" y2="190"/><line class="wire" x1="664" y1="179" x2="664" y2="201"/>
+<text class="zh tm" x="164" y="302" text-anchor="middle">U₁</text><text class="zh tm" x="348" y="302" text-anchor="middle">U₂</text><text class="zh tm" x="522" y="302" text-anchor="middle">U₃</text><text class="zh tm" x="664" y="302" text-anchor="middle">U₄</text>
+<path class="arr" d="M380,314 L380,346" marker-end="url(#ah1)"/>
+<defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="zh tm" x="396" y="336">每层独立 Pauli twirling</text>
+<text class="zh th" x="22" y="392">SPP</text>
+<line class="bond" x1="188" y1="392" x2="324" y2="392"/><line class="bond" x1="372" y1="392" x2="498" y2="392"/><line class="bond" x1="546" y1="392" x2="640" y2="392"/>
+<text x="256" y="384" text-anchor="middle">χ₁</text><text x="435" y="384" text-anchor="middle">χ₂</text><text x="593" y="384" text-anchor="middle">χ₃</text>
+<circle class="n-spp" cx="164" cy="392" r="24"/><text x="164" y="397" text-anchor="middle">G¹</text>
+<circle class="n-spp" cx="348" cy="392" r="24"/><text x="348" y="397" text-anchor="middle">G²</text>
+<circle class="n-spp" cx="522" cy="392" r="24"/><text x="522" y="397" text-anchor="middle">G³</text>
+<circle class="n-spp" cx="664" cy="392" r="24"/><text x="664" y="397" text-anchor="middle">G⁴</text>
+<line class="leg" x1="164" y1="416" x2="164" y2="440"/><line class="leg" x1="348" y1="416" x2="348" y2="440"/><line class="leg" x1="522" y1="416" x2="522" y2="440"/><line class="leg" x1="664" y1="416" x2="664" y2="440"/>
+<text x="164" y="458" text-anchor="middle">a₁ (256)</text><text x="348" y="458" text-anchor="middle">a₂ (256)</text><text x="522" y="458" text-anchor="middle">a₃ (256)</text><text x="664" y="458" text-anchor="middle">a₄ (256)</text>
+</svg></div>
+<p class="cap">图 1　一个 Trotter 步的 4 层。Layer 1、2 完成 $(1,2)$、$(3,4)$ 两条边的 $ZZ$ 演化（$R_x$ 横场在 Layer 1 开头），Layer 3、4 完成 $(2,3)$ 边。twirling 之后，每层对应 SPP 的一个节点：开放腿 $a_j$ 是该层的 4 比特 Pauli 错误标签（256 个取值），横向键 $\chi_j$ 携带跨层的浴记忆。</p>
+<div class="tbl"><table>
+<thead><tr><th>层 $j$</th><th>门操作（按执行顺序）</th><th>理想算符 $U_j$</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>全部比特 $R_x(\theta_x)$；$\mathrm{CX}_{1\to2}$、$\mathrm{CX}_{3\to4}$</td><td>$U_1=\mathrm{CX}_{12}\mathrm{CX}_{34}\,R_x^{\otimes4}$</td></tr>
+<tr><td>2</td><td>$R_z^{(2)}(\theta_z)$、$R_z^{(4)}(\theta_z)$；$\mathrm{CX}_{1\to2}$、$\mathrm{CX}_{3\to4}$</td><td>$U_2=\mathrm{CX}_{12}\mathrm{CX}_{34}\,R_z^{(2)}R_z^{(4)}$</td></tr>
+<tr><td>3</td><td>$\mathrm{CX}_{2\to3}$；$R_z^{(3)}(\theta_z)$</td><td>$U_3=R_z^{(3)}\,\mathrm{CX}_{23}$</td></tr>
+<tr><td>4</td><td>$\mathrm{CX}_{2\to3}$</td><td>$U_4=\mathrm{CX}_{23}$</td></tr>
+</tbody></table></div>
+<p class="cap">层边界按图 1 放置。代码 <code>slots()</code> 中 $R_z^{(3)}$ 放在第 4 层开头；两种放法描述同一条线路，但 twirling 边界不同，得到的 SPP 也不同，正式计算时应统一。</p>
+<p>CNOT 在脉冲内按理想控制哈密顿量 $H_{\mathrm{CX}}=\dfrac{\pi}{\tau_{\mathrm{CX}}}\,|1\rangle\langle1|_c\otimes\dfrac{I-X_t}{2}$ 演化，噪声在整个脉冲期间与控制一起作用。</p>
+
+<h3>1.3　单层 Pauli twirling</h3>
+<div class="fig"><svg viewBox="0 0 760 270" role="img" aria-label="单层 Pauli twirling 示意">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<line class="wire" x1="30" y1="60" x2="470" y2="60"/><line class="wire" x1="30" y1="110" x2="470" y2="110"/><line class="wire" x1="30" y1="160" x2="470" y2="160"/><line class="wire" x1="30" y1="210" x2="470" y2="210"/>
+<rect class="n-q" x="58" y="45" width="44" height="30" rx="4"/><text x="80" y="65" text-anchor="middle">P₁</text>
+<rect class="n-q" x="58" y="95" width="44" height="30" rx="4"/><text x="80" y="115" text-anchor="middle">P₂</text>
+<rect class="n-q" x="58" y="145" width="44" height="30" rx="4"/><text x="80" y="165" text-anchor="middle">P₃</text>
+<rect class="n-q" x="58" y="195" width="44" height="30" rx="4"/><text x="80" y="215" text-anchor="middle">P₄</text>
+<rect class="n-bath" x="140" y="36" width="70" height="198" rx="6"/><text x="175" y="140" text-anchor="middle" font-weight="600">Λⱼ</text>
+<rect class="n-gate" x="244" y="36" width="70" height="198" rx="6"/><text x="279" y="140" text-anchor="middle" font-weight="600">Uⱼ</text>
+<rect class="n-q" x="350" y="36" width="80" height="198" rx="6"/><text x="390" y="134" text-anchor="middle">P′</text><text class="ts" x="390" y="152" text-anchor="middle">=UⱼPUⱼ†</text>
+<text class="zh tm ts" x="80" y="252" text-anchor="middle">随机 P = P₁⊗P₂⊗P₃⊗P₄</text>
+<text class="zh tm ts" x="390" y="252" text-anchor="middle">补偿，使理想门不变</text>
+<path class="arr" d="M486,135 L536,135" marker-end="url(#ah2)"/><text class="zh ts tm" x="511" y="124" text-anchor="middle">系综平均</text>
+<line class="wire" x1="552" y1="60" x2="740" y2="60"/><line class="wire" x1="552" y1="110" x2="740" y2="110"/><line class="wire" x1="552" y1="160" x2="740" y2="160"/><line class="wire" x1="552" y1="210" x2="740" y2="210"/>
+<rect class="n-bath" x="572" y="36" width="70" height="198" rx="6"/><text x="607" y="134" text-anchor="middle" font-weight="600">Λⱼᵗʷ</text><text class="zh ts" x="607" y="154" text-anchor="middle">Pauli 信道</text>
+<rect class="n-gate" x="664" y="36" width="64" height="198" rx="6"/><text x="696" y="140" text-anchor="middle" font-weight="600">Uⱼ</text>
+</svg></div>
+<p class="cap">图 2　第 $j$ 层写成“噪声 $\Lambda_j$ 后接理想门 $U_j$”。前面随机插入 Pauli $P$，后面插入 $P'=U_jPU_j^\dagger$，对 $P$ 平均后噪声变成 Pauli 信道。</p>
+<p>把含噪声层写成 $\mathcal G_j=\mathcal U_j\circ\Lambda_j$，即 PTM 形式 $R_j=O_jV_j$，其中 $O_j$ 是理想门的 PTM，$V_j=O_j^{-1}R_j$ 是噪声。twirling 后</p>
+$$\mathcal G_j^{\rm tw}=\frac1{4^n}\sum_{P}\mathcal P'\circ\mathcal G_j\circ\mathcal P=\mathcal U_j\circ\Lambda_j^{\rm tw},\qquad
+\Lambda_j^{\rm tw}(\rho)=\sum_{a}p_j(a)\,P_a\rho P_a .$$
+<p>用 Pauli 对易字符 $\chi_b(a)=\pm1$（$P_a,P_b$ 对易取 $+1$，反对易取 $-1$）定义 Pauli 保真度与错误概率之间的 Walsh 变换：</p>
+$$f_j(b)=\frac1d\operatorname{Tr}\!\bigl[P_b\Lambda_j(P_b)\bigr]=[V_j]_{bb}=\sum_a\chi_b(a)\,p_j(a),\qquad
+p_j(a)=\frac1{4^n}\sum_b\chi_b(a)\,f_j(b),$$
+<p>其中 $n=4$、$d=16$、$4^n=256$。$U_j$ 含一般角度的 $R_x$、$R_z$ 时不是 Clifford 门，$P'$ 一般不是 Pauli 算符；数值模拟中按理想、无误差的系综平均实现 twirling。</p>
+
+<h3>1.4　多层与 SPP</h3>
+<p>若噪声来自有记忆的浴（静态或低频噪声），各层的 Pauli 错误不独立。逐层 twirling 后，整条线路的噪声由错误历史 $\vec a=(a_1,\dots,a_L)$ 的联合分布 $p(\vec a)$ 完全描述：</p>
+$$\mathcal G^{\rm tw}_{1:L}(\rho)=\sum_{\vec a}p(\vec a)\;\mathcal U_L\mathcal P_{a_L}\cdots\mathcal U_1\mathcal P_{a_1}(\rho),\qquad \mathcal P_a(\rho)=P_a\rho P_a .$$
+<p>$p(\vec a)$ 有 $256^L$ 个分量。SPP 把它写成时间方向的 MPS：</p>
+$$p(a_1,\dots,a_L)=G^1(a_1)\,G^2(a_2)\cdots G^L(a_L),\qquad G^j(a)\in\mathbb C^{\chi_{j-1}\times\chi_j},\quad \chi_0=\chi_L=1 .$$
+<p>$\chi_j=1$ 时 $p=\prod_jp_j(a_j)$，即独立 Pauli 模型；$\chi_j\gt1$ 时键承载跨层关联。等价地可以用多时间 Pauli 保真度描述：</p>
+$$F(b_1,\dots,b_L)=\sum_{\vec a}\Bigl[\prod_j\chi_{b_j}(a_j)\Bigr]p(\vec a),$$
+<p>它一般不等于 $\prod_jf_j(b_j)$。两者之差就是要学习、要缓解的时间关联。</p>
+
+<!-- ================= 2 ================= -->
+<h2 id="s2">2　从 HEOM 计算 SPP</h2>
+<h3>2.1　HEOM 方程与 MPS 布局</h3>
+<p>浴模型取经典高斯噪声 $H_{\rm noise}(t)=\sum_s\sigma_s\xi_s(t)Q_s$，$Q_s=Z_s/2$，$\langle\xi_s(t)\xi_{s'}(0)\rangle=\delta_{ss'}e^{-\gamma_s|t|}$（静态模 $\gamma_s=0$，OU 模 $\gamma_s=1/\tau_s$）。令 $\boldsymbol k=(k_1,\dots,k_K)$ 为层级指标，标准化 Hermite 层级方程为</p>
+$$\begin{aligned}
+\dot\rho_{\boldsymbol k}={}&-i[H_c(t)+H_{ZZ},\rho_{\boldsymbol k}]
++\sum_q\Gamma_{1}\mathcal D[\sigma_-^{(q)}]\rho_{\boldsymbol k}
++\sum_q\frac{\Gamma_{\phi}}2\mathcal D[Z_q]\rho_{\boldsymbol k}\\
+&-\sum_s k_s\gamma_s\rho_{\boldsymbol k}
+-i\sum_s\sigma_s\Bigl[Q_s,\ \sqrt{k_s+1}\,\rho_{\boldsymbol k+\boldsymbol e_s}+\sqrt{k_s}\,\rho_{\boldsymbol k-\boldsymbol e_s}\Bigr].
+\end{aligned}$$
+<p>根层级 $\rho_{\boldsymbol 0}$ 是物理约化密度矩阵（RDO），其余为辅助密度算符（ADO）。$K$ 是指数模的个数（每个比特的静态模、OU 模各算一个，所以 $K$ 一般大于 4）。MPS-HEOM 把全部 $\rho_{\boldsymbol k}$ 存成一条链：</p>
+$$\rho_{\boldsymbol k}\ \longleftrightarrow\ A^0_{s}\,A^1_{k_1}A^2_{k_2}\cdots A^K_{k_K},\qquad
+A^0:(1,256,r_0),\quad A^s:(r_{s-1},n_{\rm rtt},r_s),$$
+<p>首节点 RDO 的物理腿 $s$ 是向量化后的系统算符（$16^2=256$ 维），后面每个 ADO 节点对应一个模的层级指标 $k_s$，物理维数 $n_{\rm rtt}$ 是代码中每个节点的层级截断。</p>
+<p>下面用 $\mu\equiv\boldsymbol k=(k_1,\dots,k_K)$ 统称“第几个 ADO”。截断保留下来的 $\mu$ 的个数记为 $D$：逐节点截断 $k_s\lt n_{\rm rtt}$ 时 $D=n_{\rm rtt}^K$；总层级截断 $\sum_sk_s\le N$ 时 $D=\binom{N+K}{K}$。要区分两种维数：</p>
+<ul>
+<li>$D$ 是 ADO 指标空间的维数，也就是“浴状态”所在空间的维数，代码中从不显式存储这么长的向量。</li>
+<li>$r_s$ 是 MPS-HEOM 内部的 SVD 键维数（TDVP 传播时截断），它压缩的是某一时刻这个 $D$ 维向量的表示方式。</li>
+</ul>
+
+<h3>2.2　扩展空间中的 twirling：ADO 指标就是 SPP 的键</h3>
+<p>把系统与全部 ADO 看成一个扩展空间：其中的一个元素是一组算符 $\{\rho_\mu\}_{\mu}$，即 MPS-HEOM 中整条链所代表的对象。考虑这样一类输入：</p>
+$$\rho_\mu(t_{j-1})=P_b\,X_\mu ,\qquad X\in\mathbb C^{D},$$
+<p>系统部分全部是同一个 Pauli 算符 $P_b$，第 $\mu$ 个 ADO 的系数是数 $X_\mu$。向量 $X$ 描述的是浴的状态（记忆），下文称为<b>浴向量</b>。两个特殊的浴向量：</p>
+<div class="key">
+<p>$\mathbf e_0\in\mathbb C^D$：只有根分量 $\mu=\boldsymbol 0=(0,\dots,0)$ 为 1、其余为 0 的单位向量。写成 MPS 就是直积态 $|k_1=0\rangle\otimes\cdots\otimes|k_K=0\rangle$，键维数 1。</p>
+<ul style="margin-top:8px">
+<li>作为初始条件：$t=0$ 时 HEOM 的全部 ADO 为零、只有根层级非零，对应系统与浴无初始关联，即 $X=\mathbf e_0$。</li>
+<li>作为最后的闭合：物理密度矩阵只是根层级，$\rho_{\rm phys}=\rho_{\boldsymbol 0}$，所以“只读根 ADO”就是与 $\mathbf e_0^T$ 内积。图 4 中浴腿接 $\langle0|$ 就是这一操作。</li>
+</ul>
+</div>
+<p>用 HEOM 把上述输入传播完第 $j$ 层，再用本层理想门旋转后的 $Q_{j,b}=U_jP_bU_j^\dagger$ 对系统读出（移除了理想演化，读到的是噪声框架下的对角元），对每个 ADO 指标 $\mu$ 得到一个数：</p>
+$$\bigl(\hat T_j(b)X\bigr)_\mu=\frac1d\operatorname{Tr}\!\bigl[Q_{j,b}\,\rho_\mu(t_j)\bigr],\qquad \hat T_j(b):\ \mathbb C^D\to\mathbb C^D .$$
+<p>$\hat T_j(b)$ 不是 ADO，而是作用在浴向量上的线性映射（$D\times D$ 矩阵），称为第 $j$ 层的<b>浴转移矩阵</b>：输入浴向量 $X$，输出读出后的浴向量。理想 twirling 后，系统部分在 Pauli 基上是对角的，所以整层映射为</p>
+$$\mathcal V_j^{\rm tw}\bigl(P_b\otimes X\bigr)=P_b\otimes\hat T_j(b)X .$$
+<p>做 Walsh 变换到错误标签：</p>
+$$T_j(a)=\frac1{4^n}\sum_b\chi_b(a)\,\hat T_j(b),\qquad P_aP_bP_a=\chi_b(a)P_b\ \Longrightarrow\
+\mathcal V_j^{\rm tw}(\rho\otimes X)=\sum_aP_a\rho P_a\otimes T_j(a)X .$$
+<p>即第 $j$ 层发生 Pauli 错误 $a$，同时浴向量被 $T_j(a)$ 作用。从 $X=\mathbf e_0$ 出发，连续 $L$ 层后对系统取迹、对浴只读根分量，得到</p>
+<div class="key">
+$$p(a_1,\dots,a_L)=\mathbf e_0^{T}\,T_1(a_1)\,T_2(a_2)\cdots T_L(a_L)\,\mathbf e_0,\qquad
+F(b_1,\dots,b_L)=\mathbf e_0^{T}\,\hat T_1(b_1)\cdots\hat T_L(b_L)\,\mathbf e_0 .$$
+<p>这里的“精确”只有一个含义：除了 HEOM 本身的层级截断（$n_{\rm rtt}$ 或 $N$）之外，在时间方向上没有做任何截断。形式上这是一条 MPS：物理腿为 $a_j$，键为 ADO 指标 $\mu$，维数 $D$。它用于推导，不用于计算。</p>
+</div>
+<p>实际计算中有两层 SVD 压缩，作用在不同方向：</p>
+<ul>
+<li><b>层内（空间方向）</b>：每个浴向量都以 MPS 形式存储，键为 $r_s$，由 MPS-HEOM 的 TDVP 传播和截断控制。这一步决定单次传播的代价，不改变上式的结构。</li>
+<li><b>层间（时间方向）</b>：第 $j$ 层之后，所有可能出现的浴向量 $\mathbf e_0^TT_1(a_1)\cdots T_j(a_j)$（共 $256^j$ 个）张成一个子空间，它的维数就是 SPP 的键 $\chi_j$。2.4、2.5 节逐层用 SVD 找出这个子空间，并按奇异值截断。$\chi_j\le\min(D,\ 256^j,\ 256^{L-j})$，实际远小于 $D$。</li>
+</ul>
+<div class="fig"><svg viewBox="0 0 760 336" role="img" aria-label="形式表示与压缩后的 SPP">
+<defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="zh th" x="16" y="26">形式表示：节点是浴转移矩阵 Tⱼ(a)，键是 ADO 指标 μ（D 维，未在时间方向压缩）</text>
+<circle class="capdot" cx="40" cy="86" r="9"/><text x="40" y="66" text-anchor="middle">e₀ᵀ</text>
+<line class="bond" x1="49" y1="86" x2="138" y2="86"/><text class="tm" x="94" y="78" text-anchor="middle">μ</text>
+<rect class="n-bath" x="138" y="66" width="64" height="40" rx="6"/><text x="170" y="91" text-anchor="middle">T₁</text>
+<rect class="n-bath" x="288" y="66" width="64" height="40" rx="6"/><text x="320" y="91" text-anchor="middle">T₂</text>
+<rect class="n-bath" x="438" y="66" width="64" height="40" rx="6"/><text x="470" y="91" text-anchor="middle">T₃</text>
+<rect class="n-bath" x="588" y="66" width="64" height="40" rx="6"/><text x="620" y="91" text-anchor="middle">T₄</text>
+<line class="bond" x1="202" y1="86" x2="288" y2="86"/><text class="tm" x="245" y="78" text-anchor="middle">μ (D)</text>
+<line class="bond" x1="352" y1="86" x2="438" y2="86"/><text class="tm" x="395" y="78" text-anchor="middle">μ (D)</text>
+<line class="bond" x1="502" y1="86" x2="588" y2="86"/><text class="tm" x="545" y="78" text-anchor="middle">μ (D)</text>
+<line class="bond" x1="652" y1="86" x2="721" y2="86"/><circle class="capdot" cx="730" cy="86" r="9"/><text x="730" y="66" text-anchor="middle">e₀</text>
+<line class="leg" x1="170" y1="106" x2="170" y2="130"/><line class="leg" x1="320" y1="106" x2="320" y2="130"/><line class="leg" x1="470" y1="106" x2="470" y2="130"/><line class="leg" x1="620" y1="106" x2="620" y2="130"/>
+<text x="170" y="148" text-anchor="middle">a₁</text><text x="320" y="148" text-anchor="middle">a₂</text><text x="470" y="148" text-anchor="middle">a₃</text><text x="620" y="148" text-anchor="middle">a₄</text>
+<path class="arr" d="M380,160 L380,200" marker-end="url(#ah5)"/>
+<text class="zh tm" x="396" y="186">逐层 SVD：只保留真正到达过的方向，D → χⱼ</text>
+<text class="zh th" x="16" y="226">压缩后的 SPP（键维数 χⱼ）</text>
+<line class="bond" x1="100" y1="268" x2="142" y2="268"/><text class="tm" x="92" y="273" text-anchor="end">1</text>
+<rect class="n-spp" x="142" y="248" width="56" height="40" rx="8"/><text x="170" y="273" text-anchor="middle">G¹</text>
+<rect class="n-spp" x="292" y="248" width="56" height="40" rx="8"/><text x="320" y="273" text-anchor="middle">G²</text>
+<rect class="n-spp" x="442" y="248" width="56" height="40" rx="8"/><text x="470" y="273" text-anchor="middle">G³</text>
+<rect class="n-spp" x="592" y="248" width="56" height="40" rx="8"/><text x="620" y="273" text-anchor="middle">G⁴</text>
+<line class="bond" x1="198" y1="268" x2="292" y2="268"/><text x="245" y="260" text-anchor="middle">χ₁</text>
+<line class="bond" x1="348" y1="268" x2="442" y2="268"/><text x="395" y="260" text-anchor="middle">χ₂</text>
+<line class="bond" x1="498" y1="268" x2="592" y2="268"/><text x="545" y="260" text-anchor="middle">χ₃</text>
+<line class="bond" x1="648" y1="268" x2="690" y2="268"/><text class="tm" x="698" y="273">1</text>
+<line class="leg" x1="170" y1="288" x2="170" y2="308"/><line class="leg" x1="320" y1="288" x2="320" y2="308"/><line class="leg" x1="470" y1="288" x2="470" y2="308"/><line class="leg" x1="620" y1="288" x2="620" y2="308"/>
+<text x="170" y="326" text-anchor="middle">a₁</text><text x="320" y="326" text-anchor="middle">a₂</text><text x="470" y="326" text-anchor="middle">a₃</text><text x="620" y="326" text-anchor="middle">a₄</text>
+</svg></div>
+<p class="cap">图 3　上排是推导用的形式表示，$D\times D$ 的 $T_j(a)$ 从不显式构造。算法只从 $\mathbf e_0$ 出发，沿 $\mathbf e_0^TT_1(a_1)\cdots$ 这个方向传播，并用 SVD 找它张成的子空间，得到下排的 SPP。下排的每个 $G^j$ 都是在这个子空间中表示的 $T_j(a)$。</p>
+
+<h3>2.3　读出：系统腿接 Q，浴腿保持开放</h3>
+<div class="fig"><svg viewBox="0 0 760 400" role="img" aria-label="physical 与 response 两种读出">
+<text class="zh th" x="16" y="32">演化后的状态（输入 P_b，传播完一层）</text>
+<circle class="n-sys" cx="90" cy="76" r="22"/><text class="ts" x="90" y="80" text-anchor="middle">RDO</text>
+<circle class="n-bath" cx="200" cy="76" r="22"/><text class="ts" x="200" y="80" text-anchor="middle">ADO</text>
+<circle class="n-bath" cx="310" cy="76" r="22"/><text class="ts" x="310" y="80" text-anchor="middle">ADO</text>
+<circle class="n-bath" cx="420" cy="76" r="22"/><text class="ts" x="420" y="80" text-anchor="middle">ADO</text>
+<circle class="n-bath" cx="530" cy="76" r="22"/><text class="ts" x="530" y="80" text-anchor="middle">ADO</text>
+<line class="bond" x1="112" y1="76" x2="178" y2="76"/><line class="bond" x1="222" y1="76" x2="288" y2="76"/><line class="bond" x1="332" y1="76" x2="398" y2="76"/><line class="bond" x1="442" y1="76" x2="508" y2="76"/>
+<text class="tm ts" x="145" y="68" text-anchor="middle">r₀</text><text class="tm ts" x="255" y="68" text-anchor="middle">r₁</text><text class="tm ts" x="365" y="68" text-anchor="middle">r₂</text><text class="tm ts" x="475" y="68" text-anchor="middle">r₃</text>
+<line class="leg" x1="90" y1="98" x2="90" y2="126"/><line class="leg" x1="200" y1="98" x2="200" y2="126"/><line class="leg" x1="310" y1="98" x2="310" y2="126"/><line class="leg" x1="420" y1="98" x2="420" y2="126"/><line class="leg" x1="530" y1="98" x2="530" y2="126"/>
+<text x="90" y="144" text-anchor="middle">s (256)</text><text x="200" y="144" text-anchor="middle">k₁ (n_rtt)</text><text x="310" y="144" text-anchor="middle">k₂</text><text x="420" y="144" text-anchor="middle">k₃</text><text x="530" y="144" text-anchor="middle">k₄</text>
+<text x="584" y="80">ρ_μ(t), μ=(k₁…k₄)</text><text class="zh tm" x="584" y="100">全部 ADO 都在这条链里</text>
+<text class="zh th" x="16" y="152">物理读出 physical()：浴腿全部接 ⟨0|</text>
+<circle class="n-sys" cx="90" cy="196" r="22"/><text class="ts" x="90" y="200" text-anchor="middle">RDO</text>
+<circle class="n-bath" cx="200" cy="196" r="22"/><text class="ts" x="200" y="200" text-anchor="middle">ADO</text>
+<circle class="n-bath" cx="310" cy="196" r="22"/><text class="ts" x="310" y="200" text-anchor="middle">ADO</text>
+<circle class="n-bath" cx="420" cy="196" r="22"/><text class="ts" x="420" y="200" text-anchor="middle">ADO</text>
+<circle class="n-bath" cx="530" cy="196" r="22"/><text class="ts" x="530" y="200" text-anchor="middle">ADO</text>
+<line class="bond" x1="112" y1="196" x2="178" y2="196"/><line class="bond" x1="222" y1="196" x2="288" y2="196"/><line class="bond" x1="332" y1="196" x2="398" y2="196"/><line class="bond" x1="442" y1="196" x2="508" y2="196"/>
+<line class="leg" x1="90" y1="218" x2="90" y2="246"/><text x="90" y="264" text-anchor="middle">s</text>
+<line class="leg" x1="200" y1="218" x2="200" y2="246"/><circle class="capdot" cx="200" cy="250" r="6"/>
+<line class="leg" x1="310" y1="218" x2="310" y2="246"/><circle class="capdot" cx="310" cy="250" r="6"/>
+<line class="leg" x1="420" y1="218" x2="420" y2="246"/><circle class="capdot" cx="420" cy="250" r="6"/>
+<line class="leg" x1="530" y1="218" x2="530" y2="246"/><circle class="capdot" cx="530" cy="250" r="6"/>
+<text x="200" y="272" text-anchor="middle">⟨0|</text><text x="310" y="272" text-anchor="middle">⟨0|</text><text x="420" y="272" text-anchor="middle">⟨0|</text><text x="530" y="272" text-anchor="middle">⟨0|</text>
+<text x="584" y="200">= vec ρ₀</text><text class="zh tm" x="584" y="220">只剩根层级（普通 PTM）</text>
+<text class="zh th" x="16" y="296">SPP 读出 response()：系统腿接 Q，浴腿开放</text>
+<circle class="n-sys" cx="90" cy="320" r="22"/><text class="ts" x="90" y="324" text-anchor="middle">RDO</text>
+<circle class="n-bath" cx="200" cy="320" r="22"/><text class="ts" x="200" y="324" text-anchor="middle">ADO</text>
+<circle class="n-bath" cx="310" cy="320" r="22"/><text class="ts" x="310" y="324" text-anchor="middle">ADO</text>
+<circle class="n-bath" cx="420" cy="320" r="22"/><text class="ts" x="420" y="324" text-anchor="middle">ADO</text>
+<circle class="n-bath" cx="530" cy="320" r="22"/><text class="ts" x="530" y="324" text-anchor="middle">ADO</text>
+<line class="bond" x1="112" y1="320" x2="178" y2="320"/><line class="bond" x1="222" y1="320" x2="288" y2="320"/><line class="bond" x1="332" y1="320" x2="398" y2="320"/><line class="bond" x1="442" y1="320" x2="508" y2="320"/>
+<line class="leg" x1="90" y1="342" x2="90" y2="360"/><rect class="n-q" x="77" y="360" width="26" height="22" rx="5"/><text x="90" y="376" text-anchor="middle">Q</text>
+<line class="leg" x1="200" y1="342" x2="200" y2="366"/><line class="leg" x1="310" y1="342" x2="310" y2="366"/><line class="leg" x1="420" y1="342" x2="420" y2="366"/><line class="leg" x1="530" y1="342" x2="530" y2="366"/>
+<text x="200" y="384" text-anchor="middle">k₁</text><text x="310" y="384" text-anchor="middle">k₂</text><text x="420" y="384" text-anchor="middle">k₃</text><text x="530" y="384" text-anchor="middle">k₄</text>
+<text x="584" y="324">= v_b(k₁,k₂,k₃,k₄)</text><text class="zh tm" x="584" y="344">D 个系数全部保留</text>
+</svg></div>
+<p class="cap">图 4　两种读出的区别只在于闭合哪些腿。图中示意画了 4 个 ADO 节点，实际为 $K$ 个。若把下排四条浴腿也接 $\langle0|$，得到的标量就是 $f_1(b)$。</p>
+<p>读出张量为 $\mathsf Q_{j,b}(s)=\frac1d\bigl[\operatorname{vec}_F(Q_{j,b})_s\bigr]^*$。沿系统腿收缩后，RDO 节点变成长 $r_0$ 的边界向量 $t_b(r_0)=\sum_s\mathsf Q_{j,b}(s)A^0_{1,s,r_0}$，吸收进第一个 ADO 节点，得到只含浴腿的 MPS：</p>
+$$v_b(k_1,\dots,k_K)=t_b\,A^1(k_1)A^2(k_2)\cdots A^K(k_K)=\bigl(\mathbf e_0^T\hat T_1(b)\bigr)_{\mu}.$$
+<p>系统输入直接使用 Pauli 算符 $P_b$（向量化后放入 RDO 节点）；它通常不是密度矩阵，这里传播的是线性算符基。</p>
+
+<h3>2.4　第 1 层：256 条浴 MPS → 带标签的 MPS → SVD 切开</h3>
+<div class="fig"><svg viewBox="0 0 760 440" role="img" aria-label="第一层：叠加 256 条浴 MPS 后 SVD 得到 G1 与 C1">
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="zh th" x="16" y="26">① 256 次传播（每个 P_b 一次），读出后各得一条浴 MPS</text>
+<text x="16" y="75">b=IIII</text>
+<rect class="n-q" x="84" y="61" width="20" height="18" rx="4"/><text class="ts" x="94" y="74" text-anchor="middle">t</text>
+<line class="bond" x1="104" y1="70" x2="119" y2="70"/>
+<circle class="n-bath" cx="130" cy="70" r="11"/><circle class="n-bath" cx="170" cy="70" r="11"/><circle class="n-bath" cx="210" cy="70" r="11"/><circle class="n-bath" cx="250" cy="70" r="11"/>
+<line class="bond" x1="141" y1="70" x2="159" y2="70"/><line class="bond" x1="181" y1="70" x2="199" y2="70"/><line class="bond" x1="221" y1="70" x2="239" y2="70"/>
+<line class="leg" x1="130" y1="81" x2="130" y2="94"/><line class="leg" x1="170" y1="81" x2="170" y2="94"/><line class="leg" x1="210" y1="81" x2="210" y2="94"/><line class="leg" x1="250" y1="81" x2="250" y2="94"/>
+<text x="16" y="121">b=IIIX</text>
+<rect class="n-q" x="84" y="107" width="20" height="18" rx="4"/><text class="ts" x="94" y="120" text-anchor="middle">t</text>
+<line class="bond" x1="104" y1="116" x2="119" y2="116"/>
+<circle class="n-bath" cx="130" cy="116" r="11"/><circle class="n-bath" cx="170" cy="116" r="11"/><circle class="n-bath" cx="210" cy="116" r="11"/><circle class="n-bath" cx="250" cy="116" r="11"/>
+<line class="bond" x1="141" y1="116" x2="159" y2="116"/><line class="bond" x1="181" y1="116" x2="199" y2="116"/><line class="bond" x1="221" y1="116" x2="239" y2="116"/>
+<line class="leg" x1="130" y1="127" x2="130" y2="140"/><line class="leg" x1="170" y1="127" x2="170" y2="140"/><line class="leg" x1="210" y1="127" x2="210" y2="140"/><line class="leg" x1="250" y1="127" x2="250" y2="140"/>
+<text x="40" y="160" text-anchor="middle">⋮</text><text x="190" y="160" text-anchor="middle">⋮</text>
+<text x="16" y="191">b=ZZZZ</text>
+<rect class="n-q" x="84" y="177" width="20" height="18" rx="4"/><text class="ts" x="94" y="190" text-anchor="middle">t</text>
+<line class="bond" x1="104" y1="186" x2="119" y2="186"/>
+<circle class="n-bath" cx="130" cy="186" r="11"/><circle class="n-bath" cx="170" cy="186" r="11"/><circle class="n-bath" cx="210" cy="186" r="11"/><circle class="n-bath" cx="250" cy="186" r="11"/>
+<line class="bond" x1="141" y1="186" x2="159" y2="186"/><line class="bond" x1="181" y1="186" x2="199" y2="186"/><line class="bond" x1="221" y1="186" x2="239" y2="186"/>
+<line class="leg" x1="130" y1="197" x2="130" y2="210"/><line class="leg" x1="170" y1="197" x2="170" y2="210"/><line class="leg" x1="210" y1="197" x2="210" y2="210"/><line class="leg" x1="250" y1="197" x2="250" y2="210"/>
+<text class="ts" x="130" y="226" text-anchor="middle">k₁</text><text class="ts" x="170" y="226" text-anchor="middle">k₂</text><text class="ts" x="210" y="226" text-anchor="middle">k₃</text><text class="ts" x="250" y="226" text-anchor="middle">k₄</text>
+<path class="arr" d="M282,128 L360,128" marker-end="url(#ah3)"/>
+<text class="zh ts" x="321" y="116" text-anchor="middle">加标签 b</text><text class="zh ts tm" x="321" y="148" text-anchor="middle">add + 两扫压缩</text>
+<text x="515" y="94" text-anchor="middle">V¹(b; k₁,…,k₄)</text>
+<rect class="n-lab" x="394" y="114" width="28" height="28" rx="4"/><text x="408" y="133" text-anchor="middle">b</text>
+<line class="leg" x1="408" y1="142" x2="408" y2="168"/><text x="408" y="186" text-anchor="middle">b (256)</text>
+<line class="bond" x1="422" y1="128" x2="457" y2="128"/>
+<circle class="n-bath" cx="470" cy="128" r="13"/><circle class="n-bath" cx="520" cy="128" r="13"/><circle class="n-bath" cx="570" cy="128" r="13"/><circle class="n-bath" cx="620" cy="128" r="13"/>
+<line class="bond" x1="483" y1="128" x2="507" y2="128"/><line class="bond" x1="533" y1="128" x2="557" y2="128"/><line class="bond" x1="583" y1="128" x2="607" y2="128"/>
+<line class="leg" x1="470" y1="141" x2="470" y2="168"/><line class="leg" x1="520" y1="141" x2="520" y2="168"/><line class="leg" x1="570" y1="141" x2="570" y2="168"/><line class="leg" x1="620" y1="141" x2="620" y2="168"/>
+<text x="470" y="186" text-anchor="middle">k₁</text><text x="520" y="186" text-anchor="middle">k₂</text><text x="570" y="186" text-anchor="middle">k₃</text><text x="620" y="186" text-anchor="middle">k₄</text>
+<text class="zh th" x="16" y="262">② 标签腿 Walsh（b → a₁），浴链右正交化，在“标签 | 浴”之间 SVD</text>
+<line class="bond" x1="166" y1="330" x2="196" y2="330"/><text class="tm" x="158" y="335" text-anchor="end">1</text>
+<rect class="n-spp" x="196" y="310" width="56" height="40" rx="8"/><text x="224" y="335" text-anchor="middle">G¹</text>
+<line class="leg" x1="224" y1="350" x2="224" y2="374"/><text x="224" y="392" text-anchor="middle">a₁ (256)</text>
+<line class="bond" x1="252" y1="330" x2="357" y2="330"/><text x="300" y="322" text-anchor="middle">χ₁</text>
+<rect class="grp" x="340" y="294" width="300" height="108" rx="14"/>
+<circle class="n-bath" cx="370" cy="330" r="13"/><circle class="n-bath" cx="430" cy="330" r="13"/><circle class="n-bath" cx="490" cy="330" r="13"/><circle class="n-bath" cx="550" cy="330" r="13"/>
+<line class="bond" x1="383" y1="330" x2="417" y2="330"/><line class="bond" x1="443" y1="330" x2="477" y2="330"/><line class="bond" x1="503" y1="330" x2="537" y2="330"/>
+<line class="leg" x1="370" y1="343" x2="370" y2="370"/><line class="leg" x1="430" y1="343" x2="430" y2="370"/><line class="leg" x1="490" y1="343" x2="490" y2="370"/><line class="leg" x1="550" y1="343" x2="550" y2="370"/>
+<text x="370" y="388" text-anchor="middle">k₁</text><text x="430" y="388" text-anchor="middle">k₂</text><text x="490" y="388" text-anchor="middle">k₃</text><text x="550" y="388" text-anchor="middle">k₄</text>
+<text x="600" y="335" font-weight="600">C¹</text>
+<text class="zh tm" x="224" y="426" text-anchor="middle">SPP 第 1 个节点</text>
+<text class="zh tm" x="490" y="426" text-anchor="middle">剩余浴 MPS：带记忆的 ADO 系数 → 第 2 层初始浴</text>
+</svg></div>
+<p class="cap">图 5　256 条响应用 one-hot 标签节点拼成一条 MPS，标签保留了 $b$。$G^1$ 存为 SPP 节点；$C^1$ 是带记忆的浴，作为下一层的输入。</p>
+$$\mathcal V^{1}(b,\mu)=\bigl(\mathbf e_0^T\hat T_1(b)\bigr)_\mu,\qquad
+W^{1}(a_1,\mu)=\frac1{256}\sum_b\chi_b(a_1)\,\mathcal V^{1}(b,\mu)=\bigl(\mathbf e_0^TT_1(a_1)\bigr)_\mu ,$$
+$$W^{1}(a_1,\mu)\ \overset{\rm SVD}{=}\ \sum_{\alpha_1=1}^{\chi_1}G^1_{1,a_1,\alpha_1}\;C^1_{\alpha_1,\mu},\qquad
+G^1:(1,256,\chi_1).$$
+<p>做 SVD 前先把浴链右正交化，首节点的奇异值才对应整条切线上的 Frobenius 截断误差。根分量 $\sum_\alpha G^1_{1a_1\alpha}C^1_{\alpha0}=p_1(a_1)$ 是第 1 层的边缘错误概率，其 Walsh 变换等于普通 PTM 计算给出的 $[O_1^{-1}R_1]_{bb}$。</p>
+
+<h3>2.5　第 $j$ 层：对每个 $\alpha_{j-1}$ 重新接系统节点</h3>
+<div class="fig"><svg viewBox="0 0 760 480" role="img" aria-label="第 j 层：在 C 左边接新的系统节点，传播，叠加，SVD">
+<defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="zh th" x="16" y="26">① 固定 α₁ 取 C¹ 的一行，左边接新系统节点 P_b₂，只传播第 2 层</text>
+<circle class="n-sys" cx="52" cy="86" r="22"/><text x="52" y="90" text-anchor="middle" style="font-size:10.5px">P_b₂</text>
+<line class="leg" x1="52" y1="108" x2="52" y2="128"/><text x="52" y="146" text-anchor="middle">s</text>
+<line class="bond" x1="74" y1="86" x2="117" y2="86"/><text class="tm ts" x="95" y="78" text-anchor="middle">α₁</text>
+<circle class="n-bath" cx="130" cy="86" r="13"/><circle class="n-bath" cx="175" cy="86" r="13"/><circle class="n-bath" cx="220" cy="86" r="13"/><circle class="n-bath" cx="265" cy="86" r="13"/>
+<line class="bond" x1="143" y1="86" x2="162" y2="86"/><line class="bond" x1="188" y1="86" x2="207" y2="86"/><line class="bond" x1="233" y1="86" x2="252" y2="86"/>
+<line class="leg" x1="130" y1="99" x2="130" y2="128"/><line class="leg" x1="175" y1="99" x2="175" y2="128"/><line class="leg" x1="220" y1="99" x2="220" y2="128"/><line class="leg" x1="265" y1="99" x2="265" y2="128"/>
+<text x="130" y="146" text-anchor="middle">k₁</text><text x="175" y="146" text-anchor="middle">k₂</text><text x="220" y="146" text-anchor="middle">k₃</text><text x="265" y="146" text-anchor="middle">k₄</text>
+<path class="arr" d="M292,86 L372,86" marker-end="url(#ah4)"/>
+<text class="zh ts" x="332" y="74" text-anchor="middle">HEOM 第 2 层</text><text class="zh ts tm" x="332" y="104" text-anchor="middle">控制 + 噪声</text>
+<rect class="n-q" x="392" y="77" width="20" height="18" rx="4"/><text class="ts" x="402" y="90" text-anchor="middle">t</text>
+<text class="ts tm" x="402" y="122" text-anchor="middle">Q₂,b₂</text>
+<line class="bond" x1="412" y1="86" x2="427" y2="86"/>
+<circle class="n-bath" cx="440" cy="86" r="13"/><circle class="n-bath" cx="485" cy="86" r="13"/><circle class="n-bath" cx="530" cy="86" r="13"/><circle class="n-bath" cx="575" cy="86" r="13"/>
+<line class="bond" x1="453" y1="86" x2="472" y2="86"/><line class="bond" x1="498" y1="86" x2="517" y2="86"/><line class="bond" x1="543" y1="86" x2="562" y2="86"/>
+<line class="leg" x1="440" y1="99" x2="440" y2="128"/><line class="leg" x1="485" y1="99" x2="485" y2="128"/><line class="leg" x1="530" y1="99" x2="530" y2="128"/><line class="leg" x1="575" y1="99" x2="575" y2="128"/>
+<text x="440" y="146" text-anchor="middle">k₁</text><text x="485" y="146" text-anchor="middle">k₂</text><text x="530" y="146" text-anchor="middle">k₃</text><text x="575" y="146" text-anchor="middle">k₄</text>
+<text x="600" y="91">= v(α₁, b₂)</text>
+<text class="zh th" x="16" y="190">② 对全部 χ₁ × 256 个 (α₁, b₂) 加标签 ℓ 叠加、压缩</text>
+<rect class="n-lab" x="226" y="222" width="28" height="28" rx="4"/><text x="240" y="241" text-anchor="middle">ℓ</text>
+<line class="leg" x1="240" y1="250" x2="240" y2="276"/><text class="ts" x="232" y="294" text-anchor="end">ℓ = α₁·256 + b₂</text>
+<line class="bond" x1="254" y1="236" x2="287" y2="236"/>
+<circle class="n-bath" cx="300" cy="236" r="13"/><circle class="n-bath" cx="350" cy="236" r="13"/><circle class="n-bath" cx="400" cy="236" r="13"/><circle class="n-bath" cx="450" cy="236" r="13"/>
+<line class="bond" x1="313" y1="236" x2="337" y2="236"/><line class="bond" x1="363" y1="236" x2="387" y2="236"/><line class="bond" x1="413" y1="236" x2="437" y2="236"/>
+<line class="leg" x1="300" y1="249" x2="300" y2="276"/><line class="leg" x1="350" y1="249" x2="350" y2="276"/><line class="leg" x1="400" y1="249" x2="400" y2="276"/><line class="leg" x1="450" y1="249" x2="450" y2="276"/>
+<text x="300" y="294" text-anchor="middle">k₁</text><text x="350" y="294" text-anchor="middle">k₂</text><text x="400" y="294" text-anchor="middle">k₃</text><text x="450" y="294" text-anchor="middle">k₄</text>
+<text class="zh th" x="16" y="334">③ ℓ 拆成 α₁（接回 G¹ 的键）与 b₂ → a₂（Walsh），右正交化后 SVD</text>
+<line class="bond" x1="40" y1="398" x2="66" y2="398"/><text class="tm" x="32" y="403" text-anchor="end">1</text>
+<rect class="n-spp" x="66" y="378" width="56" height="40" rx="8"/><text x="94" y="403" text-anchor="middle">G¹</text>
+<line class="leg" x1="94" y1="418" x2="94" y2="440"/><text x="94" y="458" text-anchor="middle">a₁</text>
+<line class="bond" x1="122" y1="398" x2="196" y2="398"/><text x="159" y="390" text-anchor="middle">χ₁</text>
+<rect class="n-spp" x="196" y="378" width="56" height="40" rx="8"/><text x="224" y="403" text-anchor="middle">G²</text>
+<line class="leg" x1="224" y1="418" x2="224" y2="440"/><text x="224" y="458" text-anchor="middle">a₂</text>
+<line class="bond" x1="252" y1="398" x2="332" y2="398"/><text x="291" y="390" text-anchor="middle">χ₂</text>
+<rect class="grp" x="316" y="366" width="250" height="104" rx="14"/>
+<circle class="n-bath" cx="345" cy="398" r="13"/><circle class="n-bath" cx="395" cy="398" r="13"/><circle class="n-bath" cx="445" cy="398" r="13"/><circle class="n-bath" cx="495" cy="398" r="13"/>
+<line class="bond" x1="358" y1="398" x2="382" y2="398"/><line class="bond" x1="408" y1="398" x2="432" y2="398"/><line class="bond" x1="458" y1="398" x2="482" y2="398"/>
+<line class="leg" x1="345" y1="411" x2="345" y2="438"/><line class="leg" x1="395" y1="411" x2="395" y2="438"/><line class="leg" x1="445" y1="411" x2="445" y2="438"/><line class="leg" x1="495" y1="411" x2="495" y2="438"/>
+<text x="345" y="456" text-anchor="middle">k₁</text><text x="395" y="456" text-anchor="middle">k₂</text><text x="445" y="456" text-anchor="middle">k₃</text><text x="495" y="456" text-anchor="middle">k₄</text>
+<text x="530" y="403" font-weight="600">C²</text>
+<text class="zh tm" x="590" y="394">G² 形状 (χ₁, 256, χ₂)</text>
+<text class="zh tm" x="590" y="416">C² → 第 3 层</text>
+</svg></div>
+<p class="cap">图 6　以第 2 层为例。新注入的系统节点 $P_{b_2}$ 对应 twirling 边界：系统腿在边界被读出后重新注入，浴腿原样穿过边界。前面的历史已经全部压在 $G^1$ 与 $C^1$ 中，不需要从 $t=0$ 重跑第 1 层。</p>
+$$\rho_\mu(t_{j-1})=P_{b}\;C^{j-1}_{\alpha\mu}\ \xrightarrow{\ \text{HEOM，第 }j\text{ 层}\ }\
+W^{j}(\alpha,a,\mu)=\frac1{256}\sum_b\chi_b(a)\,\frac1d\operatorname{Tr}\!\bigl[Q_{j,b}\,\rho^{(\alpha,b)}_\mu(t_j)\bigr]=\bigl(C^{j-1}T_j(a)\bigr)_{\alpha\mu},$$
+$$\underbrace{W^{j}_{(\alpha a),\,\mu}}_{(\chi_{j-1}\cdot256)\times D}\ \overset{\rm SVD}{\approx}\ \sum_{\beta=1}^{\chi_j}G^{j}_{\alpha a\beta}\,C^{j}_{\beta\mu},\qquad
+\mathbf e_0^TT_1(a_1)\cdots T_j(a_j)=G^1(a_1)\cdots G^{j}(a_j)\,C^{j}.$$
+<p>最后一个等式在不截断时严格成立，由归纳法直接得到。关于标签 $\alpha$：</p>
+<ul>
+<li>$\alpha_{j-1}$ 是上一层 SVD 保留下来的奇异向量序号，取 $0,\dots,\chi_{j-1}-1$，按奇异值从大到小排列。它表示浴记忆的第 $\alpha$ 个基方向；$C^{j-1}_{\alpha,\cdot}$ 是一组 ADO 系数，可正可负，不对应某个 Pauli 算符。</li>
+<li>固定 $\alpha$ 就是对 $C^{j-1}$ 的第一个浴节点（形状 $(\chi_{j-1},n_{\rm rtt},r_1)$）切片 <code>[α:α+1]</code>，左键维数变为 1，等价于在左键上接 one-hot 向量 $\mathbf e_\alpha$。</li>
+<li>拼接时的标签为 $\ell=\alpha\cdot256+b$，共 $256\,\chi_{j-1}$ 个取值；SVD 后把 $\ell$ 重排为 $(\alpha,b)$，$\alpha$ 成为 $G^j$ 的左键。$G^{j-1}$ 的右键与 $C^{j-1}$ 的左键来自同一次 SVD，所以两者天然对齐。</li>
+<li>每层只向下传递上一层的一个键：第 $j$ 层的传播次数是 $256\,\chi_{j-1}$，不会出现 $\chi_1\chi_2\cdots$ 的累乘。</li>
+</ul>
+<p>$C^{j-1}$ 的元素可以为负或复数，$P_bC^{j-1}_\alpha$ 也不是可制备的密度矩阵；HEOM 方程是线性的，所以这不影响结果。</p>
+
+<h3>2.6　最后一层与完整流程</h3>
+<p>第 $L$ 层传播、读出后不做 SVD，直接把浴腿全部接 $\langle0|$（只读根 ADO），整个过程中浴只在这里闭合一次：</p>
+$$G^{L}_{\alpha a 1}=W^{L}(\alpha,a,\mu=0),\qquad p(a_1,\dots,a_L)=G^1(a_1)\cdots G^L(a_L).$$
+<pre><code><span class="cm"># layers[j] = (第 j 层控制脉冲, 理想 U_j)；P[b] 为 16×16 Pauli，b = 0..255</span>
+C = root_bath()                                  <span class="cm"># χ0 = 1：只有根 ADO 为 1</span>
+cores = []
+for j, (pulse, U) in enumerate(layers):
+    last = (j == len(layers) - 1)
+    branches = []
+    for alpha in range(C.left_dim):              <span class="cm"># 第 1 层只有 alpha = 0</span>
+        bath = C.fix_left(alpha)                 <span class="cm"># 切片 [alpha:alpha+1]</span>
+        for b in range(256):
+            state = attach_system(P[b], bath)    <span class="cm"># RDO 节点接到浴链左边</span>
+            state = heom_layer(state, pulse)     <span class="cm"># 控制 + 噪声联合传播一层（TDVP）</span>
+            q = (U @ P[b] @ U.conj().T).reshape(-1, order='F').conj() / 16
+            v = readout_memory(state, q)         <span class="cm"># 只收缩 RDO 腿，浴腿保留</span>
+            branches.append(close_root(v) if last else labelled_branch(alpha * 256 + b, v))
+    if last:
+        W = np.array(branches).reshape(C.left_dim, 256, 1)
+        cores.append(walsh_inverse(W, axis=1))   <span class="cm"># (χ_{L-1}, 256, 1)</span>
+        break
+    M = walsh_label(merge_labelled(branches))    <span class="cm"># 只变换 b，不动 alpha</span>
+    G, C = split_label(right_canonicalize(M), chi_prev=C.left_dim, tol=..., rank=...)
+    cores.append(G)                              <span class="cm"># (χ_{j-1}, 256, χ_j)</span></code></pre>
+<p>同一层内各 $(\alpha,b)$ 相互独立，可以并行；不同层之间依赖 $C^{j-1}$，必须串行。多个 Trotter 步只需把层列表接长。</p>
+
+<!-- ================= 3 ================= -->
+<h2 id="s3">3　PEA：在 SPP 上放大噪声</h2>
+<h3>3.1　噪声放大族</h3>
+<p>第 3、4 节全部在 Walsh 表象中操作，对象是 1.4 节的多时间 Pauli 保真度 $F(\vec b)$。它与 $p(\vec a)$ 只差每条腿上的局部线性变换，所以仍是一条键维数相同的 SPP；示意图中照常画成 SPP，代码中注意先做 Walsh 变换即可。</p>
+<p>在 Walsh 表象中，噪声的复合是逐点乘积。增益为整数 $g$ 的放大噪声取</p>
+$$F_g(\vec b)=F(\vec b)^g,\qquad F_1=F,\quad F_0=\mathbf 1 .$$
+<p>实现方式：在线路中额外插入一条 Pauli 历史 $\vec d$（并入每层的 twirling Pauli），$\vec d$ 的分布在 Walsh 表象中为 $F^{g-1}$，等效噪声即为 $F\cdot F^{g-1}=F^g$。可观测量满足</p>
+$$\langle O\rangle(g)=\sum_{\vec b}c_{\vec b}\,F(\vec b)^g ,$$
+<p>系数 $c_{\vec b}$ 由线路与可观测量决定。测量 $g=1,2,3$ 后外推到 $g=0$。因为 $F(\vec b)\neq\prod_jf_j(b_j)$，若用独立模型放大，放大的并不是真实噪声；用 SPP 放大则保持了时间关联的结构。</p>
+
+<h3>3.2　逐点乘积与两扫压缩</h3>
+<p>对 SPP 每个节点的错误腿做 Walsh 变换。这是局部线性变换，不改变键：</p>
+$$\hat G^{j}(b)=\sum_a\chi_b(a)\,G^{j}(a),\qquad F(b_1,\dots,b_L)=\hat G^1(b_1)\,\hat G^2(b_2)\cdots\hat G^L(b_L).$$
+<p>两条 MPS 的逐点乘积 $F_p\odot F_q$，就是在每个位置让两个节点共享同一条物理腿（三腿 copy 张量 $\delta_{bb'b''}$），键做直积：</p>
+$$\bigl(F_p\odot F_{q}\bigr)(\vec b)=\prod_j\bigl[\hat G_p^{j}(b_j)\otimes\hat G_q^{j}(b_j)\bigr],\qquad \chi_j\to\chi_{p,j}\,\chi_{q,j}.$$
+<div class="fig"><svg viewBox="0 0 760 336" role="img" aria-label="逐点乘积与 F 的平方的两扫压缩">
+<defs><marker id="ah6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="zh th" x="16" y="26">(a) 逐点乘积：两个节点共享物理腿 b</text>
+<line class="bond" x1="60" y1="66" x2="160" y2="66"/><line class="bond" x1="60" y1="144" x2="160" y2="144"/>
+<circle class="n-spp" cx="110" cy="66" r="18"/><text x="110" y="71" text-anchor="middle">G</text>
+<circle class="n-corr" cx="110" cy="144" r="18"/><text x="110" y="149" text-anchor="middle">G′</text>
+<line class="leg" x1="110" y1="84" x2="110" y2="126"/><circle class="ctl" cx="110" cy="105" r="5"/>
+<line class="leg" x1="110" y1="105" x2="150" y2="105"/><text x="158" y="110">b</text>
+<path class="arr" d="M200,105 L262,105" marker-end="url(#ah6)"/>
+<line class="bond" x1="276" y1="105" x2="384" y2="105"/>
+<rect class="n-spp" x="296" y="85" width="68" height="40" rx="8"/><text x="330" y="110" text-anchor="middle">G⊗G′</text>
+<text class="ts" x="286" y="96" text-anchor="middle">χχ′</text><text class="ts" x="376" y="96" text-anchor="middle">χχ′</text>
+<line class="leg" x1="330" y1="125" x2="330" y2="150"/><text x="330" y="168" text-anchor="middle">b</text>
+<text x="420" y="110">[G⊗G′](b) = G(b) ⊗ G′(b)</text>
+<text class="zh th" x="16" y="208">(b) F ⊙ F = F²：键维数变为 χ²，再两扫压缩</text>
+<line class="bond" x1="60" y1="238" x2="345" y2="238"/><line class="bond" x1="60" y1="298" x2="345" y2="298"/>
+<circle class="n-spp" cx="90" cy="238" r="14"/><circle class="n-spp" cx="170" cy="238" r="14"/><circle class="n-spp" cx="250" cy="238" r="14"/><circle class="n-spp" cx="330" cy="238" r="14"/>
+<circle class="n-spp" cx="90" cy="298" r="14"/><circle class="n-spp" cx="170" cy="298" r="14"/><circle class="n-spp" cx="250" cy="298" r="14"/><circle class="n-spp" cx="330" cy="298" r="14"/>
+<line class="leg" x1="90" y1="252" x2="90" y2="284"/><line class="leg" x1="170" y1="252" x2="170" y2="284"/><line class="leg" x1="250" y1="252" x2="250" y2="284"/><line class="leg" x1="330" y1="252" x2="330" y2="284"/>
+<circle class="ctl" cx="90" cy="268" r="4.5"/><circle class="ctl" cx="170" cy="268" r="4.5"/><circle class="ctl" cx="250" cy="268" r="4.5"/><circle class="ctl" cx="330" cy="268" r="4.5"/>
+<line class="leg" x1="90" y1="268" x2="108" y2="268"/><line class="leg" x1="170" y1="268" x2="188" y2="268"/><line class="leg" x1="250" y1="268" x2="268" y2="268"/><line class="leg" x1="330" y1="268" x2="348" y2="268"/>
+<text class="ts" x="44" y="242" text-anchor="end">F</text><text class="ts" x="44" y="302" text-anchor="end">F</text>
+<path class="arr" d="M372,268 L432,268" marker-end="url(#ah6)"/><text class="zh ts tm" x="402" y="256" text-anchor="middle">QR ← / SVD →</text>
+<line class="bond" x1="446" y1="268" x2="724" y2="268"/>
+<circle class="n-spp" cx="470" cy="268" r="18"/><circle class="n-spp" cx="550" cy="268" r="18"/><circle class="n-spp" cx="630" cy="268" r="18"/><circle class="n-spp" cx="710" cy="268" r="18"/>
+<line class="leg" x1="470" y1="286" x2="470" y2="306"/><line class="leg" x1="550" y1="286" x2="550" y2="306"/><line class="leg" x1="630" y1="286" x2="630" y2="306"/><line class="leg" x1="710" y1="286" x2="710" y2="306"/>
+<text x="510" y="258" text-anchor="middle">χ′</text><text x="590" y="258" text-anchor="middle">χ′</text><text x="670" y="258" text-anchor="middle">χ′</text>
+<text class="zh tm ts" x="590" y="326" text-anchor="middle">F² 的 MPS（χ′ ≤ χ²）</text>
+</svg></div>
+<p class="cap">图 7　图中省略 Walsh 变换，节点 $G$ 均指Walsh 表象节点 $\hat G$。黑点是 copy 张量。(a) 两个节点共享物理腿，合成一个键为 $\chi\chi'$ 的节点。(b) $F\odot F=F^2$：先自右向左 QR 正交化，再自左向右 SVD 截断到 $\chi'$。重复即得 $F^g$。</p>
+<p>重复执行 $F^{g}=F\odot F^{g-1}$，每次作用后做一次两扫压缩。检验：$F^g(I,\dots,I)=1$（归一化），逆 Walsh 变换后的最小分量应在舍入量级。</p>
+
+<h3>3.3　线路实现：从非负 MPS 精确抽样</h3>
+<p>把 $F^{g-1}$ 的节点逐个做逆 Walsh 变换，得到 $p_{g-1}$ 的节点 $G^j(a)$。$p_{g-1}$ 是真正的概率分布，可以逐层条件抽样。令右环境 $R_j=\sum_{a_{j+1},\dots}G^{j+1}(a_{j+1})\cdots G^L(a_L)$，已抽到的左边界为 $\ell_{j-1}=G^1(d_1)\cdots G^{j-1}(d_{j-1})$，则</p>
+$$P(d_j\mid d_1,\dots,d_{j-1})=\frac{\ell_{j-1}\,G^j(d_j)\,R_j}{\ell_{j-1}\,R_{j-1}} .$$
+<p>抽出的整条历史 $\vec d$ 本身带有时间关联，按层并入 twirling Pauli 执行。截断带来的极小负分量需要先置零再归一化。</p>
+
+<!-- ================= 4 ================= -->
+<h2 id="s4">4　PEC：SPP 的变分求逆</h2>
+<h3>4.1　目标</h3>
+<p>PEC 寻找修正准概率 $q(\vec d)$，在线路中插入修正 Pauli 历史 $\vec d$，使等效噪声变成恒等。在 Walsh 表象中，条件写作</p>
+$$F_p\odot F_q=\mathbf 1 .$$
+<p>理想期望值由带符号的加权平均得到：</p>
+$$\langle O\rangle_{\rm ideal}=\sum_{\vec d}q(\vec d)\,\langle O\rangle_{\vec d}
+=\Gamma\;\mathbb E_{\vec d\sim|q|/\Gamma}\bigl[\operatorname{sgn}q(\vec d)\,\langle O\rangle_{\vec d}\bigr],\qquad \Gamma=\sum_{\vec d}|q(\vec d)|,$$
+<p>采样开销为 $\Gamma^2$。形式解是逐点倒数 $F_q=1/F_p$，但逐点求倒数不是 MPS 运算，键维数也无从控制。因此借鉴 Guo 与杨硕对 MPO 的变分求逆，直接在 MPS 上优化 $F_q$。</p>
+
+<h3>4.2　代价函数</h3>
+<p>Guo–杨的代价为 $e=\|\mathcal U'\mathcal U-\mathbb 1\|_F^2$。取 $\mathcal U$ 为 SPP 描述的噪声，$\mathcal U'$ 为修正。Pauli 标签群是阿贝尔群，在 Walsh 表象中两者都是对角的：$\mathcal U=\operatorname{diag}(F_p)$，$\mathcal U'=\operatorname{diag}(F_q)$。于是</p>
+$$e(F_q)=\bigl\|\operatorname{diag}(F_q)\operatorname{diag}(F_p)-\mathbb 1\bigr\|_F^2=\sum_{\vec b}\bigl(F_p(\vec b)\,F_q(\vec b)-1\bigr)^2 .$$
+<div class="key">
+$$e=F_q^T\operatorname{diag}\!\bigl(F_p^{2}\bigr)F_q-2\,F_q^TF_p+256^L .$$
+<p>二次项的核 $F_p^2$ 正是第 3 节 PEA 中 $g=2$ 的对象；一次项是 $F_q$ 与 SPP 本身的重叠。两者都可以直接用已有的 SPP MPS 构造，不需要额外的 MPO。$p$ 为实数且 $\chi_b(a)=\pm1$，所以 $F_p$、$F_q$ 都是实数。</p>
+</div>
+<p>Walsh 变换是局部线性变换，下面的图中省略，图中 $G$ 与 $B$ 都指 Walsh 表象中的节点，图像上仍视为 SPP。</p>
+
+<h3>4.3　局部二次问题与扫描</h3>
+<p>把 $F_q$ 写成 MPS，$F_q(\vec b)=B_1(b_1)B_2(b_2)\cdots B_L(b_L)$，键维数 $\chi_q$。固定除 $B_j$ 外的所有节点，把 $B_j$ 的全部指标并成一个向量 $\vec B_j$，代价对它是二次的：</p>
+$$\min_{\vec B_j}\Bigl(\vec B_j^{T}M_j\vec B_j-2\,\vec B_j^{T}\vec N_j+\text{const}\Bigr)\ \Longrightarrow\ M_j\vec B_j=\vec N_j .$$
+<p>$M_j$ 是 $\langle F_q|\operatorname{diag}(F_p)\operatorname{diag}(F_p)|F_q\rangle$ 中去掉 $B_j$ 与 $B_j^T$ 之后的环境；$\vec N_j$ 是 $\langle F_q|F_p\rangle$ 中去掉 $B_j^T$ 之后的环境。</p>
+<div class="fig"><svg viewBox="0 0 760 470" role="img" aria-label="SPP 取逆的局部环境 M_j 与 N_j">
+<defs><marker id="ah7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahd" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="zh th" x="16" y="26">(a) Mⱼ：⟨F_q| diag(F)·diag(F) |F_q⟩ 去掉 Bⱼ、Bⱼᵀ</text>
+<line class="leg" x1="90" y1="70" x2="90" y2="250"/><line class="leg" x1="170" y1="70" x2="170" y2="250"/><line class="leg" x1="250" y1="70" x2="250" y2="250"/><line class="leg" x1="330" y1="70" x2="330" y2="250"/>
+<line class="bond" x1="90" y1="70" x2="330" y2="70"/><line class="bond" x1="90" y1="130" x2="330" y2="130"/><line class="bond" x1="90" y1="190" x2="330" y2="190"/><line class="bond" x1="90" y1="250" x2="330" y2="250"/>
+<text class="ts tm" x="44" y="74" text-anchor="middle">⟨F_q|</text><text class="ts tm" x="44" y="134" text-anchor="middle">F</text><text class="ts tm" x="44" y="194" text-anchor="middle">F</text><text class="ts tm" x="44" y="254" text-anchor="middle">|F_q⟩</text>
+<rect class="n-corr" x="72" y="56" width="36" height="28" rx="5"/><text class="ts" x="90" y="74" text-anchor="middle">B₁</text>
+<rect class="hole" x="152" y="56" width="36" height="28" rx="5" style="fill:var(--surface)"/><text class="ts tm" x="170" y="74" text-anchor="middle">Bⱼᵀ</text>
+<rect class="n-corr" x="232" y="56" width="36" height="28" rx="5"/><text class="ts" x="250" y="74" text-anchor="middle">B₃</text>
+<rect class="n-corr" x="312" y="56" width="36" height="28" rx="5"/><text class="ts" x="330" y="74" text-anchor="middle">B₄</text>
+<circle class="n-spp" cx="90" cy="130" r="17"/><text class="ts" x="90" y="134" text-anchor="middle">G¹</text>
+<circle class="n-spp" cx="170" cy="130" r="17"/><text class="ts" x="170" y="134" text-anchor="middle">G²</text>
+<circle class="n-spp" cx="250" cy="130" r="17"/><text class="ts" x="250" y="134" text-anchor="middle">G³</text>
+<circle class="n-spp" cx="330" cy="130" r="17"/><text class="ts" x="330" y="134" text-anchor="middle">G⁴</text>
+<circle class="n-spp" cx="90" cy="190" r="17"/><text class="ts" x="90" y="194" text-anchor="middle">G¹</text>
+<circle class="n-spp" cx="170" cy="190" r="17"/><text class="ts" x="170" y="194" text-anchor="middle">G²</text>
+<circle class="n-spp" cx="250" cy="190" r="17"/><text class="ts" x="250" y="194" text-anchor="middle">G³</text>
+<circle class="n-spp" cx="330" cy="190" r="17"/><text class="ts" x="330" y="194" text-anchor="middle">G⁴</text>
+<rect class="n-corr" x="72" y="236" width="36" height="28" rx="5"/><text class="ts" x="90" y="254" text-anchor="middle">B₁</text>
+<rect class="hole" x="152" y="236" width="36" height="28" rx="5" style="fill:var(--surface)"/><text class="ts tm" x="170" y="254" text-anchor="middle">Bⱼ</text>
+<rect class="n-corr" x="232" y="236" width="36" height="28" rx="5"/><text class="ts" x="250" y="254" text-anchor="middle">B₃</text>
+<rect class="n-corr" x="312" y="236" width="36" height="28" rx="5"/><text class="ts" x="330" y="254" text-anchor="middle">B₄</text>
+<path class="arr" d="M210,282 L210,318" marker-end="url(#ah7)"/>
+<rect class="n-corr" x="62" y="356" width="44" height="34" rx="5"/><text class="ts" x="84" y="377" text-anchor="middle">Bⱼᵀ</text>
+<line class="bond" x1="106" y1="362" x2="160" y2="362"/><line class="bond" x1="106" y1="373" x2="160" y2="373"/><line class="bond" x1="106" y1="384" x2="160" y2="384"/>
+<rect class="n-env" x="160" y="344" width="100" height="58" rx="6"/><text x="210" y="378" text-anchor="middle" font-weight="600">Mⱼ</text>
+<line class="bond" x1="260" y1="362" x2="314" y2="362"/><line class="bond" x1="260" y1="373" x2="314" y2="373"/><line class="bond" x1="260" y1="384" x2="314" y2="384"/>
+<rect class="n-corr" x="314" y="356" width="44" height="34" rx="5"/><text class="ts" x="336" y="377" text-anchor="middle">Bⱼ</text>
+<text class="zh tm ts" x="210" y="426" text-anchor="middle">三条线：左键 α、物理腿 b、右键 β</text>
+<text class="zh th" x="430" y="26">(b) Nⱼ：⟨F_q|F⟩ 去掉 Bⱼᵀ</text>
+<line class="leg" x1="470" y1="70" x2="470" y2="170"/><line class="leg" x1="550" y1="70" x2="550" y2="170"/><line class="leg" x1="630" y1="70" x2="630" y2="170"/><line class="leg" x1="710" y1="70" x2="710" y2="170"/>
+<line class="bond" x1="470" y1="70" x2="710" y2="70"/><line class="bond" x1="470" y1="170" x2="710" y2="170"/>
+<text class="ts tm" x="446" y="74" text-anchor="end">⟨F_q|</text>
+<rect class="n-corr" x="452" y="56" width="36" height="28" rx="5"/><text class="ts" x="470" y="74" text-anchor="middle">B₁</text>
+<rect class="hole" x="532" y="56" width="36" height="28" rx="5" style="fill:var(--surface)"/><text class="ts tm" x="550" y="74" text-anchor="middle">Bⱼᵀ</text>
+<rect class="n-corr" x="612" y="56" width="36" height="28" rx="5"/><text class="ts" x="630" y="74" text-anchor="middle">B₃</text>
+<rect class="n-corr" x="692" y="56" width="36" height="28" rx="5"/><text class="ts" x="710" y="74" text-anchor="middle">B₄</text>
+<circle class="n-spp" cx="470" cy="170" r="17"/><text class="ts" x="470" y="174" text-anchor="middle">G¹</text>
+<circle class="n-spp" cx="550" cy="170" r="17"/><text class="ts" x="550" y="174" text-anchor="middle">G²</text>
+<circle class="n-spp" cx="630" cy="170" r="17"/><text class="ts" x="630" y="174" text-anchor="middle">G³</text>
+<circle class="n-spp" cx="710" cy="170" r="17"/><text class="ts" x="710" y="174" text-anchor="middle">G⁴</text>
+<text class="ts tm" x="446" y="174" text-anchor="end">F</text>
+<path class="arr" d="M590,282 L590,318" marker-end="url(#ah7)"/>
+<rect class="n-corr" x="482" y="356" width="44" height="34" rx="5"/><text class="ts" x="504" y="377" text-anchor="middle">Bⱼᵀ</text>
+<line class="bond" x1="526" y1="362" x2="590" y2="362"/><line class="bond" x1="526" y1="373" x2="590" y2="373"/><line class="bond" x1="526" y1="384" x2="590" y2="384"/>
+<rect class="n-env" x="590" y="344" width="90" height="58" rx="6"/><text x="635" y="378" text-anchor="middle" font-weight="600">Nⱼ</text>
+<text class="zh tm ts" x="590" y="426" text-anchor="middle">一次项的环境（与 Bⱼ 同形状）</text>
+</svg></div>
+<p class="cap">图 8　SPP 取逆的局部问题，Walsh 变换省略，$G$、$B$ 均为Walsh 表象节点。绿色为待优化的 $F_q$ 的节点，玫红为 SPP 节点，虚线框为被挖去的 $B_j$。每一列的竖线表示四条物理腿取同一个 $b$：逐点相乘时 $G^j$ 相当于对角节点 $\hat G^j(b)\,\delta_{bb'}$，因此图中只有 SPP 与 $F_q$ 两种节点。(a) 中两行 $F$ 也可以先合成第 3 节的 $F^2$ 再缩并。环境由左右块缩并得到，扫描时缓存，用法与 DMRG/TDVP 中的左右环境相同。</p>
+<p>求解方式有两种：</p>
+<ul>
+<li><b>直接求解</b>（Guo–杨的做法）：每个位置解线性方程 $M_j\vec B_j=\vec N_j$，左右来回扫描至收敛。$M_j$ 对称半正定，可用共轭梯度求解；病态时加 Tikhonov 正则 $M_j\to M_j+\lambda\,E_j$，其中 $E_j$ 是 $\langle F_q|F_q\rangle$ 的环境。</li>
+<li><b>梯度优化</b>：局部梯度为 $\partial e/\partial\vec B_j=2\,(M_j\vec B_j-\vec N_j)$，可以对全部节点同时用 Adam 一类方法更新，便于加入其他约束或罚项。</li>
+</ul>
+<p>保迹条件对应 $\sum_{\vec d}q(\vec d)=F_q(I,\dots,I)=1$，即Walsh 表象中一个分量。精确逆自动满足（$F_p(I,\dots,I)=1$）；截断后可用拉格朗日乘子或罚项强制，罚项的环境就是 $F_q$ 在 $\vec b=(I,\dots,I)$ 处取值时去掉 $B_j$。</p>
+
+<h3>4.4　键维数的意义与实现问题</h3>
+<ul>
+<li><b>$\chi_q=1$</b>：$q$ 是逐层修正的乘积，对应逐层独立的 PEC。优化后剩余的代价 $e$ 量化了独立修正无法消除的时间关联偏差。逐步增大 $\chi_q$，直到 $e$ 低于目标精度。这与 Guo–杨把空间键截到 1 以减少补偿门的做法类似，只是这里的键在时间方向。</li>
+<li><b>开销</b>：$q$ 的节点由 $B_j$ 逐个做逆 Walsh 变换得到。$\Gamma=\sum|q|$ 无法从有符号 MPS 直接精确计算，小规模时可展开验证，大规模时用抽样估计。正则参数 $\lambda$ 在剩余偏差与 $\Gamma$ 之间折中。</li>
+<li><b>抽样</b>：从 $|q|/\Gamma$ 精确抽样一般不可直接实现。可行方案之一是把 $q$ 参数化为两个非负 MPS 之差 $q=q^+-q^-$，各自用 3.3 节的方法精确抽样，代价是开销变为 $\sum q^++\sum q^-\ge\Gamma$。</li>
+<li><b>实现</b>：修正历史 $\vec d$ 的第 $j$ 个分量并入第 $j$ 层的 twirling Pauli。前提是插入的 Pauli 不改变原有噪声的统计；这一点需要在含有限脉冲误差的模型中验证。</li>
+</ul>
+
+<!-- ================= 5 ================= -->
+<h2 id="s5">5　验证与下一步</h2>
+<h3>5.1　SPP 的检验</h3>
+<ol>
+<li><b>归一化</b>：各节点在 $a$ 上求和后连乘应为 1；HEOM 保迹，截断前自动成立。</li>
+<li><b>第 1 层边缘</b>：$\sum_{a_2,\dots}p$ 的 Walsh 变换等于普通 PTM 计算的 $[O_1^{-1}R_1]_{bb}$。</li>
+<li><b>独立极限</b>：强制 $\chi_j=1$ 应退化为边缘乘积模型；关闭噪声时 $p=\boldsymbol\delta$。</li>
+<li><b>解析基准</b>：单比特、静态高斯浴（$Q=Z/2$）、两个长 $\tau$ 的空闲层，令 $x=\sigma^2\tau^2$，则 $f_X=e^{-x/2}$，$F(X,X)=\tfrac12(1+e^{-2x})$，与独立模型之差约为 $x^2/2$。</li>
+<li><b>收敛</b>：分别扫描 $n_{\rm rtt}$（或 $N$）、HEOM-MPS 键维数、时间键截断 $\chi_j$；截断后检查联合概率的非负性。</li>
+</ol>
+<h3>5.2　缓解方案的检验</h3>
+<ol>
+<li><b>PEC 小规模基准</b>：$L$ 较小时直接对全部 $\vec b$ 计算 $1/F_p(\vec b)$ 作为精确逆，与扫描结果比较。单比特、$L=4$、键维数 2 的关联 SPP 上，按 4.3 节扫描所得 $q$ 的残差约为 $10^{-8}$，$\sum q=1$ 精确到 $10^{-9}$，与稠密逆一致。</li>
+<li><b>缓解后偏差</b>：把 $q$ 或放大族代回整条线路（4 比特、多个 Trotter 步），比较缓解后的期望值偏差与 $\Gamma^2$，分别与独立 Pauli 模型（$\chi=1$）的 PEA、PEC 对照。</li>
+<li><b>适用范围</b>：扫描 $\sigma$、OU 相关时间与 Trotter 步数，确定时间关联在多大参数下才超过目标精度，从而判断何时必须使用 SPP 而不是独立模型。</li>
+</ol>
+
+<h3>参考文献</h3>
+<ul>
+<li>时空 Pauli 过程（SPP）：<a href="https://arxiv.org/abs/2603.05474" target="_blank" rel="noopener">arXiv:2603.05474</a></li>
+<li>van den Berg, Minev, Kandala, Temme，稀疏 Pauli–Lindblad 模型的 PEC：<a href="https://arxiv.org/abs/2201.09866" target="_blank" rel="noopener">arXiv:2201.09866</a></li>
+<li>Kim et al.，基于 PEA 的零噪声外推：Nature 618, 500 (2023)</li>
+<li>Guo, Yang，Quantum error mitigation via matrix product operators：<a href="https://arxiv.org/abs/2201.00752" target="_blank" rel="noopener">arXiv:2201.00752</a></li>
+</ul>
+</main>
+
+</body></html>

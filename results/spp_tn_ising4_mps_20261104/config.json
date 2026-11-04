@@ -1,0 +1,42 @@
+{
+  "output": "results/spp_tn_ising4_mps_20261104",
+  "example": "ising4",
+  "engine": "mps",
+  "levels": 3,
+  "max_dt": 0.1,
+  "heom_bond": 8,
+  "time_bond": 8,
+  "sigma": 0.03,
+  "gamma": 0.2,
+  "shots": 20000,
+  "seed": 20261104,
+  "convergence": false,
+  "n_qubits": 4,
+  "modes": "one independent classical OU mode on qubit 0",
+  "convention": "gate-after",
+  "pauli_order": "I,X,Y,Z; qubit 0 most significant",
+  "time_units": "arbitrary, sigma and gamma use reciprocal units",
+  "slot_names": [
+    "rx-cx-even",
+    "rz-cx-even",
+    "cx-rz-middle",
+    "cx-middle"
+  ],
+  "slot_durations": [
+    [
+      1.0,
+      2.0
+    ],
+    [
+      1.0,
+      2.0
+    ],
+    [
+      2.0,
+      1.0
+    ],
+    [
+      2.0
+    ]
+  ]
+}

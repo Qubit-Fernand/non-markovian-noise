@@ -34,14 +34,11 @@ per log bin is a quadrature of 1/omega on the specified finite band.
     return omega, g, occupation
 
 
-def heom(pulses=None, depth=5, reset=False, initial=None, **bath_parameters):
-    """Keep every ADO across pulse boundaries unless reset=True (ablation)."""
+def bosonic_bath(coupling_operator, **bath_parameters):
+    """Shared finite-mode bath convention for the pulse and SPP solvers."""
     import qutip as qt
-    from qutip.solver.heom import BosonicBath, HEOMSolver
-    pulses = quantum_schedule() if pulses is None else pulses
+    from qutip.solver.heom import BosonicBath
     omega, g, nb = mode_parameters(**bath_parameters)
-    if depth < 1 or comb(2*len(omega)+depth, depth) > 50000:
-        raise ValueError("Invalid/too-large hierarchy; reduce modes or depth")
     cr, vr, ci, vi = [], [], [], []
     for w, coupling, nbar in zip(omega, g, nb):
         variance = coupling**2*(2*nbar+1)
@@ -52,7 +49,18 @@ def heom(pulses=None, depth=5, reset=False, initial=None, **bath_parameters):
         vr.extend([1j*w, -1j*w])
         ci.extend([-0.5j*coupling**2, 0.5j*coupling**2])
         vi.extend([1j*w, -1j*w])
-    bath = BosonicBath(qt.Qobj(Z/2), cr, vr, ci, vi, combine=True)
+    bath = BosonicBath(qt.Qobj(coupling_operator), cr, vr, ci, vi, combine=True)
+    return bath, omega, g, nb
+
+
+def heom(pulses=None, depth=5, reset=False, initial=None, **bath_parameters):
+    """Keep every ADO across pulse boundaries unless reset=True (ablation)."""
+    import qutip as qt
+    from qutip.solver.heom import HEOMSolver
+    pulses = quantum_schedule() if pulses is None else pulses
+    bath, omega, g, nb = bosonic_bath(Z/2, **bath_parameters)
+    if depth < 1 or comb(2*len(omega)+depth, depth) > 50000:
+        raise ValueError("Invalid/too-large hierarchy; reduce modes or depth")
     rho0 = qt.ket2dm(qt.basis(2,0)) if initial is None else qt.Qobj(initial)
     state = rho0
     states, ado_count = [rho0.full()], None

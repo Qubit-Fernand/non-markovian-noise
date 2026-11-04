@@ -1,0 +1,45 @@
+{
+  "probability_l2": 2.4683932588816512e-05,
+  "marginal_max_abs": 1.0237605322815924e-05,
+  "mps_probability": {
+    "total_real": 0.9999999999999982,
+    "total_imag": -3.9378338388964624e-19,
+    "normalization_error": 1.776356883047267e-15,
+    "entries": 4294967296,
+    "storage": 6144,
+    "bonds": [
+      3,
+      3,
+      3
+    ],
+    "positivity_checked": false,
+    "valid": null
+  },
+  "dense_probability": {
+    "total_real": 1.00000000000002,
+    "total_imag": -3.4817594784070845e-19,
+    "normalization_error": 1.9984014446285903e-14,
+    "entries": 4294967296,
+    "storage": 3072,
+    "bonds": [
+      2,
+      2,
+      2
+    ],
+    "positivity_checked": false,
+    "valid": null
+  },
+  "mps_elapsed_seconds": 213.08687362499768,
+  "dense_elapsed_seconds": 10.248655416013207,
+  "mps_bonds": [
+    3,
+    3,
+    3
+  ],
+  "dense_bonds": [
+    2,
+    2,
+    2
+  ],
+  "scope": "four qubits, four slots, one OU mode on qubit 0, three levels; not a hierarchy convergence or global positivity certificate"
+}
