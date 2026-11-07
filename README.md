@@ -1,5 +1,7 @@
 # 有限时长量子门与非马尔可夫噪声：可运行的数值原型
 
+The manuscript is in the adjacent independent Git repository [`../overleaf/`](../overleaf/).
+
 有限时长控制、有时间关联的噪声，以及基于 TensorCircuit 的 SPP 张量网络与误差缓解数值实现。所有结果均为合成模拟，模型假设和验证范围见各基准报告。
 
 ## 新增：TensorCircuit SPP 张量网络包（2026-11-04）
