@@ -1,6 +1,6 @@
 # 有限时长量子门与非马尔可夫噪声：可运行的数值原型
 
-The manuscript is in the adjacent independent Git repository [`../overleaf/`](../overleaf/).
+**项目目录：** 对应的文稿位于同级目录 [../Overleaf/](../Overleaf/)，两者是独立 Git 仓库。
 
 有限时长控制、有时间关联的噪声，以及基于 TensorCircuit 的 SPP 张量网络与误差缓解数值实现。所有结果均为合成模拟，模型假设和验证范围见各基准报告。
 
@@ -40,7 +40,9 @@ The manuscript is in the adjacent independent Git repository [`../overleaf/`](..
 
 - [完整讨论稿：时间相关效应的分辨与张量网络表示（2026-11-02）](docs/spp-memory-discussion-20261102.md)：可脱离聊天上下文阅读，包含两时段例子、原配对脉冲任务、SPP/压缩的作用、下一步建议及现有证据边界，供合作者讨论。
 
-- [周四讨论准备：SPP 参数规模与张量网络计算可行性（2026-11-05）](docs/spp-tensor-network-meeting-20261105.md)：2026-11-02 确定优先与张老师讨论的主题；先回应参数规模、低秩记忆表示与逐层构造，再明确需要哪些压缩和成本证据。属于汇报准备，尚无新增压缩模拟。
+- [SPP 太大了，张量网络能帮上忙吗？](docs/spp-too-big.md)：2026-11-04 单独整理的讨论稿，从参数空间问题讲到逐层构造，结合这次四比特表示、单比特收敛与缓解结果，说明目前验证到哪里以及下一步需要做什么。
+
+- [周四讨论准备：SPP 参数规模与张量网络计算可行性（2026-11-05）](docs/spp-tensor-network-meeting-20261105.md)：2026-11-04 已补充四比特单模时间 MPS、单比特相关/独立 PEC 对照和层级收敛数据，附可展示的 PNG/PDF 与重绘脚本；明确最终存储、计算成本及验证范围。
 
 - [HEOM–SPP 误差缓解研究方案（HTML 原文）](docs/heom-spp-proposal-20261029.html)：文内署名陈胤伽、日期 2026-10-29，2026-11-02 收录用户提供的原文件。内容包括四比特 Ising Trotter 分层、MPS-HEOM 到 SPP、PEA 与 PEC 变分求逆；保留原始图示和排版，方案中的实现与结果表述尚未由本项目独立核验。公式渲染与部分字体需联网加载。
 
@@ -149,11 +151,15 @@ print(np.diag(rho).real)
 
 理想结果为 `(|000>+|111>)/sqrt(2)`。这里 CNOT 用可直接验证的理想控制 Hamiltonian 实现，不是器件拟合的 CR 门：
 
-$$H_{CX}=\frac{\pi}{\tau} |1\rangle\langle1|\otimes\frac{I-X}{2}.$$
+$$
+H_{CX}=\frac{\pi}{\tau} |1\rangle\langle1|\otimes\frac{I-X}{2}.
+$$
 
 整个脉冲期间同时作用
 
-$$H(t)=H_{\mathrm{ctrl}}(t)+\frac12\sum_i\xi_i(t)Z_i.$$
+$$
+H(t)=H_{\mathrm{ctrl}}(t)+\frac12\sum_i\xi_i(t)Z_i.
+$$
 
 因此噪声不是等门结束以后才加上去。dense 每个时间格直接指数化总 Hamiltonian。MPS 采用 Strang 分裂 `noise(h/2) -> control(h) -> noise(h/2)`；这只是一个随 h 收敛的数值积分方法，不是物理上假设门和噪声分离或在门间重置环境。
 
@@ -161,14 +167,18 @@ $$H(t)=H_{\mathrm{ctrl}}(t)+\frac12\sum_i\xi_i(t)Z_i.$$
 
 每个比特的噪声独立，由 K=12 个平稳 Ornstein-Uhlenbeck 过程相加：
 
-$$C_\xi(t)=\frac{\sigma^2}{K}\sum_k e^{-\gamma_k|t|},\qquad
-S_\xi(\omega)=\frac{\sigma^2}{K}\sum_k\frac{2\gamma_k}{\gamma_k^2+\omega^2}.$$
+$$
+C_\xi(t)=\frac{\sigma^2}{K}\sum_k e^{-\gamma_k|t|},\qquad
+S_\xi(\omega)=\frac{\sigma^2}{K}\sum_k\frac{2\gamma_k}{\gamma_k^2+\omega^2}.
+$$
 
 定义 `C(t)=integral S(omega) exp(-i omega t) d omega/(2*pi)`。默认 `sigma=0.004 rad/ns`，`gamma_k` 在 `[1e-4,0.1] ns^-1` 上对数均匀。等权重对数分布的 Lorentzian 之和只在频带内部近似 `1/|omega|`；低频趋于常数，高频按 `1/omega^2` 衰减，方差有限。它不是无截止的严格 `1/f`，也不是原论文量子谱的原样实现。
 
 每次执行都保存同一条噪声轨迹直到电路结束；系统门不会重采样环境。输出的混态是
 
-$$\rho(T)\approx\frac1M\sum_r|\psi_r(T)\rangle\langle\psi_r(T)|,$$
+$$
+\rho(T)\approx\frac1M\sum_r|\psi_r(T)\rangle\langle\psi_r(T)|,
+$$
 
 不是先平均态矢量再取外积。轨迹平均不等于真实实验里每个 shot 都独立重新采样慢噪声；研究跨 shot 漂移还需要单独的采集时间模型。
 
@@ -186,13 +196,17 @@ $$\rho(T)\approx\frac1M\sum_r|\psi_r(T)\rangle\langle\psi_r(T)|,$$
 
 为了真正包含量子环境及反作用，而不仅是经典随机 Hamiltonian，另一个例子演化
 
-$$H_{\mathrm{tot}}(t)=H_{\mathrm{ctrl}}(t)+\sum_k\omega_k a_k^\dagger a_k
-+\frac Z2\sum_k g_k(a_k+a_k^\dagger).$$
+$$
+H_{\mathrm{tot}}(t)=H_{\mathrm{ctrl}}(t)+\sum_k\omega_k a_k^\dagger a_k
++\frac Z2\sum_k g_k(a_k+a_k^\dagger).
+$$
 
 系统初态 `|0>`，浴初态为独立 Gibbs 态，初始系统与浴因子化。采用 `Ry(pi/2)`、等待、`Rx(pi/2)`、等待，各 10 ns。浴相关函数为
 
-$$C_B(t)=\sum_k g_k^2[(n_k+1)e^{-i\omega_k t}+n_k e^{i\omega_k t}],\qquad
-n_k=(e^{\beta\omega_k}-1)^{-1}.$$
+$$
+C_B(t)=\sum_k g_k^2[(n_k+1)e^{-i\omega_k t}+n_k e^{i\omega_k t}],\qquad
+n_k=(e^{\beta\omega_k}-1)^{-1}.
+$$
 
 这个相关函数包含虚部与正负频率不对称。经典实 Gaussian 噪声不能一般地重现它。
 
