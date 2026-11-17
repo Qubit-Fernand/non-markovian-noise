@@ -97,14 +97,17 @@ conda run -n TensorCircuitNG python -m spp_tn.demo --example ising4 --levels 3 \
 - [x] 经典 Hermite 层级 MPS、开放 ADO 响应、逐层时间 MPS。
 - [x] PEA、约束 ALS-PEC、稠密校验和小规模采样。
 - [x] 固定四比特 Ising 层边界与理想线路核验。
-- [ ] TDVP／更适合刚性层级方程的传播器；当前是截断 RK4。
+- [ ] **当前优先：MPO + TDVP**。实现 HEOM 生成元 MPO 及适用于非幺正层级演化的 TDVP，完成与稀疏指数、RK4 的正确性／收敛对照及 HEOM → SPP 端到端验证；当前仍为截断 RK4。
+- [ ] **上述验证后再做 CPU 优化与 GPU 并行**：先性能分析，再评估收缩／局部求解优化和探针批处理；在同等精度下比较时间与峰值内存。详细顺序见 [主 README 待办](../README.md#待办todo)。
 - [ ] 缓存 PEC 左右环境；改善强噪声和近奇异逆的优化稳定性。
 - [ ] 可验证非负的参数化、无需全枚举的 signed-PEC 采样／Gamma 估计。
 - [ ] 四比特多模式多 Trotter 步的成本、独立误差和压缩扫描。
 - [ ] 有限 shots 的通用 SPP 学习、可辨识性及留出控制验证。
-- [ ] 有噪声 twirling／correction 的物理验证、GPU／自动微分；当前没有真机结果。
+- [ ] 有噪声 twirling／correction 的物理验证及自动微分；当前没有真机结果。
 
 ## 维护记录
+
+- 2026-11-15：下一阶段明确为先实现 MPO + TDVP 并验证 HEOM → SPP，再考虑 CPU 优化和 GPU 并行；本次只更新任务，未修改计算实现。
 
 - 2026-11-04：项目环境由 `.venv-spp` 迁移到独立 conda `TensorCircuitNG`，固定原基准的核心版本；36 项项目测试及一比特基准重跑通过，旧 venv 已移入回收站。版本与维护入口为 `../environments/README.md`。
 - 2026-11-04：新增独立包。以 `note.tex` 修正后的 gate-after 约定为准，HTML 的 TDVP 改为明确标识的 RK4 原型；优先验证计算闭环和误差来源。
