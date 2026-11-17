@@ -1,0 +1,158 @@
+{
+  "schema": "heom-circuit-layers-v1",
+  "qubit_order": "q0-most-significant",
+  "n_qubits": 4,
+  "layers": [
+    {
+      "name": "rx-cx-even",
+      "blocks": [
+        {
+          "gates": [
+            {
+              "name": "rx",
+              "qubits": [
+                0
+              ],
+              "angle": 0.5
+            },
+            {
+              "name": "rx",
+              "qubits": [
+                1
+              ],
+              "angle": 0.5
+            },
+            {
+              "name": "rx",
+              "qubits": [
+                2
+              ],
+              "angle": 0.5
+            },
+            {
+              "name": "rx",
+              "qubits": [
+                3
+              ],
+              "angle": 0.5
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "cx",
+              "qubits": [
+                0,
+                1
+              ],
+              "angle": null
+            },
+            {
+              "name": "cx",
+              "qubits": [
+                2,
+                3
+              ],
+              "angle": null
+            }
+          ]
+        }
+      ],
+      "step": 0
+    },
+    {
+      "name": "rz-cx-even",
+      "blocks": [
+        {
+          "gates": [
+            {
+              "name": "rz",
+              "qubits": [
+                1
+              ],
+              "angle": -0.075
+            },
+            {
+              "name": "rz",
+              "qubits": [
+                3
+              ],
+              "angle": -0.075
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "cx",
+              "qubits": [
+                0,
+                1
+              ],
+              "angle": null
+            },
+            {
+              "name": "cx",
+              "qubits": [
+                2,
+                3
+              ],
+              "angle": null
+            }
+          ]
+        }
+      ],
+      "step": 0
+    },
+    {
+      "name": "cx-rz-middle",
+      "blocks": [
+        {
+          "gates": [
+            {
+              "name": "cx",
+              "qubits": [
+                1,
+                2
+              ],
+              "angle": null
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "rz",
+              "qubits": [
+                2
+              ],
+              "angle": -0.075
+            }
+          ]
+        }
+      ],
+      "step": 0
+    },
+    {
+      "name": "cx-middle",
+      "blocks": [
+        {
+          "gates": [
+            {
+              "name": "cx",
+              "qubits": [
+                1,
+                2
+              ],
+              "angle": null
+            }
+          ]
+        }
+      ],
+      "step": 0
+    }
+  ],
+  "source": "html-ising",
+  "convention": "gate-after"
+}

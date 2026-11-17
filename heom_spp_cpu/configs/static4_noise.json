@@ -1,0 +1,13 @@
+{
+  "schema": "heom-noise-v1",
+  "n_qubits": 4,
+  "kind": "static",
+  "levels": 6,
+  "topology": "independent",
+  "coupled_qubits": null,
+  "modes_per_qubit": 1,
+  "hierarchy_basis": "scaled",
+  "gwval": 1e-06,
+  "wval": 0.0,
+  "coupling": "Z/2"
+}

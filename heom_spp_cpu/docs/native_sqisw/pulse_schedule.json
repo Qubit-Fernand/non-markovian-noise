@@ -1,0 +1,770 @@
+{
+  "schema": "heom-pulse-schedule-v3",
+  "convention": "gate-after",
+  "n_qubits": 4,
+  "durations": {
+    "rotation_ns": 15.0,
+    "cx_ns": 80.0,
+    "cz_ns": 80.0,
+    "rzz_ns": 80.0,
+    "sqisw_ns": 20.0,
+    "idle_ns": 20.0,
+    "buffer_ns": 5.0,
+    "virtual_z": true
+  },
+  "layers": [
+    {
+      "layer": 0,
+      "step": 0,
+      "name": "s0-even-1",
+      "segments": [
+        {
+          "block": 0,
+          "start_ns": 0.0,
+          "end_ns": 5.0,
+          "active_gates": [],
+          "buffer": true
+        },
+        {
+          "block": 0,
+          "start_ns": 5.0,
+          "end_ns": 20.0,
+          "active_gates": [
+            "r",
+            "r",
+            "r",
+            "r"
+          ],
+          "gains": {}
+        },
+        {
+          "block": 1,
+          "start_ns": 20.0,
+          "end_ns": 20.0,
+          "virtual_gates": [
+            "rz",
+            "rz",
+            "rz",
+            "rz"
+          ]
+        },
+        {
+          "block": 2,
+          "start_ns": 20.0,
+          "end_ns": 25.0,
+          "active_gates": [],
+          "buffer": true
+        },
+        {
+          "block": 2,
+          "start_ns": 25.0,
+          "end_ns": 45.0,
+          "active_gates": [
+            "sqisw",
+            "sqisw"
+          ],
+          "gains": {}
+        }
+      ],
+      "start_ns": 0.0,
+      "end_ns": 45.0
+    },
+    {
+      "layer": 1,
+      "step": 0,
+      "name": "s0-even-2",
+      "segments": [
+        {
+          "block": 0,
+          "start_ns": 45.0,
+          "end_ns": 50.0,
+          "active_gates": [],
+          "buffer": true
+        },
+        {
+          "block": 0,
+          "start_ns": 50.0,
+          "end_ns": 65.0,
+          "active_gates": [
+            "r",
+            "r",
+            "r",
+            "r"
+          ],
+          "gains": {}
+        },
+        {
+          "block": 1,
+          "start_ns": 65.0,
+          "end_ns": 65.0,
+          "virtual_gates": [
+            "rz",
+            "rz"
+          ]
+        },
+        {
+          "block": 2,
+          "start_ns": 65.0,
+          "end_ns": 70.0,
+          "active_gates": [],
+          "buffer": true
+        },
+        {
+          "block": 2,
+          "start_ns": 70.0,
+          "end_ns": 90.0,
+          "active_gates": [
+            "sqisw",
+            "sqisw"
+          ],
+          "gains": {}
+        }
+      ],
+      "start_ns": 45.0,
+      "end_ns": 90.0
+    },
+    {
+      "layer": 2,
+      "step": 0,
+      "name": "s0-odd-1",
+      "segments": [
+        {
+          "block": 0,
+          "start_ns": 90.0,
+          "end_ns": 95.0,
+          "active_gates": [],
+          "buffer": true
+        },
+        {
+          "block": 0,
+          "start_ns": 95.0,
+          "end_ns": 110.0,
+          "active_gates": [
+            "r",
+            "r",
+            "r",
+            "r"
+          ],
+          "gains": {}
+        },
+        {
+          "block": 1,
+          "start_ns": 110.0,
+          "end_ns": 110.0,
+          "virtual_gates": [
+            "rz",
+            "rz",
+            "rz",
+            "rz"
+          ]
+        },
+        {
+          "block": 2,
+          "start_ns": 110.0,
+          "end_ns": 115.0,
+          "active_gates": [],
+          "buffer": true
+        },
+        {
+          "block": 2,
+          "start_ns": 115.0,
+          "end_ns": 135.0,
+          "active_gates": [
+            "sqisw"
+          ],
+          "gains": {}
+        }
+      ],
+      "start_ns": 90.0,
+      "end_ns": 135.0
+    },
+    {
+      "layer": 3,
+      "step": 0,
+      "name": "s0-odd-2",
+      "segments": [
+        {
+          "block": 0,
+          "start_ns": 135.0,
+          "end_ns": 140.0,
+          "active_gates": [],
+          "buffer": true
+        },
+        {
+          "block": 0,
+          "start_ns": 140.0,
+          "end_ns": 155.0,
+          "active_gates": [
+            "r",
+            "r"
+          ],
+          "gains": {}
+        },
+        {
+          "block": 1,
+          "start_ns": 155.0,
+          "end_ns": 155.0,
+          "virtual_gates": [
+            "rz"
+          ]
+        },
+        {
+          "block": 2,
+          "start_ns": 155.0,
+          "end_ns": 160.0,
+          "active_gates": [],
+          "buffer": true
+        },
+        {
+          "block": 2,
+          "start_ns": 160.0,
+          "end_ns": 180.0,
+          "active_gates": [
+            "sqisw"
+          ],
+          "gains": {}
+        },
+        {
+          "block": 3,
+          "start_ns": 180.0,
+          "end_ns": 185.0,
+          "active_gates": [],
+          "buffer": true
+        },
+        {
+          "block": 3,
+          "start_ns": 185.0,
+          "end_ns": 200.0,
+          "active_gates": [
+            "r",
+            "r"
+          ],
+          "gains": {}
+        },
+        {
+          "block": 4,
+          "start_ns": 200.0,
+          "end_ns": 200.0,
+          "virtual_gates": [
+            "rz",
+            "rz"
+          ]
+        }
+      ],
+      "start_ns": 135.0,
+      "end_ns": 200.0
+    }
+  ],
+  "total_duration_ns": 200.0,
+  "pulses": [
+    {
+      "layer": 0,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        0
+      ],
+      "start_ns": 5.0,
+      "end_ns": 20.0,
+      "angle": 0.4664152808413611,
+      "phase": -0.03605544852860065,
+      "omega_x": 0.031074142988709638,
+      "omega_y": -0.0011208779172336251
+    },
+    {
+      "layer": 0,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        1
+      ],
+      "start_ns": 5.0,
+      "end_ns": 20.0,
+      "angle": 2.003316815047883,
+      "phase": 0.5640614015174732,
+      "omega_x": 0.11286563649120203,
+      "omega_y": 0.0714012631020133
+    },
+    {
+      "layer": 0,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        2
+      ],
+      "start_ns": 5.0,
+      "end_ns": 20.0,
+      "angle": 0.4664152808413611,
+      "phase": -0.03605544852860065,
+      "omega_x": 0.031074142988709638,
+      "omega_y": -0.0011208779172336251
+    },
+    {
+      "layer": 0,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        3
+      ],
+      "start_ns": 5.0,
+      "end_ns": 20.0,
+      "angle": 2.003316815047883,
+      "phase": 0.5640614015174732,
+      "omega_x": 0.11286563649120203,
+      "omega_y": 0.0714012631020133
+    },
+    {
+      "layer": 0,
+      "block": 2,
+      "gate": "sqisw",
+      "qubits": [
+        0,
+        1
+      ],
+      "start_ns": 25.0,
+      "end_ns": 45.0,
+      "angle": null,
+      "phase": null,
+      "g": 0.039269908169872414
+    },
+    {
+      "layer": 0,
+      "block": 2,
+      "gate": "sqisw",
+      "qubits": [
+        2,
+        3
+      ],
+      "start_ns": 25.0,
+      "end_ns": 45.0,
+      "angle": null,
+      "phase": null,
+      "g": 0.039269908169872414
+    },
+    {
+      "layer": 1,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        0
+      ],
+      "start_ns": 50.0,
+      "end_ns": 65.0,
+      "angle": 3.035501747432232,
+      "phase": 0.0,
+      "omega_x": 0.20236678316214882,
+      "omega_y": 0.0
+    },
+    {
+      "layer": 1,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        1
+      ],
+      "start_ns": 50.0,
+      "end_ns": 65.0,
+      "angle": 3.141592653589793,
+      "phase": 0.0,
+      "omega_x": 0.20943951023931953,
+      "omega_y": 0.0
+    },
+    {
+      "layer": 1,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        2
+      ],
+      "start_ns": 50.0,
+      "end_ns": 65.0,
+      "angle": 3.035501747432232,
+      "phase": 0.0,
+      "omega_x": 0.20236678316214882,
+      "omega_y": 0.0
+    },
+    {
+      "layer": 1,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        3
+      ],
+      "start_ns": 50.0,
+      "end_ns": 65.0,
+      "angle": 3.141592653589793,
+      "phase": 0.0,
+      "omega_x": 0.20943951023931953,
+      "omega_y": 0.0
+    },
+    {
+      "layer": 1,
+      "block": 2,
+      "gate": "sqisw",
+      "qubits": [
+        0,
+        1
+      ],
+      "start_ns": 70.0,
+      "end_ns": 90.0,
+      "angle": null,
+      "phase": null,
+      "g": 0.039269908169872414
+    },
+    {
+      "layer": 1,
+      "block": 2,
+      "gate": "sqisw",
+      "qubits": [
+        2,
+        3
+      ],
+      "start_ns": 70.0,
+      "end_ns": 90.0,
+      "angle": null,
+      "phase": null,
+      "g": 0.039269908169872414
+    },
+    {
+      "layer": 2,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        0
+      ],
+      "start_ns": 95.0,
+      "end_ns": 110.0,
+      "angle": 3.104066258557031,
+      "phase": -3.141592653589793,
+      "omega_x": -0.20693775057046873,
+      "omega_y": -2.534256538588779e-17
+    },
+    {
+      "layer": 2,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        1
+      ],
+      "start_ns": 95.0,
+      "end_ns": 110.0,
+      "angle": 1.5333375463080625,
+      "phase": 0.002252212536337339,
+      "omega_x": 0.10222224382746785,
+      "omega_y": 0.00023022660831274123
+    },
+    {
+      "layer": 2,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        2
+      ],
+      "start_ns": 95.0,
+      "end_ns": 110.0,
+      "angle": 1.608255107281732,
+      "phase": -0.060066908976782685,
+      "omega_x": 0.10702364402131041,
+      "omega_y": -0.006436322168490887
+    },
+    {
+      "layer": 2,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        3
+      ],
+      "start_ns": 95.0,
+      "end_ns": 110.0,
+      "angle": 1.5707963267948968,
+      "phase": 8.881784197001252e-16,
+      "omega_x": 0.10471975511965978,
+      "omega_y": 9.300982661356352e-17
+    },
+    {
+      "layer": 2,
+      "block": 2,
+      "gate": "sqisw",
+      "qubits": [
+        1,
+        2
+      ],
+      "start_ns": 115.0,
+      "end_ns": 135.0,
+      "angle": null,
+      "phase": null,
+      "g": 0.039269908169872414
+    },
+    {
+      "layer": 3,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        1
+      ],
+      "start_ns": 140.0,
+      "end_ns": 155.0,
+      "angle": 3.035501747432232,
+      "phase": 0.0,
+      "omega_x": 0.20236678316214882,
+      "omega_y": 0.0
+    },
+    {
+      "layer": 3,
+      "block": 0,
+      "gate": "r",
+      "qubits": [
+        2
+      ],
+      "start_ns": 140.0,
+      "end_ns": 155.0,
+      "angle": 3.141592653589793,
+      "phase": 0.0,
+      "omega_x": 0.20943951023931953,
+      "omega_y": 0.0
+    },
+    {
+      "layer": 3,
+      "block": 2,
+      "gate": "sqisw",
+      "qubits": [
+        1,
+        2
+      ],
+      "start_ns": 160.0,
+      "end_ns": 180.0,
+      "angle": null,
+      "phase": null,
+      "g": 0.039269908169872414
+    },
+    {
+      "layer": 3,
+      "block": 3,
+      "gate": "r",
+      "qubits": [
+        1
+      ],
+      "start_ns": 185.0,
+      "end_ns": 200.0,
+      "angle": 3.104066258557031,
+      "phase": -3.141592653589793,
+      "omega_x": -0.20693775057046873,
+      "omega_y": -2.534256538588779e-17
+    },
+    {
+      "layer": 3,
+      "block": 3,
+      "gate": "r",
+      "qubits": [
+        2
+      ],
+      "start_ns": 185.0,
+      "end_ns": 200.0,
+      "angle": 1.5707963267948968,
+      "phase": 8.881784197001252e-16,
+      "omega_x": 0.10471975511965978,
+      "omega_y": 9.300982661356352e-17
+    }
+  ],
+  "ideal_z": [
+    {
+      "layer": 0,
+      "time_ns": 20.0,
+      "qubit": 0,
+      "angle": 2.6989302987904296
+    },
+    {
+      "layer": 0,
+      "time_ns": 20.0,
+      "qubit": 1,
+      "angle": 2.3183266064604524
+    },
+    {
+      "layer": 0,
+      "time_ns": 20.0,
+      "qubit": 2,
+      "angle": 2.6989302987904296
+    },
+    {
+      "layer": 0,
+      "time_ns": 20.0,
+      "qubit": 3,
+      "angle": 2.3183266064604524
+    },
+    {
+      "layer": 1,
+      "time_ns": 65.0,
+      "qubit": 1,
+      "angle": -3.141592653589793
+    },
+    {
+      "layer": 1,
+      "time_ns": 65.0,
+      "qubit": 3,
+      "angle": -3.141592653589793
+    },
+    {
+      "layer": 2,
+      "time_ns": 110.0,
+      "qubit": 0,
+      "angle": -2.6948075275195933
+    },
+    {
+      "layer": 2,
+      "time_ns": 110.0,
+      "qubit": 1,
+      "angle": -3.0837779571493478
+    },
+    {
+      "layer": 2,
+      "time_ns": 110.0,
+      "qubit": 2,
+      "angle": 0.06231912151311825
+    },
+    {
+      "layer": 2,
+      "time_ns": 110.0,
+      "qubit": 3,
+      "angle": 0.5068098475285514
+    },
+    {
+      "layer": 3,
+      "time_ns": 155.0,
+      "qubit": 2,
+      "angle": -3.141592653589793
+    },
+    {
+      "layer": 3,
+      "time_ns": 200.0,
+      "qubit": 1,
+      "angle": -2.6948075275195933
+    },
+    {
+      "layer": 3,
+      "time_ns": 200.0,
+      "qubit": 2,
+      "angle": 0.5068098475285514
+    }
+  ],
+  "frame_changes": [
+    {
+      "layer": 0,
+      "time_ns": 25.0,
+      "qubit": 1,
+      "partner": 0,
+      "change": "enter",
+      "frame_angle": -62.83185307179586,
+      "compensation_angle": 62.83185307179586
+    },
+    {
+      "layer": 0,
+      "time_ns": 25.0,
+      "qubit": 3,
+      "partner": 2,
+      "change": "enter",
+      "frame_angle": -62.83185307179586,
+      "compensation_angle": 62.83185307179586
+    },
+    {
+      "layer": 0,
+      "time_ns": 45.0,
+      "qubit": 1,
+      "partner": 0,
+      "change": "leave",
+      "frame_angle": 113.09733552923255,
+      "compensation_angle": -113.09733552923255
+    },
+    {
+      "layer": 0,
+      "time_ns": 45.0,
+      "qubit": 3,
+      "partner": 2,
+      "change": "leave",
+      "frame_angle": 113.09733552923255,
+      "compensation_angle": -113.09733552923255
+    },
+    {
+      "layer": 1,
+      "time_ns": 70.0,
+      "qubit": 1,
+      "partner": 0,
+      "change": "enter",
+      "frame_angle": -175.92918860102841,
+      "compensation_angle": 175.92918860102841
+    },
+    {
+      "layer": 1,
+      "time_ns": 70.0,
+      "qubit": 3,
+      "partner": 2,
+      "change": "enter",
+      "frame_angle": -175.92918860102841,
+      "compensation_angle": 175.92918860102841
+    },
+    {
+      "layer": 1,
+      "time_ns": 90.0,
+      "qubit": 1,
+      "partner": 0,
+      "change": "leave",
+      "frame_angle": 226.1946710584651,
+      "compensation_angle": -226.1946710584651
+    },
+    {
+      "layer": 1,
+      "time_ns": 90.0,
+      "qubit": 3,
+      "partner": 2,
+      "change": "leave",
+      "frame_angle": 226.1946710584651,
+      "compensation_angle": -226.1946710584651
+    },
+    {
+      "layer": 2,
+      "time_ns": 115.0,
+      "qubit": 1,
+      "partner": 2,
+      "change": "enter",
+      "frame_angle": -289.02652413026095,
+      "compensation_angle": 289.02652413026095
+    },
+    {
+      "layer": 2,
+      "time_ns": 135.0,
+      "qubit": 1,
+      "partner": 2,
+      "change": "leave",
+      "frame_angle": 339.29200658769764,
+      "compensation_angle": -339.29200658769764
+    },
+    {
+      "layer": 3,
+      "time_ns": 160.0,
+      "qubit": 1,
+      "partner": 2,
+      "change": "enter",
+      "frame_angle": -402.1238596594935,
+      "compensation_angle": 402.1238596594935
+    },
+    {
+      "layer": 3,
+      "time_ns": 180.0,
+      "qubit": 1,
+      "partner": 2,
+      "change": "leave",
+      "frame_angle": 452.3893421169302,
+      "compensation_angle": -452.3893421169302
+    }
+  ],
+  "frames": {
+    "tunable": [
+      1,
+      3
+    ],
+    "detuning": 2.5132741228718345,
+    "compensate": true
+  },
+  "units": "time ns; omega_x, omega_y, g in rad/ns",
+  "ideal_unitary": "logical layer (independent of the pulse model)",
+  "pulse_models": "square pulses; not device calibrated"
+}

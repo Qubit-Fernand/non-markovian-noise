@@ -1,0 +1,375 @@
+{
+  "schema": "heom-circuit-layers-v1",
+  "qubit_order": "q0-most-significant",
+  "n_qubits": 4,
+  "layers": [
+    {
+      "name": "s0-even-1",
+      "blocks": [
+        {
+          "gates": [
+            {
+              "name": "r",
+              "qubits": [
+                0
+              ],
+              "angle": 0.4664152808413611,
+              "phase": -0.03605544852860065
+            },
+            {
+              "name": "r",
+              "qubits": [
+                1
+              ],
+              "angle": 2.003316815047883,
+              "phase": 0.5640614015174732
+            },
+            {
+              "name": "r",
+              "qubits": [
+                2
+              ],
+              "angle": 0.4664152808413611,
+              "phase": -0.03605544852860065
+            },
+            {
+              "name": "r",
+              "qubits": [
+                3
+              ],
+              "angle": 2.003316815047883,
+              "phase": 0.5640614015174732
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "rz",
+              "qubits": [
+                0
+              ],
+              "angle": 2.6989302987904296,
+              "phase": null
+            },
+            {
+              "name": "rz",
+              "qubits": [
+                1
+              ],
+              "angle": 2.3183266064604524,
+              "phase": null
+            },
+            {
+              "name": "rz",
+              "qubits": [
+                2
+              ],
+              "angle": 2.6989302987904296,
+              "phase": null
+            },
+            {
+              "name": "rz",
+              "qubits": [
+                3
+              ],
+              "angle": 2.3183266064604524,
+              "phase": null
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "sqisw",
+              "qubits": [
+                0,
+                1
+              ],
+              "angle": null,
+              "phase": null
+            },
+            {
+              "name": "sqisw",
+              "qubits": [
+                2,
+                3
+              ],
+              "angle": null,
+              "phase": null
+            }
+          ]
+        }
+      ],
+      "step": 0
+    },
+    {
+      "name": "s0-even-2",
+      "blocks": [
+        {
+          "gates": [
+            {
+              "name": "r",
+              "qubits": [
+                0
+              ],
+              "angle": 3.035501747432232,
+              "phase": 0.0
+            },
+            {
+              "name": "r",
+              "qubits": [
+                1
+              ],
+              "angle": 3.141592653589793,
+              "phase": 0.0
+            },
+            {
+              "name": "r",
+              "qubits": [
+                2
+              ],
+              "angle": 3.035501747432232,
+              "phase": 0.0
+            },
+            {
+              "name": "r",
+              "qubits": [
+                3
+              ],
+              "angle": 3.141592653589793,
+              "phase": 0.0
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "rz",
+              "qubits": [
+                1
+              ],
+              "angle": -3.141592653589793,
+              "phase": null
+            },
+            {
+              "name": "rz",
+              "qubits": [
+                3
+              ],
+              "angle": -3.141592653589793,
+              "phase": null
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "sqisw",
+              "qubits": [
+                0,
+                1
+              ],
+              "angle": null,
+              "phase": null
+            },
+            {
+              "name": "sqisw",
+              "qubits": [
+                2,
+                3
+              ],
+              "angle": null,
+              "phase": null
+            }
+          ]
+        }
+      ],
+      "step": 0
+    },
+    {
+      "name": "s0-odd-1",
+      "blocks": [
+        {
+          "gates": [
+            {
+              "name": "r",
+              "qubits": [
+                0
+              ],
+              "angle": 3.104066258557031,
+              "phase": -3.141592653589793
+            },
+            {
+              "name": "r",
+              "qubits": [
+                1
+              ],
+              "angle": 1.5333375463080625,
+              "phase": 0.002252212536337339
+            },
+            {
+              "name": "r",
+              "qubits": [
+                2
+              ],
+              "angle": 1.608255107281732,
+              "phase": -0.060066908976782685
+            },
+            {
+              "name": "r",
+              "qubits": [
+                3
+              ],
+              "angle": 1.5707963267948968,
+              "phase": 8.881784197001252e-16
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "rz",
+              "qubits": [
+                0
+              ],
+              "angle": -2.6948075275195933,
+              "phase": null
+            },
+            {
+              "name": "rz",
+              "qubits": [
+                1
+              ],
+              "angle": -3.0837779571493478,
+              "phase": null
+            },
+            {
+              "name": "rz",
+              "qubits": [
+                2
+              ],
+              "angle": 0.06231912151311825,
+              "phase": null
+            },
+            {
+              "name": "rz",
+              "qubits": [
+                3
+              ],
+              "angle": 0.5068098475285514,
+              "phase": null
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "sqisw",
+              "qubits": [
+                1,
+                2
+              ],
+              "angle": null,
+              "phase": null
+            }
+          ]
+        }
+      ],
+      "step": 0
+    },
+    {
+      "name": "s0-odd-2",
+      "blocks": [
+        {
+          "gates": [
+            {
+              "name": "r",
+              "qubits": [
+                1
+              ],
+              "angle": 3.035501747432232,
+              "phase": 0.0
+            },
+            {
+              "name": "r",
+              "qubits": [
+                2
+              ],
+              "angle": 3.141592653589793,
+              "phase": 0.0
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "rz",
+              "qubits": [
+                2
+              ],
+              "angle": -3.141592653589793,
+              "phase": null
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "sqisw",
+              "qubits": [
+                1,
+                2
+              ],
+              "angle": null,
+              "phase": null
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "r",
+              "qubits": [
+                1
+              ],
+              "angle": 3.104066258557031,
+              "phase": -3.141592653589793
+            },
+            {
+              "name": "r",
+              "qubits": [
+                2
+              ],
+              "angle": 1.5707963267948968,
+              "phase": 8.881784197001252e-16
+            }
+          ]
+        },
+        {
+          "gates": [
+            {
+              "name": "rz",
+              "qubits": [
+                1
+              ],
+              "angle": -2.6948075275195933,
+              "phase": null
+            },
+            {
+              "name": "rz",
+              "qubits": [
+                2
+              ],
+              "angle": 0.5068098475285514,
+              "phase": null
+            }
+          ]
+        }
+      ],
+      "step": 0
+    }
+  ],
+  "source": "ising-sqisw",
+  "convention": "gate-after"
+}

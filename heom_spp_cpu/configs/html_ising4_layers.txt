@@ -1,0 +1,4 @@
+L1 step=0: rx-cx-even: rx(0.5)[q0] || rx(0.5)[q1] || rx(0.5)[q2] || rx(0.5)[q3] -> cx[q0,q1] || cx[q2,q3]
+L2 step=0: rz-cx-even: rz(-0.075)[q1] || rz(-0.075)[q3] -> cx[q0,q1] || cx[q2,q3]
+L3 step=0: cx-rz-middle: cx[q1,q2] -> rz(-0.075)[q2]
+L4 step=0: cx-middle: cx[q1,q2]

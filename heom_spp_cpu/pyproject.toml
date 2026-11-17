@@ -1,0 +1,25 @@
+[project]
+name = "heom-spp"
+version = "0.2.0"
+description = "HEOM to spatiotemporal Pauli process (SPP) tensor networks for mitigating time-correlated noise"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26", "scipy>=1.11", "threadpoolctl>=3"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+circuits = ["qiskit>=1,<3"]
+
+[project.scripts]
+heom-spp = "heom_spp.cli:main"
+heom-spp-demo = "heom_spp.demo:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["heom_spp*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

@@ -1,0 +1,37 @@
+Ising Trotter step, 4 qubits, 1 step(s): theta_x=0.5, theta_z=-0.075
+native gates: r (XY square pulse, 15 ns), sqisw (20 ns), rz (ideal, 0 ns); 5 ns idle before every pulse block
+|1 - |Tr(U_target^dag U_circuit)|/d| = 0.00e+00
+total duration 200 ns
+
+Layer 1 [s0-even-1]  0-45 ns  4 r, 4 rz, 2 sqisw
+    r(θ=0.4664, φ=-0.0361)[Q1]  r(θ=2.0033, φ=+0.5641)[Q2]  r(θ=0.4664, φ=-0.0361)[Q3]  r(θ=2.0033, φ=+0.5641)[Q4]
+    rz(+2.6989)[Q1]  rz(+2.3183)[Q2]  rz(+2.6989)[Q3]  rz(+2.3183)[Q4]
+    sqisw[Q1,Q2]  sqisw[Q3,Q4]
+Layer 2 [s0-even-2]  45-90 ns  4 r, 2 rz, 2 sqisw
+    r(θ=3.0355, φ=+0.0000)[Q1]  r(θ=3.1416, φ=+0.0000)[Q2]  r(θ=3.0355, φ=+0.0000)[Q3]  r(θ=3.1416, φ=+0.0000)[Q4]
+    rz(-3.1416)[Q2]  rz(-3.1416)[Q4]
+    sqisw[Q1,Q2]  sqisw[Q3,Q4]
+Layer 3 [s0-odd-1]  90-135 ns  4 r, 4 rz, 1 sqisw
+    r(θ=3.1041, φ=-3.1416)[Q1]  r(θ=1.5333, φ=+0.0023)[Q2]  r(θ=1.6083, φ=-0.0601)[Q3]  r(θ=1.5708, φ=+0.0000)[Q4]
+    rz(-2.6948)[Q1]  rz(-3.0838)[Q2]  rz(+0.0623)[Q3]  rz(+0.5068)[Q4]
+    sqisw[Q2,Q3]
+Layer 4 [s0-odd-2]  135-200 ns  4 r, 3 rz, 1 sqisw
+    r(θ=3.0355, φ=+0.0000)[Q2]  r(θ=3.1416, φ=+0.0000)[Q3]
+    rz(-3.1416)[Q3]
+    sqisw[Q2,Q3]
+    r(θ=3.1041, φ=-3.1416)[Q2]  r(θ=1.5708, φ=+0.0000)[Q3]
+    rz(-2.6948)[Q2]  rz(+0.5068)[Q3]
+
+Rotating-frame changes (tunable qubit joins its partner's frame for the exchange gate):
+    t=  25.0 ns  Q2 enter frame of Q1: Rz(-62.832), compensation Rz(+62.832)
+    t=  25.0 ns  Q4 enter frame of Q3: Rz(-62.832), compensation Rz(+62.832)
+    t=  45.0 ns  Q2 leave frame of Q1: Rz(+113.097), compensation Rz(-113.097)
+    t=  45.0 ns  Q4 leave frame of Q3: Rz(+113.097), compensation Rz(-113.097)
+    t=  70.0 ns  Q2 enter frame of Q1: Rz(-175.929), compensation Rz(+175.929)
+    t=  70.0 ns  Q4 enter frame of Q3: Rz(-175.929), compensation Rz(+175.929)
+    t=  90.0 ns  Q2 leave frame of Q1: Rz(+226.195), compensation Rz(-226.195)
+    t=  90.0 ns  Q4 leave frame of Q3: Rz(+226.195), compensation Rz(-226.195)
+    t= 115.0 ns  Q2 enter frame of Q3: Rz(-289.027), compensation Rz(+289.027)
+    t= 135.0 ns  Q2 leave frame of Q3: Rz(+339.292), compensation Rz(-339.292)
+    t= 160.0 ns  Q2 enter frame of Q3: Rz(-402.124), compensation Rz(+402.124)
+    t= 180.0 ns  Q2 leave frame of Q3: Rz(+452.389), compensation Rz(-452.389)

@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+*.egg-info/
+.venv*/
+.vscode/
+.history/
+tmp/
+/dist/
+# Run outputs stay with the machine that produced them.
+/results/
+*.log
