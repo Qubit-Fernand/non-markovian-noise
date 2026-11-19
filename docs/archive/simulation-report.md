@@ -1,8 +1,8 @@
 # 有限时长量子门与非马尔可夫噪声：数值模拟报告
 
-日期：2026-09-21。数据来源：[2048 条轨迹验证运行](../results/validated/summary.json)。
+日期：2026-09-21。数据来源：[2048 条轨迹验证运行](../../results/validated/summary.json)。
 
-本报告记录已实际执行的数值原型及其输出。研究方案见[独立文档](research-plan.md)，数学约定和使用方法见[README](../README.md)。
+本报告记录已实际执行的数值原型及其输出。研究方案见[独立文档](research-plan.md)，数学约定和使用方法见[README](../../README.md)。
 
 ## 1. 目标与已实现的方法
 
@@ -64,7 +64,7 @@ Fidelity 定义为 $F=\langle\mathrm{GHZ}|\rho|\mathrm{GHZ}\rangle$。误差为�
 | 门边界重置有色环境          | 0.926267 ± 0.001987 | 0.862421 |
 | 单点校准 Lindblad           |             0.888971 | 0.800470 |
 
-![实际模拟结果](../results/validated/comparison.png)
+![实际模拟结果](../../results/validated/comparison.png)
 
 ### 读图说明
 
@@ -97,7 +97,7 @@ $$
 | $\langle XXX\rangle$ |                  0.7101636653 |
 | $\rho_{000,111}$     | 0.3550818326 + 0.0003376902 i |
 
-其余计算基概率接近数值零。以上保留位数用于核对文件，不代表相应的统计精度；完整复数矩阵保存在 [final_states.npz](../results/validated/final_states.npz)。
+其余计算基概率接近数值零。以上保留位数用于核对文件，不代表相应的统计精度；完整复数矩阵保存在 [final_states.npz](../../results/validated/final_states.npz)。
 
 ## 4. 量子浴终态
 
@@ -117,7 +117,7 @@ $$
 
 $$
 
-跨门保留完整 ADO 时得到以上结果；若每个脉冲后只传递系统密度矩阵，相当于重置环境，终态会改变。各脉冲末的完整数据见 [quantum_states.npz](../results/validated/quantum_states.npz)。
+跨门保留完整 ADO 时得到以上结果；若每个脉冲后只传递系统密度矩阵，相当于重置环境，终态会改变。各脉冲末的完整数据见 [quantum_states.npz](../../results/validated/quantum_states.npz)。
 
 ## 5. 数值检查
 

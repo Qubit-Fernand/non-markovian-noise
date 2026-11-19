@@ -1,8 +1,10 @@
 # HEOM → SPP 误差缓解
 
-用 HEOM 计算逐层 Pauli twirling 之后的时空 Pauli 过程（SPP），把全部错误历史的联合概率写成时间方向的 MPS，再在 SPP 上做噪声放大（PEA/ZNE）和变分求逆（PEC）。算法路线见 [docs/heom-spp-proposal-20261029.html](../docs/heom-spp-proposal-20261029.html)。
+用 HEOM 计算逐层 Pauli twirling 之后的时空 Pauli 过程（SPP），把全部错误历史的联合概率写成时间方向的 MPS，再在 SPP 上做噪声放大（PEA/ZNE）和变分求逆（PEC）。算法路线见 [docs/heom-spp-proposal-20261029.html](../docs/archive/heom-spp-proposal-20261029.html)。
 
 只依赖 numpy、scipy、threadpoolctl，纯 CPU。
+
+项目流程见 [Overview](../docs/overview.md)，统一安装与复现见 [usage.md](../docs/usage.md)，当前任务见 [research.md](../docs/research.md)。本页保留独立包的接口、配置和服务器运行细节；以下命令均从 `heom_spp_cpu/` 执行。目标模型仍需收敛验证，扫描复用和基线比较的两项限制见 [已知问题](docs/known-issues.md)。
 
 ## 结构
 
@@ -13,7 +15,7 @@
 | `heom_spp/plot.py` | 脉冲时序图 |
 | `heom_spp/pulse.py` | `Segment`（有限时长控制）、`Frame`（零时长虚拟门）、`Slot`（一个学习层）；脉冲编译器 |
 | `heom_spp/bath.py` | 浴的指数项 `Mode`（经典实高斯或复指数左/右节点）、白噪声余项 `White`、`noise.json` 预设、BSD 拟合表读取 |
-| `heom_spp/heom.py` | 三个共用同一方程的引擎：`TDVPHEOM`（生产）、`HEOM`（压缩 RK4）、`DenseHEOM`（稀疏指数参考） |
+| `heom_spp/heom.py` | 三个共用同一方程的引擎：`TDVPHEOM`（MPO／TDVP）、`HEOM`（压缩 RK4）、`DenseHEOM`（稀疏指数参考） |
 | `heom_spp/tdvp.py` | 单点 KSL/TDVP 与非厄米 Arnoldi |
 | `heom_spp/spp.py` | 按层并行构造 SPP、概率检查、边缘分布、抽样 |
 | `heom_spp/mitigation.py` | 噪声放大、稠密与 ALS 变分求逆、线路响应 |

@@ -1,10 +1,10 @@
 # nmnoise 模拟与复现说明
 
-本文由原 README 的详细使用说明迁入，保留经典轨迹、量子浴及旧基准的模型约定与验证范围。当前 SPP 张量网络实现另见 [spp_tn](../spp_tn/README.md)。
+本文由原 README 的详细使用说明迁入，保留经典轨迹、量子浴及旧基准的模型约定与验证范围。当前 SPP 张量网络实现另见 [spp_tn](../../spp_tn/README.md)。
 
 合作者建议先阅读数值报告中的“读图说明”，再查看研究方案。`results/validated/` 是报告采用的主数据；`results/demo/` 仅保留早期试运行。当前结果是给定模型下的数值验证，尚未对接真机或完成器件噪声学习。
 
-![三比特模拟结果：fidelity、终态密度矩阵和连续噪声轨迹](../results/validated/comparison.png)
+![三比特模拟结果：fidelity、终态密度矩阵和连续噪声轨迹](../../results/validated/comparison.png)
 
 这里已经实现并交叉验证四种求解路线。它们区分两个独立选择：**环境的物理模型**与**演化的数值表示**。
 
@@ -40,7 +40,7 @@ python -m pytest -q
 python -m spp_tn.demo --output results/my_spp_run --convergence
 ```
 
-[`requirements.txt`](../requirements.txt) 固定了 TensorCircuit-NG 1.10.0、NumPy 2.4.6、SciPy 1.15.2、QuTiP 5.2.2 等经过验证的版本，并以 editable 方式安装本仓库。`environment.yml` 复用同一文件，避免两套版本漂移。不要在同一环境中同时安装 `tensorcircuit` 与 `tensorcircuit-ng`。核心求解器和测试无需系统 LaTeX；生成论文风格图表时才需要安装 LaTeX 和字体。macOS ARM 已本地验证；Linux 等其他平台尚未验证，跨平台允许浮点舍入差异。
+[`requirements.txt`](../../requirements.txt) 固定了 TensorCircuit-NG 1.10.0、NumPy 2.4.6、SciPy 1.15.2、QuTiP 5.2.2 等经过验证的版本，并以 editable 方式安装本仓库。`environment.yml` 复用同一文件，避免两套版本漂移。不要在同一环境中同时安装 `tensorcircuit` 与 `tensorcircuit-ng`。核心求解器和测试无需系统 LaTeX；生成论文风格图表时才需要安装 LaTeX 和字体。macOS ARM 已本地验证；Linux 等其他平台尚未验证，跨平台允许浮点舍入差异。
 
 查看已有报告、PNG 图和结果数据无需重跑。生成新图前需要安装系统 LaTeX 和 Times New Roman 字体；绘图配置位于 `run_demo.py` 的 `make_plot()`。快速试运行和完整运行分别为：
 
@@ -201,7 +201,7 @@ MPS 可以指定 `max_bond` 与 `svd_cutoff`，记录丢弃权重及归一化偏
 
 ### 当前研究进展
 
-配对脉冲扫描及[受限四比特 Ising SPP/PEC 基准](../docs/spp-ising-benchmark.md)已完成，均为合成数值实验。新基准只覆盖两时段 I/Z 历史、单站点单模浴及瞬时理想 Ising 控制，未实现通用 SPP 学习或真机验证。合作者报告的 HEOM → SPP → PEC 近期进展及 IBM 文献理解修正，见 [2026-10-28 讨论记录](../docs/paired-pulse-proposal.md#讨论更新heom--spp--pec-与-ibm-文献复核2026-10-28-整理)；合作者源码、参数和优化算法仍待取得并核对。IBM 文献已完成[专项核对](../docs/ibm-2607-25998-review.md)：用于 PEC 的仍是 SPL，但 F.2 额外拟合了准静态相关模型以评估残余偏差。实验设计、结果及未决事项统一维护在 [proposal 文档](../docs/paired-pulse-proposal.md)。
+配对脉冲扫描及[受限四比特 Ising SPP/PEC 基准](spp-ising-benchmark.md)已完成，均为合成数值实验。新基准只覆盖两时段 I/Z 历史、单站点单模浴及瞬时理想 Ising 控制，未实现通用 SPP 学习或真机验证。合作者报告的 HEOM → SPP → PEC 近期进展及 IBM 文献理解修正，见 [2026-10-28 讨论记录](paired-pulse-proposal.md#讨论更新heom--spp--pec-与-ibm-文献复核2026-10-28-整理)；合作者源码、参数和优化算法仍待取得并核对。IBM 文献已完成[专项核对](ibm-2607-25998-review.md)：用于 PEC 的仍是 SPL，但 F.2 额外拟合了准静态相关模型以评估残余偏差。实验设计、结果及未决事项统一维护在 [proposal 文档](paired-pulse-proposal.md)。
 
 新基准复现（输出目录必须不存在）：
 
@@ -210,4 +210,4 @@ conda run -n TensorCircuitNG python run_spp_benchmark.py --output results/spp_is
 conda run -n TensorCircuitNG python -m pytest -q
 ```
 
-主记录：[results/spp_ising_20261029/summary.json](../results/spp_ising_20261029/summary.json)。12 条留出电路、84 个观测量的预测 RMSE 为独立层 0.005545、相关模型 0.000306；相关 PEC 的准概率开销因子 $\gamma^2=2.4891$。默认训练 300,000 shots、每目标 PEC 20,000 shots；100 次重复学习计入有限学习误差。完整限定及成本见报告。
+主记录：[results/spp_ising_20261029/summary.json](../../results/spp_ising_20261029/summary.json)。12 条留出电路、84 个观测量的预测 RMSE 为独立层 0.005545、相关模型 0.000306；相关 PEC 的准概率开销因子 $\gamma^2=2.4891$。默认训练 300,000 shots、每目标 PEC 20,000 shots；100 次重复学习计入有限学习误差。完整限定及成本见报告。

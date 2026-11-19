@@ -8,17 +8,17 @@
 
 ## 2026-11-04 环境与张量网络
 
-本项目改用独立 conda **TensorCircuitNG**（配置：[`environment.yml`](../environment.yml)），原 `.venv-spp` 已移入回收站。新环境通过全部 36 项项目测试；旧 `TensorCircuit` 环境的运行依赖及四个后端已修复并补齐，门／后端上游测试 124 通过、3 跳过。版本、OpenMP 设置和验证记录统一见 [`environments/README.md`](../environments/README.md)。
+本项目改用独立 conda **TensorCircuitNG**（配置：[`environment.yml`](../../environment.yml)），原 `.venv-spp` 已移入回收站。新环境通过全部 36 项项目测试；旧 `TensorCircuit` 环境的运行依赖及四个后端已修复并补齐，门／后端上游测试 124 通过、3 跳过。版本、OpenMP 设置和验证记录统一见 [`environments/README.md`](../../environments/README.md)。
 
 ## 此前完成记录
 
 下列记录包括数值工作与文献核对，不代表完成真机验证。2026-10-15 已运行完整测试套件，14 项通过。
 
-- [x] 收录用户提供的 [HEOM–SPP 研究方案 HTML](../docs/heom-spp-proposal-20261029.html)，原样复制至 `docs/` 并校验文件内容一致，补充阅读入口（2026-11-02；仅归档，未执行文内方案或核验其结论）。
+- [x] 收录用户提供的 [HEOM–SPP 研究方案 HTML](heom-spp-proposal-20261029.html)，原样复制至 `docs/` 并校验文件内容一致，补充阅读入口（2026-11-02；仅归档，未执行文内方案或核验其结论）。
 
 - [x] 新增受限四比特 Ising SPP/PEC 基准与 5 项物理/统计测试，全套 19 项通过；保存原始计数、收敛检查、源码 SHA-256 和独立输出目录，并从源码快照重跑核对（2026-10-29）。更新 proposal，明确瞬时控制、单站点单模浴、两时段范围及合作者实现仍待核对。
 
-- [x] 核对 IBM arXiv:2607.25998v1 正文及附录 E/F，区分 SPL-PEC、历史依赖校准、TLS 稳定化、后选择与 F.2 准静态相关拟合；更新 proposal 与[专项说明](../docs/ibm-2607-25998-review.md)（2026-10-28；文献核对，未复现作者实验）。
+- [x] 核对 IBM arXiv:2607.25998v1 正文及附录 E/F，区分 SPL-PEC、历史依赖校准、TLS 稳定化、后选择与 F.2 准静态相关拟合；更新 proposal 与[专项说明](ibm-2607-25998-review.md)（2026-10-28；文献核对，未复现作者实验）。
 - [x] 实现 dense trajectories、MPS trajectories、HEOM 和独立显式浴四条数值路线。
 - [x] 已保存数值报告、主数据、终态密度矩阵、连续噪声样本及复现说明。
 - [x] 原文记录了步长、MPS 截断、HEOM/显式浴及门边界等误差检查。
@@ -33,4 +33,4 @@
 
 - [x] 将 Chen et al. arXiv:2509.07693v2 加入 `Error-Mitigation → Non-Markov`（条目 `AXEGG4GX`）；因群组不允许存储附件，提供在线 PDF。核对在线 PDF 与原文件 SHA-256 一致后，用 `trash` 移走项目根目录副本并更新引用（2026-10-27）。
 
-- [x] 整理合作者近期 HEOM/SPP/PEC 工作及对 IBM arXiv:2607.25998 的理解修正（2026-10-28；初始讨论记录）。其中论文判断现已由[专项核对](../docs/ibm-2607-25998-review.md)更新，合作者实现仍待独立核对。
+- [x] 整理合作者近期 HEOM/SPP/PEC 工作及对 IBM arXiv:2607.25998 的理解修正（2026-10-28；初始讨论记录）。其中论文判断现已由[专项核对](ibm-2607-25998-review.md)更新，合作者实现仍待独立核对。

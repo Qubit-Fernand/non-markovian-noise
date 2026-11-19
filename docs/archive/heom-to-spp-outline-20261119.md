@@ -2,13 +2,15 @@
 
 整理：2026-11-16。用于 2026-11-19（周四）讨论，建议主讲 8–10 分钟。阅读起点是[《从 SPL 到 SPP》](spl-to-spp-explainer.md)，不预设已经了解 HEOM 或张量网络传播算法。
 
-本文是基于 `spp_tn` 的流程与任务纲领。已有结果来自此前的合成模拟，本次没有新增实验；文中 MPO + TDVP 的计划状态针对 `spp_tn`。另一个独立的 [`heom_spp_cpu`](../heom_spp_cpu/README.md) 包已包含 MPO/TDVP 实现，具体计算仍需验证收敛。
+本文是基于 `spp_tn` 的流程与任务纲领。已有结果来自此前的合成模拟，本次没有新增实验；文中 MPO + TDVP 的计划状态针对 `spp_tn`。另一个独立的 [`heom_spp_cpu`](../../heom_spp_cpu/README.md) 包已包含 MPO/TDVP 实现，具体计算仍需验证收敛。
 
 ## 开场：我们要解决两个问题
 
 SPP（spacetime Pauli process，时空 Pauli 过程）描述各时间层 Pauli 错误的联合概率。设线路有 $n$ 个比特、$L$ 层，第 $j$ 层的错误标签为 $a_j$，每个标签有 $4^n$ 种取值，完整对象为
 
-$$p(a_1,\ldots,a_L).$$
+$$
+p(a_1,\ldots,a_L).
+$$
 
 它有 $4^{nL}$ 个表项。我们已经知道，直接保存完整表会很贵；但在压缩之前，还有一个问题：**这些概率从哪里来？**
 
@@ -34,7 +36,7 @@ flowchart TD
     C --> H["给定初态时，也可直接读出<br/>最终密度矩阵和观测量，无需 SPP"]
 ```
 
-不支持 Mermaid 的阅读器可查看[原流程图截图](figures/heom-spp-workflow-original-20261116.png)。上图在原图基础上明确了两点：HEOM 可以直接预测系统演化；当前传播仍为 RK4，MPO + TDVP 尚在计划中。
+不支持 Mermaid 的阅读器可查看[原流程图截图](../figures/heom-spp-workflow-original-20261116.png)。上图在原图基础上明确了两点：HEOM 可以直接预测系统演化；当前传播仍为 RK4，MPO + TDVP 尚在计划中。
 
 ## 1. HEOM：没有 SPP，也能计算噪声下的演化
 
@@ -46,11 +48,16 @@ flowchart TD
 
 HEOM 为此携带一组矩阵：
 
-$$X(t)=\bigl(\rho_0(t),\rho_1(t),\rho_2(t),\ldots\bigr).$$
+$$
+X(t)=\Bigl(
+\underbrace{\rho_0(t)}_{\text{系统平均态}},\quad
+\underbrace{\rho_1(t),\rho_2(t),\ldots}_{\text{辅助层级：比喻中的记忆账本}}
+\Bigr).
+$$
 
 其中 $\rho_0$ 是平均物理密度矩阵，其余是记录关联的辅助矩阵，并不各自代表归一化的物理态。整个集合满足一组耦合方程。
 
-可以把它想成：**系统状态旁边还带着一本记忆账本。** 一层门结束后，整本账本继续传给下一层，只更换控制；不把辅助矩阵清零。否则就人为抹掉了层间关联。
+可以把它想成：**系统状态旁边还带着一本记忆账本。** 一层门结束后，系统平均态和整组辅助矩阵一起传给下一层，只更换控制；不把辅助矩阵清零。否则就人为抹掉了层间关联。
 
 若只想计算某个给定实验的结果，最后读取 $\rho_0(T)$ 即可。对观测量 $O$，其期望值为 $\operatorname{Tr}[O\rho_0(T)]$。SPP 是后面为了表示 Pauli 错误过程、服务预测与缓解而构造的对象。
 
@@ -72,7 +79,9 @@ $$X(t)=\bigl(\rho_0(t),\rho_1(t),\rho_2(t),\ldots\bigr).$$
 
 把 HEOM 简写为
 
-$$\frac{dX(t)}{dt}=\mathcal L(t)X(t),$$
+$$
+\frac{dX(t)}{dt}=\mathcal L(t)X(t),
+$$
 
 其中 $X(t)$ 是全部层级数据，$\mathcal L(t)$ 是演化生成元，包含控制、噪声耦合和层级间的信息传递。
 
@@ -101,7 +110,9 @@ TDVP 则处理“怎样推进”的问题：原方程给出的变化方向可能
 
 最终直接得到
 
-$$p(a_1,\ldots,a_L)=A_1^{a_1}\cdots A_L^{a_L}.$$
+$$
+p(a_1,\ldots,a_L)=A_1^{a_1}\cdots A_L^{a_L}.
+$$
 
 其中 $A_j^{a_j}$ 是 $\chi_{j-1}\times\chi_j$ 矩阵，两端 $\chi_0=\chi_L=1$。存储系数数目为 $\sum_j4^n\chi_{j-1}\chi_j$。若所需时间键 $\chi_j$ 较小，便能避免完整的指数大表；但一般过程不保证有小键。
 
@@ -156,24 +167,32 @@ SPP 可用于计算相关 Pauli 错误对线路观测量的影响。进一步可
 
 取 $\hbar=1$，设 $x(t)$ 是均值为零、平稳方差为 1 的 OU 噪声，相关函数为 $\mathbb E[x(t)x(s)]=e^{-\gamma|t-s|}$，$\gamma$ 为相关性衰减速率。控制 Hamiltonian 为 $H_{\mathrm{ctrl}}(t)$，耦合算符为 $Q$，噪声强度为 $\sigma$。给定一条完整轨迹 $x$，对应系统态 $\rho_x$ 满足
 
-$$\dot\rho_x=-i[H_{\mathrm{ctrl}}+\sigma xQ,\rho_x].$$
+$$
+\dot\rho_x=-i[H_{\mathrm{ctrl}}+\sigma xQ,\rho_x].
+$$
 
 对轨迹取平均，记 $\rho_0=\mathbb E[\rho_x]$，就有
 
-$$\dot\rho_0=-i[H_{\mathrm{ctrl}},\rho_0]-i\sigma[Q,\mathbb E[x\rho_x]].$$
+$$
+\dot\rho_0=-i[H_{\mathrm{ctrl}},\rho_0]-i\sigma[Q,\mathbb E[x\rho_x]].
+$$
 
 即使 $\mathbb E[x]=0$，也不能把 $\mathbb E[x\rho_x]$ 置零，因为系统与噪声已经相关。引入归一化 Hermite 多项式加权的辅助矩阵，前几项为
 
-$$\rho_1=\mathbb E[x\rho_x],\qquad
-\rho_2=\frac{1}{\sqrt2}\mathbb E[(x^2-1)\rho_x].$$
+$$
+\rho_1=\mathbb E[x\rho_x],\qquad
+\rho_2=\frac{1}{\sqrt2}\mathbb E[(x^2-1)\rho_x].
+$$
 
 对当前单模、无额外耗散的设置，一般第 $k$ 层的方程是
 
-$$\dot\rho_k=-i[H_{\mathrm{ctrl}},\rho_k]-k\gamma\rho_k
--i\sigma[Q,\sqrt{k}\rho_{k-1}+\sqrt{k+1}\rho_{k+1}],$$
+$$
+\dot\rho_k=-i[H_{\mathrm{ctrl}},\rho_k]-k\gamma\rho_k
+-i\sigma[Q,\sqrt{k}\rho_{k-1}+\sqrt{k+1}\rho_{k+1}],
+$$
 
 其中 $k=0$ 时下层项取零。平均态的变化需要一阶关联，一阶关联又耦合二阶关联，从而形成层级。初始系统与平稳噪声独立时，$\rho_0(0)=\rho_{\mathrm{init}}$、$\rho_{k>0}(0)=0$；这表示初始无关联，不表示噪声不存在。演化中高阶矩阵会产生，门边界需保留它们。
 
 实际只保留有限层，需通过增加层级检验收敛。这一解释针对当前 `spp_tn` 的经典 Hermite 层级，不将它与旧量子浴 HEOM 的辅助矩阵逐项等同。
 
-实现依据：[heom.py](../spp_tn/heom.py)、[process.py](../spp_tn/process.py)及[包说明](../spp_tn/README.md)。量子浴 HEOM 携带完整辅助算符继续传播的用法可参见 [QuTiP HEOM 文档](https://qutip.readthedocs.io/en/stable/guide/heom/bosonic.html)。
+实现依据：[heom.py](../../spp_tn/heom.py)、[process.py](../../spp_tn/process.py)及[包说明](../../spp_tn/README.md)。量子浴 HEOM 携带完整辅助算符继续传播的用法可参见 [QuTiP HEOM 文档](https://qutip.readthedocs.io/en/stable/guide/heom/bosonic.html)。

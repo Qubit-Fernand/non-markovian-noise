@@ -15,7 +15,7 @@
 - 当前 MPS 传播耗时约 213 s，参考约 10.2 s；两次运行并发启动，不能作为受控性能基准，也没有加速结论。
 - 此处尚无层级收敛、完整非负性证书或四比特 PEC 精度验证。单模低层级本身限制了记忆空间，不能推广为一般 SPP 都有小秩。
 
-来源：[四比特对照记录](../results/spp_tn_ising4_mps_20261104/comparison.json)。
+来源：[四比特对照记录](../../results/spp_tn_ising4_mps_20261104/comparison.json)。
 
 ### 单比特：忽略时间相关性会留下 PEC 偏差
 
@@ -33,7 +33,7 @@
 
 有限 shots 的合成 PEC 为 **0.961462 ± 0.005237**（20,000 shots，一个标准误）；准概率成本因子 Gamma² = **1.47297**。没有包含实验模型学习误差。
 
-来源：[新 conda 环境运行记录](../results/spp_tn_conda_20261104/summary.json)。
+来源：[新 conda 环境运行记录](../../results/spp_tn_conda_20261104/summary.json)。
 
 ### 收敛与实现检查
 
@@ -42,11 +42,11 @@
 - 强制 HEOM 内部键为 1 或 2 时出现明显负概率；不能只展示小键与存储量而省略有效性检查。
 - 单比特未压缩到最小形式的最终 MPS 有 92 个系数，完整表仅 64 项；该小例子用于正确性与缓解验证，不用于宣称存储收益。
 
-来源：[分项收敛记录](../results/spp_tn_20261104_final/summary.json)。
+来源：[分项收敛记录](../../results/spp_tn_20261104_final/summary.json)。
 
-![单比特缓解与层级收敛](figures/spp-meeting-20261105.png)
+![单比特缓解与层级收敛](../figures/spp-meeting-20261105.png)
 
-[矢量 PDF](figures/spp-meeting-20261105.pdf)；[绘图脚本](plot_spp_meeting.py)。在仓库根目录运行 `conda run -n TensorCircuitNG python docs/plot_spp_meeting.py` 可从归档 JSON 重绘，需要 LaTeX/newtx。左图使用新 conda 环境复跑，右图使用此前归档的收敛扫描；两次基础概率张量 L2 差约 8.27e-15。
+[矢量 PDF](../figures/spp-meeting-20261105.pdf)；[绘图脚本](../plot_spp_meeting.py)。在仓库根目录运行 `conda run -n TensorCircuitNG python docs/plot_spp_meeting.py` 可从归档 JSON 重绘，需要 LaTeX/newtx。左图使用新 conda 环境复跑，右图使用此前归档的收敛扫描；两次基础概率张量 L2 差约 8.27e-15。
 
 可直接口述：
 

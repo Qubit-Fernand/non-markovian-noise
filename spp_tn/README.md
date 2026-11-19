@@ -1,23 +1,18 @@
 # SPP tensor networks：从 Hermite HEOM 到时间 MPS
 
-这是当前仓库内独立的研究代码包。以相邻 Overleaf 项目的 `note.tex` 为公式和约定依据，以 [HTML 方案](../docs/heom-spp-proposal-20261029.html) 为算法路线。旧的 `nmnoise/` 模拟和两时段基准保持独立。
+这是当前仓库内独立的研究代码包。以相邻 Overleaf 项目的 `note.tex` 为公式和约定依据，以 [HTML 方案](../docs/archive/heom-spp-proposal-20261029.html) 为算法路线。旧的 nmnoise 模拟和两时段基准已移入 [archive/](../archive/README.md)。
 
 ## 安装与入口
 
-项目统一使用独立 conda 环境 **TensorCircuitNG**，不再依赖 Qubit 或项目 venv。在仓库根目录首次创建：
+统一安装、两套测试和复现约定见 [usage.md](../docs/usage.md)。激活 TensorCircuitNG 后，在代码根目录执行：
 
 ```bash
-conda env create -f environment.yml
-conda activate TensorCircuitNG
-python -m pytest -q
 python -m spp_tn.demo --output results/my_spp_run --convergence
 ```
 
-输出目录必须不存在。也可使用安装后的 `spp-tn --output ...`。`summary.json` 保存模型参数、版本、源码哈希、构造成本、概率检查、PEC 残差、观测量和误差来源；`source/` 保存运行时源码；NPZ 保存 MPS 节点、有限 shots 的错误／修正历史和测量结果。发现失败时保留未完成目录供检查，只有存在 `summary.json` 才表示运行完成。
+输出目录必须不存在。也可使用 `spp-tn --output ...`。`summary.json` 保存模型参数、版本、源码哈希、构造成本、概率检查、PEC 残差和误差来源；`source/` 保存运行时源码，NPZ 保存 MPS 节点和 shots 样本。失败目录保留供检查。
 
-本机已经创建该环境，直接 `conda activate TensorCircuitNG` 即可。无激活运行可用 `conda run -n TensorCircuitNG python ...`。精确数值依赖见 [`environments/tensorcircuit-ng.txt`](../environments/tensorcircuit-ng.txt)，环境维护与验证见 [`environments/README.md`](../environments/README.md)。旧 `TensorCircuit` 环境保留给 upstream legacy 仓库，二者分别维护。
-
-TensorCircuit-NG 和 TensorCircuit 共用 `import tensorcircuit`，**在两个独立环境中二选一安装**，不要同时安装两个 extra。旧版环境用 `.[tn-legacy,test]`，其中固定 NumPy `<2`，避免 TensorCircuit 0.12 的 `np.reshape(newshape=...)` 导入错误。复核使用 NG 1.10.0 与 legacy 0.12.0。包的收缩、QR、SVD 使用 TensorCircuit 的 NumPy 后端；线路响应使用 `tc.Circuit`。目前没有 JAX 自动微分／JIT／GPU 支持声明。
+本包复用 TensorCircuit-NG NumPy 后端的收缩、QR、SVD，线路响应使用 `tc.Circuit`；目前没有 JAX 自动微分／JIT／GPU 路径。NG 与 legacy 共用导入名，须分环境安装，详见 [环境说明](../environments/README.md)。
 
 SPP 节点表示概率本身，HEOM 节点表示线性算符系数；它们都不是量子态振幅。因此这里单独实现异维物理腿的张量链，复用 TensorCircuit 后端运算，没有直接套用 `MPSCircuit` 的量子态归一化或 Born 概率采样。
 
@@ -93,19 +88,11 @@ conda run -n TensorCircuitNG python -m spp_tn.demo --example ising4 --levels 3 \
 
 当前 PEC 局部环境通过 TN 收缩重算，每 sweep 对层数有额外二次成本；局部正规方程显式构造且有大小保护。求逆收敛记录不能证明所有 Walsh 系数非零；大规模奇异性需另行研究。残差不等于任意线路的偏差界，ridge 也不是 Gamma 的代理。PEA 的二次外推有残余偏差；有限 shots 不包含模型学习误差。
 
-- [x] 独立 TensorCircuit-NG／legacy 环境和通用 NumPy 后端路径。
-- [x] 经典 Hermite 层级 MPS、开放 ADO 响应、逐层时间 MPS。
-- [x] PEA、约束 ALS-PEC、稠密校验和小规模采样。
-- [x] 固定四比特 Ising 层边界与理想线路核验。
-- [ ] **当前优先：MPO + TDVP**。实现 HEOM 生成元 MPO 及适用于非幺正层级演化的 TDVP，完成与稀疏指数、RK4 的正确性／收敛对照及 HEOM → SPP 端到端验证；当前仍为截断 RK4。
-- [ ] **上述验证后再做 CPU 优化与 GPU 并行**：先性能分析，再评估收缩／局部求解优化和探针批处理；在同等精度下比较时间与峰值内存。详细顺序见 [主 README 待办](../README.md#待办todo)。
-- [ ] 缓存 PEC 左右环境；改善强噪声和近奇异逆的优化稳定性。
-- [ ] 可验证非负的参数化、无需全枚举的 signed-PEC 采样／Gamma 估计。
-- [ ] 四比特多模式多 Trotter 步的成本、独立误差和压缩扫描。
-- [ ] 有限 shots 的通用 SPP 学习、可辨识性及留出控制验证。
-- [ ] 有噪声 twirling／correction 的物理验证及自动微分；当前没有真机结果。
+本包保留压缩 RK4 参考路径；显式 MPO／TDVP 已在独立 [heom_spp_cpu](../heom_spp_cpu/README.md) 中实现。项目级任务统一维护在 [research.md](../docs/research.md)，先验证目标模型，再推进性能优化。这里的 signed-PEC 采样仍限小规模，不与 CPU 包的接口和验证范围混用。
 
 ## 维护记录
+
+- 2026-11-19：通用安装、实验汇总和项目任务改由 docs 五个入口维护；本页保留 API、数值约定和包特有限制。旧记录中的 MPO／TDVP 计划只描述当时的本包状态。
 
 - 2026-11-15：下一阶段明确为先实现 MPO + TDVP 并验证 HEOM → SPP，再考虑 CPU 优化和 GPU 并行；本次只更新任务，未修改计算实现。
 

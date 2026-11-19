@@ -54,7 +54,7 @@ $$N_{\mathrm{MPS}}=\sum_{j=1}^{L}d_P\chi_{j-1}\chi_j.$$
 
 若上一层保留 $\chi_{j-1}$ 个记忆方向，第 $j$ 层需要 $4^n\chi_{j-1}$ 次探针传播，无需分别处理全部 $4^{nj}$ 条前缀历史。**这个数是传播次数，不是总运行时间复杂度**：每次 HEOM 传播、张量合并和压缩仍然有成本。
 
-代码位于本仓库新建的 [`spp_tn`](../spp_tn/README.md) 包。TensorCircuit-NG 提供张量收缩、QR/SVD 和线路响应计算；逐层构造及 HEOM 算法由本仓库实现。当前传播器采用四阶 Runge–Kutta（RK4）加 MPS 截断，未实现时间依赖变分原理（TDVP）传播。误差统一放在理想门之后，即 gate-after 约定。
+代码位于本仓库新建的 [`spp_tn`](../../spp_tn/README.md) 包。TensorCircuit-NG 提供张量收缩、QR/SVD 和线路响应计算；逐层构造及 HEOM 算法由本仓库实现。当前传播器采用四阶 Runge–Kutta（RK4）加 MPS 截断，未实现时间依赖变分原理（TDVP）传播。误差统一放在理想门之后，即 gate-after 约定。
 
 ## 4. 这次四比特实验跑出了什么？
 
@@ -80,7 +80,7 @@ $$N_{\mathrm{MPS}}=\sum_{j=1}^{L}d_P\chi_{j-1}\chi_j.$$
 
 本次 MPS 传播耗时约 213 s，参考约 10.2 s。两次运行并发启动，不是受控性能测试；当前也没有观察到这个小模型上的速度优势。
 
-数据：[四比特比较记录](../results/spp_tn_ising4_mps_20261104/comparison.json)、[运行说明](../results/spp_tn_ising4_mps_20261104/README.md)。
+数据：[四比特比较记录](../../results/spp_tn_ising4_mps_20261104/comparison.json)、[运行说明](../../results/spp_tn_ising4_mps_20261104/README.md)。
 
 ## 5. 小系统检查：算得准吗，保留相关性有什么用？
 
@@ -116,11 +116,11 @@ MPS 传播与同层级稀疏指数传播参考的概率 L2 差为 **$1.94\times1
 
 20,000 次合成测量的 PEC 估计为 **$0.961462\pm0.005237$**，误差为一个标准误。令 $q$ 为 PEC 的有符号修正分布，$\Gamma=\sum_{\boldsymbol a}|q(\boldsymbol a)|$；本例的准概率成本因子 $\Gamma^2=1.47297$。这些结果没有计入从实验数据学习噪声模型的误差。
 
-![单比特缓解结果与层级收敛](figures/spp-meeting-20261105.png)
+![单比特缓解结果与层级收敛](../figures/spp-meeting-20261105.png)
 
-图左为新 conda 环境复跑，图右为此前归档的层级扫描；两次基础概率张量的 L2 差约 $8.27\times10^{-15}$。[矢量 PDF](figures/spp-meeting-20261105.pdf)与[重绘脚本](plot_spp_meeting.py)一并保存。
+图左为新 conda 环境复跑，图右为此前归档的层级扫描；两次基础概率张量的 L2 差约 $8.27\times10^{-15}$。[矢量 PDF](../figures/spp-meeting-20261105.pdf)与[重绘脚本](../plot_spp_meeting.py)一并保存。
 
-数据：[单比特运行记录](../results/spp_tn_conda_20261104/summary.json)、[收敛扫描](../results/spp_tn_20261104_final/summary.json)。
+数据：[单比特运行记录](../../results/spp_tn_conda_20261104/summary.json)、[收敛扫描](../../results/spp_tn_20261104_final/summary.json)。
 
 ## 6. 下一步最值得做什么？
 

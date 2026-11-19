@@ -207,7 +207,7 @@ conda run -n Qubit python run_paired_scan.py --confirmation-samples 32768 --outp
 | 12 模混合 | 0.004 | 1600 | 0.355955 | 0.293887 | 0.202838 | 0.062068 ± 0.004223 |
 | 12 模混合 | 0.004 | 3200 | 0.011355 | 0.005791 | 0.041143 | 0.005564 ± 0.005466 |
 
-![独立复核：终态 X 期望值与配对差值](../results/paired_scan_20261015/confirmed_pairs.png)
+![独立复核：终态 X 期望值与配对差值](../../results/paired_scan_20261015/confirmed_pairs.png)
 
 ### 哪些参数值得继续考察
 
@@ -216,7 +216,7 @@ conda run -n Qubit python run_paired_scan.py --confirmation-samples 32768 --outp
 - **绝对模型偏差与配对信号不同**：例如原报告谱、sigma=0.004、T=200 ns，两模型对单条序列的 X 预测相差约 0.167，但 A/B 差值仅约 0.003。不能按绝对拟合偏差挑选最适合观察记忆的配对实验。
 - **不能只读扫描热图最大值**：初扫采样量有限，星号表示绝对均值小于 3 个 MC 标准误。候选采用 abs(Delta X)-3*MC_SE 筛选，并以独立种子复核；该评分不是多重比较校正后的置信界，也没有证明全局最优。
 
-![单 OU 初扫：配对差值与参数的关系](../results/paired_scan_20261015/pair_contrast.png)
+![单 OU 初扫：配对差值与参数的关系](../../results/paired_scan_20261015/pair_contrast.png)
 
 ### 验证与边界
 
@@ -231,10 +231,10 @@ conda run -n Qubit python run_paired_scan.py --confirmation-samples 32768 --outp
 
 以 Delta X=0.06207 为例，理想独立测量的保守 3 标准误预算约 4673 shots/序列；0.00298 的信号约需 203 万 shots/序列。这里只用于比较信号量级，尚未计入 SPAM、漂移、模型不确定度、功效或多重检验。实验条件与示例模型不同，不能直接把这组时长当成真机最优点。
 
-- [完整 summary.json](../results/paired_scan_20261015/summary.json)：配置、校准残差、全部扫描、复核、脉宽/静态/步长检查与随机种子。
-- [scan_bloch.npz](../results/paired_scan_20261015/scan_bloch.npz)、[calibration_bloch.npz](../results/paired_scan_20261015/calibration_bloch.npz)、[confirmation_bloch.npz](../results/paired_scan_20261015/confirmation_bloch.npz)：原始末态 Bloch 样本，列顺序 X,Y,Z；配对数据首轴 A,B。校准数据首轴 Ramsey,echo。
+- [完整 summary.json](../../results/paired_scan_20261015/summary.json)：配置、校准残差、全部扫描、复核、脉宽/静态/步长检查与随机种子。
+- [scan_bloch.npz](../../results/paired_scan_20261015/scan_bloch.npz)、[calibration_bloch.npz](../../results/paired_scan_20261015/calibration_bloch.npz)、[confirmation_bloch.npz](../../results/paired_scan_20261015/confirmation_bloch.npz)：原始末态 Bloch 样本，列顺序 X,Y,Z；配对数据首轴 A,B。校准数据首轴 Ramsey,echo。
 - `confirmation_noise_examples_*.npz` 保存各复核点前 32 条实际噪声轨迹的区间平均值及时间格；全部噪声可由种子、版本和源码快照重建。
-- [verification.json](../results/paired_scan_20261015/verification.json) 与 [SHA256SUMS](../results/paired_scan_20261015/SHA256SUMS)：验证记录和该次运行所有文件的校验和。
+- [verification.json](../../results/paired_scan_20261015/verification.json) 与 [SHA256SUMS](../../results/paired_scan_20261015/SHA256SUMS)：验证记录和该次运行所有文件的校验和。
 - `results/paired_scan_20261015/source/` 保存本次数值运行源码；PNG 与矢量 PDF 均已导出。旧 GHZ 与量子浴归档保持不变。
 
 重跑请使用新的输出目录；脚本拒绝覆盖已有结果。校验归档：

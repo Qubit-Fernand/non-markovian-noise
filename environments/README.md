@@ -4,25 +4,9 @@
 
 ## 默认环境
 
-从仓库根目录运行：
+统一创建、运行和分包测试见 [usage.md](../docs/usage.md)。[requirements.txt](../requirements.txt) 是固定版本主入口，[environment.yml](../environment.yml) 引用它；[tensorcircuit-ng.txt](tensorcircuit-ng.txt) 保留为兼容入口，pip 命令从代码根目录运行。
 
-```bash
-conda env create -f environment.yml
-conda activate TensorCircuitNG
-python -m pip check
-python -m pytest -q
-spp-tn --output results/new_run --convergence
-```
-
-如果已经准备好 Python 3.11 的独立环境：
-
-```bash
-python -m pip install -r requirements.txt
-python -m pip check
-python -m pytest -q
-```
-
-[`../requirements.txt`](../requirements.txt) 是固定版本的唯一主入口，同时安装本仓库的 editable 包和 `spp-tn` 命令；[`../environment.yml`](../environment.yml) 直接引用它。[`tensorcircuit-ng.txt`](tensorcircuit-ng.txt) 保留为兼容入口，仍应从仓库根目录调用 pip。
+根清单安装主线 `spp_tn`；旧 `nmnoise` 已归档，可按 [归档说明](../archive/README.md)单独安装。独立 `heom_spp_cpu` 需另外安装，其全部传递依赖未由根清单锁定。此页保留版本与环境验证记录。
 
 | 主要依赖 | 验证版本 |
 |---|---|
