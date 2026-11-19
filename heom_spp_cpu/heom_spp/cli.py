@@ -456,7 +456,7 @@ def _model_arguments(p):
     p.add_argument("--positivity-max-entries", type=int, default=1000000)
 
 
-def main(argv=None):
+def argument_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(required=True)
     p = sub.add_parser("run")
@@ -498,6 +498,11 @@ def main(argv=None):
     p.set_defaults(function=summarize)
     p.add_argument("root", type=Path)
     p.add_argument("--output", type=Path)
+    return parser
+
+
+def main(argv=None):
+    parser = argument_parser()
     args = parser.parse_args(argv)
     if hasattr(args, "blas_threads") and args.blas_threads < 1:
         parser.error("blas-threads must be positive")

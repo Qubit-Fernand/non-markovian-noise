@@ -81,7 +81,7 @@ python -m heom_spp.cli run \
 
 输出保存实际层、噪声、脉冲 schedule、SPP 和版本快照。`--workers` 应按机器及问题规模选择；多进程并不总更快。该包时间单位为 ns，Hamiltonian 为 rad/ns。原生门、静态积分参考、Slurm 和分析参数见 [CPU 包说明](../heom_spp_cpu/README.md)。
 
-**当前两项已知问题必须纳入复现流程：** 收敛扫描可能复用不同参数的旧结果，基线分析只核对形状而未核对线路。每组物理参数使用新的 `ROOT`，比较前核对 `layers.json`、`noise.json` 和层划分。具体限制见 [known-issues.md](../heom_spp_cpu/docs/known-issues.md)。
+扫描脚本现在会在计算／提交前检查整个 ROOT 的配置，并校验各缓存结果；不匹配或信息不全时停止，改用新的 ROOT。基线分析要求 `layers.json` 的门、比特、角度及层／块划分匹配，允许噪声模型不同；缺失或不匹配会报错。历史结果未改写，兼容边界与测试见 [修复记录](../heom_spp_cpu/docs/known-issues.md)。
 
 ### 旧模拟与受限基准
 

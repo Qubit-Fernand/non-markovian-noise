@@ -26,7 +26,8 @@
 #
 # Each run directory keeps its spp.npz, so the recommended one can go straight
 # into `python -m heom_spp.analyze <run>` without recomputing anything.
-# Re-running the script skips finished runs and reports unfinished directories.
+# Before any computation/submission, validate all saved configurations.
+# Only matching completed runs are reused; mismatches/unfinished runs fail closed.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 PYTHON="${PYTHON:-python}"
@@ -45,34 +46,27 @@ REFERENCE="${REFERENCE:-1}"
 BASELINES="${BASELINES:-0}"
 GRID_DT="${GRID_DT:-}"; GRID_HB="${GRID_HB:-}"
 NODES="${NODES:-6}"                    # Gauss-Hermite nodes per qubit of the reference
-mkdir -p "$ROOT"
-
-if [[ "$REFERENCE" != 0 ]]; then
-  if [[ -f "$ROOT/reference/summary.json" ]]; then
-    echo "done      reference"
-  elif [[ -e "$ROOT/reference" ]]; then
-    echo "UNFINISHED reference: remove $ROOT/reference to rerun"
-  else
-    echo "running   reference (quadrature, local)"
-    # shellcheck disable=SC2086
-    "$PYTHON" -m heom_spp.cli reference --example "$EXAMPLE" $PULSE_ARGS --steps "$STEPS" \
-      --bath static --sigma "$SIGMA" --nodes "$NODES" --output "$ROOT/reference" > "$ROOT/reference.log" 2>&1
-    grep -E "quadrature_check_l2|correlation_l2" "$ROOT/reference.log" || true
-  fi
-fi
+# Validate old scan members, even ones omitted from today's numerical grid.
+# shellcheck disable=SC2086
+"$PYTHON" -m heom_spp.reuse --scan-root "$ROOT" reference \
+  --example "$EXAMPLE" $PULSE_ARGS --steps "$STEPS" --bath static \
+  --sigma "$SIGMA" --nodes "$NODES" --output "$ROOT/reference"
 
 launch() {
   local name="$1" tb="$2" hb="$3" dt="$4" lv="$5" extra="${6:-}"
   local out="$ROOT/$name"
-  if [[ -f "$out/summary.json" ]]; then
-    echo "done      $name"; return
-  fi
-  if [[ -e "$out" ]]; then
-    echo "UNFINISHED $name: $out exists without summary.json (still running, or failed: remove it to rerun)"; return
-  fi
   local assembly=$(( tb * 4 > 32 ? tb * 4 : 32 ))
   local args="--example $EXAMPLE $PULSE_ARGS --steps $STEPS --bath static --sigma $SIGMA --levels $lv \
 --engine tdvp --max-dt $dt --heom-bond $hb --time-bond $tb --assembly-bond $assembly $extra --output $out"
+  if [[ "$PREFLIGHT" == 1 ]]; then
+    # Uses the actual CLI parser, including defaults and numerical settings.
+    # shellcheck disable=SC2086
+    "$PYTHON" -m heom_spp.reuse run $args
+    return
+  fi
+  if [[ -f "$out/summary.json" ]]; then
+    echo "done      $name (configuration verified)"; return
+  fi
   if [[ -n "${LOCAL:-}" ]]; then
     echo "running   $name"
     # shellcheck disable=SC2086
@@ -83,20 +77,43 @@ launch() {
   fi
 }
 
-if [[ "$BASELINES" != only ]]; then
-  launch base "$TB" "$HB" "$DT" "$LV"
-  for v in $TB_LIST; do launch "tb$v" "$v" "$HB" "$DT" "$LV"; done
-  for v in $HB_LIST; do launch "hb$v" "$TB" "$v" "$DT" "$LV"; done
-  for v in $DT_LIST; do launch "dt$v" "$TB" "$HB" "$v" "$LV"; done
-  for v in $LV_LIST; do launch "lv$v" "$TB" "$HB" "$DT" "$v"; done
-  for dt in $GRID_DT; do for hb in $GRID_HB; do
-    launch "dt$dt-hb$hb" "$TB" "$hb" "$dt" "$LV"
-  done; done
+scan_jobs() {
+  if [[ "$BASELINES" != only ]]; then
+    launch base "$TB" "$HB" "$DT" "$LV"
+    for v in $TB_LIST; do launch "tb$v" "$v" "$HB" "$DT" "$LV"; done
+    for v in $HB_LIST; do launch "hb$v" "$TB" "$v" "$DT" "$LV"; done
+    for v in $DT_LIST; do launch "dt$v" "$TB" "$HB" "$v" "$LV"; done
+    for v in $LV_LIST; do launch "lv$v" "$TB" "$HB" "$DT" "$v"; done
+    for dt in $GRID_DT; do for hb in $GRID_HB; do
+      launch "dt$dt-hb$hb" "$TB" "$hb" "$dt" "$LV"
+    done; done
+  fi
+  if [[ "$BASELINES" != 0 ]]; then
+    launch reset-layer "$TB" "$HB" "$DT" "$LV" "--reset layer"
+    launch reset-pulse "$TB" "$HB" "$DT" "$LV" "--reset pulse"
+  fi
+}
+
+# Complete every check before even computing a new reference or submitting a job.
+PREFLIGHT=1
+scan_jobs
+mkdir -p "$ROOT"
+
+if [[ "$REFERENCE" != 0 ]]; then
+  if [[ -f "$ROOT/reference/summary.json" ]]; then
+    echo "done      reference (configuration verified)"
+  else
+    echo "running   reference (quadrature, local)"
+    # shellcheck disable=SC2086
+    "$PYTHON" -m heom_spp.cli reference --example "$EXAMPLE" $PULSE_ARGS --steps "$STEPS" \
+      --bath static --sigma "$SIGMA" --nodes "$NODES" --output "$ROOT/reference" > "$ROOT/reference.log" 2>&1
+    grep -E "quadrature_check_l2|correlation_l2" "$ROOT/reference.log" || true
+  fi
 fi
-if [[ "$BASELINES" != 0 ]]; then
-  launch reset-layer "$TB" "$HB" "$DT" "$LV" "--reset layer"
-  launch reset-pulse "$TB" "$HB" "$DT" "$LV" "--reset pulse"
-fi
+
+PREFLIGHT=0
+scan_jobs
+
 echo
 echo "When every run has finished:  $PYTHON -m heom_spp.cli converge $ROOT"
 echo "Then, for the recommended run:  $PYTHON -m heom_spp.analyze $ROOT/<run> \\"

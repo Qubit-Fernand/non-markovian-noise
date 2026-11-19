@@ -19,7 +19,7 @@
 | `spp_tn` | TensorCircuit-NG NumPy 后端；经典 Hermite 层级 MPS、压缩 RK4、SPP 时间 MPS、PEA／PEC | [包说明](spp_tn/README.md) |
 | `heom_spp_cpu` | 独立 NumPy／SciPy CPU 包；显式 MPO、单站点 TDVP、RK4／稀疏参考、探针并行和静态积分参考 | [包说明](heom_spp_cpu/README.md) |
 
-**已有 MPO／TDVP 实现，下一步重点是目标模型的正确性与收敛验证。** 保留 RK4 和独立参考进行比较，通过后再扩展 CPU 优化与 GPU 并行；当前无 GPU 路径。两项影响结果比较的[已知问题](heom_spp_cpu/docs/known-issues.md)仍未修复。
+**已有 MPO／TDVP 实现，下一步重点是目标模型的正确性与收敛验证。** 保留 RK4 和独立参考进行比较，通过后再扩展 CPU 优化与 GPU 并行；当前无 GPU 路径。扫描复用与基线线路校验的两项问题已修复，行为和兼容边界见[修复记录](heom_spp_cpu/docs/known-issues.md)。
 
 旧 `nmnoise` 模拟及其脚本、测试已移入 [archive/](archive/README.md)，不再随主包安装或默认测试。已有结果仍保留在 `results/`。
 
@@ -45,6 +45,8 @@ python -m spp_tn.demo --output results/my_spp_run --convergence
 任务只在 [research.md](docs/research.md) 维护，按 Overview 流程推进：固定控制与噪声输入 → 验证 HEOM／MPO／TDVP → 验证逐层 SPP 及预测／缓解 → 扩规模 → CPU／GPU 性能比较。文献中的计划、已有代码和经过收敛验证的结果分别标注。
 
 ## 维护约定与记录
+
+- 2026-11-19：修复 CPU 收敛扫描的旧配置复用及基线线路匹配问题；新增回归与真实小规模扫描测试。TensorCircuitNG 中 CPU 包 107 passed、3 skipped（可选 Qiskit 未安装），主线 17 passed；pip check 与 Bash 语法检查通过。未改写历史结果。
 
 - 2026-11-19：归档 nmnoise 及其脚本／测试，主包只发现 spp_tn；旧 egg-info 与 references-local 用 trash 移至回收站，保留 ignore 规则。归档源码与旧结果未改写。验证：主线 17 项、归档 19 项测试通过；包发现与本轮相关的 104 个本地链接检查通过。
 

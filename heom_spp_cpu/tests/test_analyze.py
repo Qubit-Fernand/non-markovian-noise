@@ -138,3 +138,81 @@ def test_unnormalised_spp_is_normalised_and_reported(saved_run, tmp_path):
     assert_allclose(b["pec"]["independent"]["gamma"], a["pec"]["independent"]["gamma"])
     assert_allclose([b["pec"]["independent"]["mitigated"][w] for w in "XZ"],
                     [a["pec"]["independent"]["mitigated"][w] for w in "XZ"], atol=1e-12)
+
+
+@pytest.fixture
+def baseline_pair(tmp_path):
+    plan = CircuitLayers(2, (
+        Layer("drive", (ParallelBlock((Gate("r", (0,), .7, .2), Gate("rx", (1,), .3))),)),
+        Layer("entangle", (ParallelBlock((Gate("cx", (0, 1)),)),))))
+    paths = [tmp_path/"device", tmp_path/"baseline"]
+    for i, path in enumerate(paths):
+        path.mkdir()
+        plan.save(path/"layers.json")
+        # Different noise models on the same circuit must remain valid baselines.
+        weights = np.full(16, (.1+.02*i)/15)
+        weights[0] = .9-.02*i
+        MPS.product([weights, weights]).save(path/"spp.npz")
+        (path/"noise.json").write_text(json.dumps({"sigma": .1+.1*i}))
+    return paths
+
+
+@pytest.mark.parametrize("change", ["gate", "angle", "phase", "qubits", "layer_order", "blocks", "boundary"])
+def test_baseline_rejects_same_shape_different_circuit(baseline_pair, change):
+    run, baseline = baseline_pair
+    data = json.loads((baseline/"layers.json").read_text())
+    gate = data["layers"][0]["blocks"][0]["gates"][0]
+    if change == "gate":
+        data["layers"][1]["blocks"][0]["gates"][0]["name"] = "cz"
+    elif change in ("angle", "phase"):
+        gate[change] += .01
+    elif change == "qubits":
+        data["layers"][1]["blocks"][0]["gates"][0]["qubits"] = [1, 0]
+    elif change == "layer_order":
+        data["layers"].reverse()
+    elif change == "boundary":
+        moved = data["layers"][0]["blocks"][0]["gates"].pop()
+        data["layers"][1]["blocks"].insert(0, {"gates": [moved]})
+    else:
+        # Same ideal unitary, different parallel/sequential block definition.
+        gates = data["layers"][0]["blocks"][0]["gates"]
+        data["layers"][0]["blocks"] = [{"gates": [g]} for g in gates]
+    (baseline/"layers.json").write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="baseline comparison: layers.json circuit/layer"):
+        analyze(run, observables=["ZI"], baselines={"comparison": baseline},
+                pec_bonds=(), shots=100, progress=lambda *_: None)
+    assert not (run/"mitigation.json").exists()
+
+
+def test_baseline_accepts_same_circuit_with_new_metadata_and_noise(baseline_pair):
+    run, baseline = baseline_pair
+    data = json.loads((baseline/"layers.json").read_text())
+    data["source"] = "another export"
+    for layer in data["layers"]:
+        layer["name"] = "renamed"
+        layer["step"] += 10
+        for block in layer["blocks"]:
+            block["gates"].reverse()  # disjoint parallel gates commute
+    (baseline/"layers.json").write_text(json.dumps(data, indent=4))
+    result = analyze(run, observables=["ZI"], baselines={"comparison": baseline},
+                     gains=(1, 2), pec_bonds=(), shots=100, progress=lambda *_: None)
+    assert "comparison" in result["pec"]
+    assert "comparison" in result["zne"]["extrapolated"]
+    assert result["baseline_distance_to_marginals_l2"]["comparison"] > 0
+
+
+@pytest.mark.parametrize("damage", ["missing", "invalid", "wrong_order"])
+def test_baseline_requires_valid_layer_metadata(baseline_pair, damage):
+    run, baseline = baseline_pair
+    path = baseline/"layers.json"
+    if damage == "missing":
+        path.rename(baseline/"original-layers.json")
+    elif damage == "invalid":
+        path.write_text("{")
+    else:
+        data = json.loads(path.read_text())
+        data["qubit_order"] = "q0-least-significant"
+        path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="baseline comparison: cannot validate"):
+        analyze(run, observables=["ZI"], baselines={"comparison": baseline},
+                pec_bonds=(), shots=100, progress=lambda *_: None)

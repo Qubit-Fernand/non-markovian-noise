@@ -4,7 +4,7 @@
 
 只依赖 numpy、scipy、threadpoolctl，纯 CPU。
 
-项目流程见 [Overview](../docs/overview.md)，统一安装与复现见 [usage.md](../docs/usage.md)，当前任务见 [research.md](../docs/research.md)。本页保留独立包的接口、配置和服务器运行细节；以下命令均从 `heom_spp_cpu/` 执行。目标模型仍需收敛验证，扫描复用和基线比较的两项限制见 [已知问题](docs/known-issues.md)。
+项目流程见 [Overview](../docs/overview.md)，统一安装与复现见 [usage.md](../docs/usage.md)，当前任务见 [research.md](../docs/research.md)。本页保留独立包的接口、配置和服务器运行细节；以下命令均从 `heom_spp_cpu/` 执行。目标模型仍需收敛验证，扫描复用与基线线路校验的行为及旧结果兼容边界见 [修复记录](docs/known-issues.md)。
 
 ## 结构
 
@@ -105,7 +105,7 @@ STEPS=1 bash scripts/scan_convergence.sh
 
 - `STEPS=N` 是 Trotter 步数（每步 4 个学习层）；结果放在 `results/scan_stepsN/`。
 - 默认阶梯：`TB_LIST="16 32"`、`HB_LIST="16 24"`、`DT_LIST="0.5 0.25"`、`LV_LIST="8 10"`，共 9 个作业；都可以用环境变量改，`SIGMA`、`CPUS` 同理。
-- 重复执行会跳过已完成的组，并指出未完成的目录。不走 Slurm 时加 `LOCAL=1 WORKERS=6`。
+- 重复执行会先预检整个 ROOT 的物理配置及所有待运行组的参数，匹配的完整结果才跳过；参数不匹配、记录缺失或未完成时，在计算／提交前停止。更换物理模型、参考节点数或同名组的数值参数时使用新的 ROOT。即使 `REFERENCE=0`，已有参考解仍会校验。不走 Slurm 时加 `LOCAL=1 WORKERS=6`。
 - 脚本先在当前节点直接算出**积分参考解**（见下，单核、不提交作业）放到 `reference/`；`REFERENCE=0` 跳过。
 - 有参考解后不必逐个参数改：`GRID_DT="0.1 0.05" GRID_HB="8 16 24"` 追加“步长 × HEOM 键维”网格（命名 `dt0.1-hb16`），已有的组会跳过。
 - 参数选定后，`BASELINES=only HB=16 DT=0.5 bash scripts/scan_convergence.sh` 只提交 `reset-layer`、`reset-pulse` 两个独立噪声基线（见下）。
@@ -159,6 +159,7 @@ python -m heom_spp.analyze results/scan_steps1/base
 - **ZNE**：增益 `--gains 1,2,3`，插入的额外噪声分别取自 SPP 本身和逐层独立模型，各自外推到零噪声。
 - **PEC**：独立模型的逐层逆，以及 SPP 的变分逆（时间键维 `--pec-bonds 1,2,4`），给出缓解后的偏差、残差和 Γ。SPP 逆的 Γ 用重要性抽样估计并给出标准误差。
 - 观测量用 `--observables ZIII,ZZII,...`（q0 在最左），初态 `--initial zero|plus`。结果写入运行目录的 `mitigation.json`。
+- `--baseline` 必须提供匹配的 `layers.json`：门、比特、角度、驱动相位、层／块顺序与边界一致；仅同形状不够。允许来源、名称和同块并行门列举顺序不同，也允许噪声模型不同。缺失或不匹配会报错。
 - `--baseline 名字=运行目录`（可重复）加入别的独立模型，例如 `--baseline reset-layer=results/reset_layer --baseline reset-pulse=results/reset_pulse`。器件始终是所分析的 SPP，基线只替换放大或求逆时用的模型。
 - 每行输出带已用时间；PEC 阶段还给出剩余时间的上限估计（逆提前收敛会更早结束）。
 - 表里的 `max |err|` 是各观测量 $|\langle O\rangle-\langle O\rangle_{\rm ideal}|$ 中最大的一个。`Gamma` 是修正准概率的 $\Gamma=\sum|q|$，PEC 达到同样统计误差需要的采样次数乘以 $\Gamma^2$。
@@ -208,3 +209,9 @@ engine = TDVPHEOM(modes, whites=[White(q, k0, "z:q0")], max_dt=0.05)
 - [docs/LAYERS_AND_STATIC_HEOM.md](docs/LAYERS_AND_STATIC_HEOM.md)：层、脉冲、静态 HEOM 的公式与配置
 - [docs/cpu-validation-20261111.md](docs/cpu-validation-20261111.md)：重构前的本地验证记录（文件名是旧的）
 - SPP 的讨论与会议记录在仓库根目录的 [docs/](../docs/)
+
+## 维护记录
+
+- 2026-11-19：修复收敛扫描误用旧参数结果及基线分析未核对线路的问题；新增配置预检和回归测试，历史结果保持原样。详细行为见 [修复记录](docs/known-issues.md)。
+
+本次验证：TensorCircuitNG（Python 3.11，threadpoolctl 3.8.0）中 CPU 包 **107 passed, 3 skipped**，三项跳过均为未安装可选 Qiskit 的线路互操作测试；主线 **17 passed**。`pip check`、`bash -n scripts/scan_convergence.sh` 通过。绘图测试存在 Matplotlib／pyparsing 弃用警告，不影响上述结果。

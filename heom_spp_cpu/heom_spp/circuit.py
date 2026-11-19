@@ -97,6 +97,18 @@ class CircuitLayers:
     def to_dict(self):
         return dict(schema="heom-circuit-layers-v1", qubit_order="q0-most-significant", **asdict(self))
 
+    def operation_signature(self):
+        """Ordered layers/blocks/gates, without descriptive names or provenance.
+
+        Disjoint gates within one parallel block commute; their JSON list order
+        is not a circuit difference. Keep block and layer boundaries exact.
+        """
+        return (self.n_qubits, self.convention, tuple(
+            tuple(tuple((g.name, g.qubits, g.angle, g.phase)
+                        for g in sorted(block.gates, key=lambda g: g.qubits))
+                  for block in layer.blocks)
+            for layer in self.layers))
+
     @classmethod
     def from_dict(cls, data):
         if data.get("schema") != "heom-circuit-layers-v1":

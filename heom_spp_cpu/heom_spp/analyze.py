@@ -190,6 +190,12 @@ def analyze(run, *, observables, initial="zero", gains=(1, 2, 3), pec_bonds=(1, 
     # Product models: the marginals of the SPP, then the named baselines.
     models, distances = {"independent": walsh(independent, n)}, {}
     for name, path in (baselines or {}).items():
+        try:
+            baseline_plan = CircuitLayers.load(Path(path)/"layers.json")
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            raise ValueError(f"baseline {name}: cannot validate {Path(path)/'layers.json'}: {exc}") from exc
+        if baseline_plan.operation_signature() != plan.operation_signature():
+            raise ValueError(f"baseline {name}: layers.json circuit/layer definitions do not match {run}")
         other = real_tensor(MPS.load(Path(path)/"spp.npz"))
         if other.dims != p.dims or name in ("independent", "correlated"):
             raise ValueError(f"baseline {name} does not fit this circuit")
